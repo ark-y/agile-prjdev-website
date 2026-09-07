@@ -1,6 +1,5 @@
 <!-- temp preview folder for project -->
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,11 +9,13 @@
 
     <title>UI Preview</title>
 
+
     <!-- css for the dev dashboard -->
     <link
             rel="stylesheet"
             href="src/pages/DevLanding/DevLanding.css"
     >
+
 
     <!-- css for the create project popup -->
     <link
@@ -22,10 +23,25 @@
             href="src/components/CreateProjectForm/CreateProjectForm.css"
     >
 
+
     <!-- css for the project cards -->
     <link
             rel="stylesheet"
             href="src/components/ProjectCard/ProjectCard.css"
+    >
+
+
+    <!-- css for the project overview -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ProjectOverview/ProjectOverview.css"
+    >
+
+
+    <!-- css for the task form -->
+    <link
+            rel="stylesheet"
+            href="src/components/CreateTaskForm/CreateTaskForm.css"
     >
 
 </head>
@@ -33,9 +49,13 @@
 
 <body>
 
-<!-- whole dev dashboard -->
-<main class="dev-page">
 
+<!-- ==================== DEV DASHBOARD ==================== -->
+
+<main
+        class="dev-page"
+        id="devDashboard"
+>
 
     <!-- top blue bit -->
     <header class="dashboard-header">
@@ -87,7 +107,6 @@
         </button>
 
     </section>
-
 
 
     <!-- create project popup -->
@@ -145,10 +164,363 @@
 
 
 
+<!-- ==================== PROJECT OVERVIEW ==================== -->
+
+<main
+        class="project-page"
+        id="projectOverview"
+        style="display: none;"
+>
+
+    <!-- same header as dev landing -->
+    <header class="project-header">
+
+        <!-- project name -->
+        <h1>SAMPLE PROJECT</h1>
+
+
+        <!-- icons on the right -->
+        <section class="project-header-icons">
+
+            <!-- messages -->
+            <button class="message-button">
+                📥
+            </button>
+
+            <!-- settings -->
+            <button class="settings-button">
+                ⚙
+            </button>
+
+        </section>
+
+    </header>
+
+
+    <!-- everything under the header -->
+    <section class="project-body">
+
+
+        <!-- backlog and sprints -->
+        <section
+                class="sprint-area"
+                id="sprintArea"
+        >
+
+            <!-- backlog is always first -->
+            <section class="sprint-box">
+
+                <h2>BACKLOG</h2>
+
+                <!-- tasks will go here later -->
+                <section class="task-area">
+
+                </section>
+
+            </section>
+
+
+            <!-- sample sprint -->
+            <section class="sprint-box">
+
+                <!-- sprint name can be edited -->
+                <input
+                        class="sprint-name-input"
+                        type="text"
+                        value="SPRINT 1"
+                >
+
+                <!-- tasks will go here later -->
+                <section class="task-area">
+
+                </section>
+
+            </section>
+
+        </section>
+
+
+        <!-- fade before the grey boxes -->
+        <section class="sidebar-fade"></section>
+
+
+        <!-- stuff on the far right -->
+        <aside class="project-sidebar">
+
+
+            <!-- progress box -->
+            <section class="progress-box">
+
+                <h2>PROGRESS</h2>
+
+
+                <!-- progress bar -->
+                <section class="progress-row">
+
+                    <section class="progress-bar">
+
+                        <!-- green part -->
+                        <span class="progress-fill"></span>
+
+                    </section>
+
+                    <span class="progress-number">
+                        46%
+                    </span>
+
+                </section>
+
+
+                <!-- info about the project -->
+                <section class="progress-info">
+
+                    <p>Team list</p>
+                    <p>Project timeline</p>
+                    <p>Project due date</p>
+                    <p>Client</p>
+
+                </section>
+
+            </section>
+
+
+            <!-- buttons under progress -->
+            <section class="sidebar-buttons">
+
+                <!-- adding a task -->
+                <button
+                        class="sidebar-button"
+                        onclick="openTaskForm()"
+                >
+
+                    <span>ADD</span>
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+                    <span>TASK</span>
+
+                </button>
+
+
+                <!-- adding a sprint -->
+                <button
+                        class="sidebar-button"
+                        onclick="addSprint()"
+                >
+
+                    <span>ADD</span>
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+                    <span>SPRINT</span>
+
+                </button>
+
+            </section>
+
+        </aside>
+
+    </section>
+
+
+    <!-- going back to all the projects -->
+    <button
+            type="button"
+            class="back-projects-button"
+            onclick="backToProjects()"
+    >
+        ← Back to Projects
+    </button>
+
+</main>
+
+
+
+<!-- ==================== TASK FORM ==================== -->
+
+<main
+        class="task-form-page"
+        id="taskForm"
+        style="display: none;"
+>
+
+    <!-- top blue bit -->
+    <header class="task-form-header">
+
+        <!-- task name -->
+        <input
+                class="task-name-input"
+                type="text"
+                placeholder="Task name"
+        >
+
+
+        <!-- shows whatever weight they choose -->
+        <span
+                class="task-weight-number"
+                id="taskWeightNumber"
+        >
+        </span>
+
+    </header>
+
+
+    <!-- everything under the header -->
+    <section class="task-form-body">
+
+
+        <!-- top row with tags and weight -->
+        <section class="task-form-row">
+
+            <!-- tags on the left -->
+            <section class="task-tags">
+
+                <!-- adding another tag -->
+                <button
+                        type="button"
+                        class="add-tag-button"
+                >
+                    + tag
+                </button>
+
+
+                <!-- sample tags for now -->
+                <button
+                        type="button"
+                        class="tag-button tag-green"
+                >
+                    Tag 1
+                </button>
+
+
+                <button
+                        type="button"
+                        class="tag-button tag-purple"
+                >
+                    Long Tag 2
+                </button>
+
+            </section>
+
+
+            <!-- choosing the task weight -->
+            <section class="weight-wrapper">
+
+                <select
+                        class="weight-select"
+                        onchange="updateTaskWeight(this.value)"
+                >
+
+                    <option value="">Weight</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+
+                </select>
+
+
+                <!-- our own arrow -->
+                <span class="select-arrow">
+                    ▼
+                </span>
+
+            </section>
+
+        </section>
+
+
+        <!-- second row -->
+        <section class="task-form-row">
+
+
+            <!-- deadline dropdown just for now -->
+            <button
+                    type="button"
+                    class="fake-dropdown deadline-dropdown"
+            >
+
+                <span>Deadline</span>
+
+                <span class="dropdown-arrow">
+                    ▼
+                </span>
+
+            </button>
+
+
+            <!-- assignee dropdown just for now -->
+            <button
+                    type="button"
+                    class="fake-dropdown assignee-dropdown"
+            >
+
+                <span>Assignee</span>
+
+                <span class="dropdown-arrow">
+                    ▼
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- task description -->
+        <textarea
+                class="task-description"
+                placeholder="Description"
+        ></textarea>
+
+
+        <!-- buttons at the bottom -->
+        <section class="task-form-buttons">
+
+            <!-- closing without saving -->
+            <button
+                    type="button"
+                    class="task-cancel-button"
+                    onclick="closeTaskForm()"
+            >
+                Cancel
+            </button>
+
+
+            <!-- saving the task -->
+            <button
+                    type="button"
+                    class="task-save-button"
+            >
+                Save Task
+            </button>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+
 <!-- temporary js just for testing stuff -->
 <script>
 
-    // opening the popup
+
+    // keeping track of how many sprints there are
+    let sprintCount = 1;
+
+
+    // opening the project popup
     function openProjectPopup() {
 
         document
@@ -158,7 +530,7 @@
     }
 
 
-    // closing the popup
+    // closing the project popup
     function closeProjectPopup() {
 
         document
@@ -171,9 +543,135 @@
     // opening the sample project
     function openSampleProject() {
 
-        window.location.href = "SprintView.html";
+        // hiding the dashboard
+        document
+            .getElementById("devDashboard")
+            .style.display = "none";
+
+
+        // hiding the task form just in case
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        // showing the project page
+        document
+            .getElementById("projectOverview")
+            .style.display = "block";
 
     }
+
+
+    // going back to all the projects
+    function backToProjects() {
+
+        // hiding the project page
+        document
+            .getElementById("projectOverview")
+            .style.display = "none";
+
+
+        // hiding the task form just in case
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        // showing the dashboard again
+        document
+            .getElementById("devDashboard")
+            .style.display = "block";
+
+    }
+
+
+    // adding another sprint
+    function addSprint() {
+
+        // increasing the sprint number
+        sprintCount++;
+
+
+        // making the new sprint box
+        const newSprint = document.createElement("section");
+
+        newSprint.className = "sprint-box";
+
+
+        // making the editable sprint name
+        const sprintName = document.createElement("input");
+
+        sprintName.className = "sprint-name-input";
+
+        sprintName.type = "text";
+
+        sprintName.value = "SPRINT " + sprintCount;
+
+
+        // making the task area
+        const taskArea = document.createElement("section");
+
+        taskArea.className = "task-area";
+
+
+        // putting everything into the sprint
+        newSprint.appendChild(sprintName);
+
+        newSprint.appendChild(taskArea);
+
+
+        // adding it next to the other sprints
+        document
+            .getElementById("sprintArea")
+            .appendChild(newSprint);
+
+    }
+
+
+    // opening the task form
+    function openTaskForm() {
+
+        // hiding the project page
+        document
+            .getElementById("projectOverview")
+            .style.display = "none";
+
+
+        // showing the task form
+        document
+            .getElementById("taskForm")
+            .style.display = "block";
+
+    }
+
+
+    // going back to the project page
+    function closeTaskForm() {
+
+        // hiding the task form
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        // showing the project again
+        document
+            .getElementById("projectOverview")
+            .style.display = "block";
+
+    }
+
+
+    // changing the number at the top when the weight changes
+    function updateTaskWeight(weight) {
+
+        document
+            .getElementById("taskWeightNumber")
+            .textContent = weight;
+
+    }
+
 
 </script>
 
