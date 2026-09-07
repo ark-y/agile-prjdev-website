@@ -1,0 +1,182 @@
+<!-- temp preview folder for project -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>UI Preview</title>
+
+    <!-- css for the dev dashboard -->
+    <link
+            rel="stylesheet"
+            href="src/pages/DevLanding/DevLanding.css"
+    >
+
+    <!-- css for the create project popup -->
+    <link
+            rel="stylesheet"
+            href="src/components/CreateProjectForm/CreateProjectForm.css"
+    >
+
+    <!-- css for the project cards -->
+    <link
+            rel="stylesheet"
+            href="src/components/ProjectCard/ProjectCard.css"
+    >
+
+</head>
+
+
+<body>
+
+<!-- whole dev dashboard -->
+<main class="dev-page">
+
+
+    <!-- top blue bit -->
+    <header class="dashboard-header">
+
+        <h1>X'S DASHBOARD</h1>
+
+
+        <!-- icons on the right -->
+        <section class="dashboard-icons">
+
+            <!-- messages -->
+            <button class="message-button">
+                📥
+            </button>
+
+            <!-- settings -->
+            <button class="settings-button">
+                ⚙
+            </button>
+
+        </section>
+
+    </header>
+
+
+    <!-- where all the projects go -->
+    <section class="projects-section">
+
+        <!-- making a new project -->
+        <button
+                class="add-project"
+                onclick="openProjectPopup()"
+        >
+            +
+        </button>
+
+
+        <!-- sample project just for testing -->
+        <button
+                class="project-card"
+                onclick="openSampleProject()"
+        >
+
+            <!-- showing the projects name -->
+            <span class="project-name">
+                Sample Project
+            </span>
+
+        </button>
+
+    </section>
+
+
+
+    <!-- create project popup -->
+    <section
+            class="popup-background"
+            id="projectPopup"
+    >
+
+        <!-- actual popup -->
+        <form class="create-project-popup">
+
+            <h2>Create Project</h2>
+
+
+            <!-- getting the project name -->
+            <label for="projectName">
+                Project Name
+            </label>
+
+            <input
+                    type="text"
+                    id="projectName"
+                    placeholder="Enter project name"
+            >
+
+
+            <!-- buttons at the bottom -->
+            <section class="popup-buttons">
+
+                <!-- closing the popup -->
+                <button
+                        type="button"
+                        class="cancel-button"
+                        onclick="closeProjectPopup()"
+                >
+                    Cancel
+                </button>
+
+
+                <!-- making the project -->
+                <button
+                        type="button"
+                        class="create-button"
+                >
+                    Create Project
+                </button>
+
+            </section>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+
+<!-- temporary js just for testing stuff -->
+<script>
+
+    // opening the popup
+    function openProjectPopup() {
+
+        document
+            .getElementById("projectPopup")
+            .style.display = "flex";
+
+    }
+
+
+    // closing the popup
+    function closeProjectPopup() {
+
+        document
+            .getElementById("projectPopup")
+            .style.display = "none";
+
+    }
+
+
+    // opening the sample project
+    function openSampleProject() {
+
+        window.location.href = "SprintView.html";
+
+    }
+
+</script>
+
+</body>
+
+</html>
