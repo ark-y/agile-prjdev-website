@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@400;700&display=swap');
+
+
+/* whole task page */
+.task-form-page {
+    min-height: 100vh;
+
+    background-color: #D9D9D9;
+
+    font-family: "Fustat", sans-serif;
+}
+
+
+/* top blue bit */
+.task-form-header {
+    height: 105px;
+
+    background-color: #18273A;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 40px;
+
+    box-sizing: border-box;
+}
+
+
+/* task name */
+.task-name-input {
+    width: 75%;
+
+    border: none;
+    outline: none;
+
+    background: none;
+    color: #D9D9D9;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 52px;
+    font-weight: 400;
+}
+
+
+/* task name placeholder */
+.task-name-input::placeholder {
+    color: #D9D9D9;
+}
+
+
+/* weight number at the top */
+.task-weight-number {
+    color: #D9D9D9;
+
+    font-size: 44px;
+}
+
+
+/* everything under the header */
+.task-form-body {
+    padding: 26px 36px;
+
+    box-sizing: border-box;
+}
+
+
+/* rows in the form */
+.task-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+
+/* tag area */
+.task-tags {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* all the tag buttons */
+.task-tags button {
+    border: none;
+    border-radius: 30px;
+
+    padding: 10px 22px;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* add tag */
+.add-tag-button {
+    background-color: rgba(0, 0, 0, 0.30);
+    color: #D9D9D9;
+}
+
+
+/* sample green tag */
+.tag-green {
+    background-color: #3F9B76;
+    color: #D9D9D9;
+}
+
+
+/* sample purple tag */
+.tag-purple {
+    background-color: #963A91;
+    color: #D9D9D9;
+}
+
+
+/* holding the weight dropdown */
+.weight-wrapper {
+    position: relative;
+
+    width: 165px;
+}
+
+
+/* weight dropdown */
+.weight-select {
+    width: 100%;
+    height: 55px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 28px;
+
+    background-color: #18273A;
+    color: #D9D9D9;
+
+    padding: 0 50px 0 25px;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 20px;
+
+    cursor: pointer;
+
+    /* getting rid of the normal arrow */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+
+/* our arrow for weight */
+.select-arrow {
+    position: absolute;
+
+    top: 50%;
+    right: 25px;
+
+    transform: translateY(-50%);
+
+    color: #D9D9D9;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+
+/* deadline and assignee dropdowns */
+.fake-dropdown {
+    height: 55px;
+
+    border: none;
+    border-radius: 28px;
+
+    background-color: #18273A;
+    color: #D9D9D9;
+
+    padding: 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* bigger arrows on the right */
+.dropdown-arrow {
+    color: #D9D9D9;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* deadline is longer */
+.deadline-dropdown {
+    width: 380px;
+}
+
+
+/* assignee is smaller */
+.assignee-dropdown {
+    width: 190px;
+}
+
+
+/* big description box */
+.task-description {
+    width: 100%;
+    height: 390px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 30px;
+
+    background-color: rgba(0, 0, 0, 0.35);
+    color: #18273A;
+
+    padding: 22px 34px;
+
+    box-sizing: border-box;
+
+    resize: none;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+/* description placeholder */
+.task-description::placeholder {
+    color: #18273A;
+}
+
+
+/* buttons at the bottom */
+.task-form-buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 15px;
+
+    margin-top: 20px;
+}
+
+
+/* both bottom buttons */
+.task-form-buttons button {
+    border: none;
+    border-radius: 20px;
+
+    padding: 12px 24px;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+
+/* cancel button */
+.task-cancel-button {
+    background-color: rgba(0, 0, 0, 0.30);
+    color: #18273A;
+}
+
+
+/* save button */
+.task-save-button {
+    background-color: #18273A;
+    color: #D9D9D9;
+}
