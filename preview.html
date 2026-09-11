@@ -99,7 +99,6 @@
                 onclick="openSampleProject()"
         >
 
-            <!-- showing the projects name -->
             <span class="project-name">
                 Sample Project
             </span>
@@ -212,7 +211,6 @@
 
                 <h2>BACKLOG</h2>
 
-                <!-- tasks will go here later -->
                 <section class="task-area">
 
                 </section>
@@ -223,14 +221,79 @@
             <!-- sample sprint -->
             <section class="sprint-box">
 
-                <!-- sprint name can be edited -->
+                <!-- delete sprint -->
+                <button
+                        type="button"
+                        class="delete-sprint-button"
+                        onclick="deleteSprint(this)"
+                        aria-label="Delete sprint"
+                >
+                    ×
+                </button>
+
+
+                <!-- sprint name -->
                 <input
                         class="sprint-name-input"
                         type="text"
                         value="SPRINT 1"
                 >
 
-                <!-- tasks will go here later -->
+
+                <!-- sprint dates -->
+                <section class="sprint-dates">
+
+                    <!-- compact date -->
+                    <button
+                            type="button"
+                            class="sprint-date-display"
+                            onclick="openSprintDates(this)"
+                    >
+                        11/09 - 25/09
+                    </button>
+
+
+                    <!-- date editor -->
+                    <section
+                            class="sprint-date-editor"
+                            style="display: none;"
+                    >
+
+                        <input
+                                type="date"
+                                class="sprint-start-date"
+                                value="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <span>
+                            -
+                        </span>
+
+
+                        <input
+                                type="date"
+                                class="sprint-end-date"
+                                value="2026-09-25"
+                                min="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <button
+                                type="button"
+                                class="date-done-button"
+                                onclick="closeSprintDates(this)"
+                        >
+                            ✓
+                        </button>
+
+                    </section>
+
+                </section>
+
+
                 <section class="task-area">
 
                 </section>
@@ -259,7 +322,6 @@
 
                     <section class="progress-bar">
 
-                        <!-- green part -->
                         <span class="progress-fill"></span>
 
                     </section>
@@ -348,10 +410,8 @@
         style="display: none;"
 >
 
-    <!-- top blue bit -->
     <header class="task-form-header">
 
-        <!-- task name -->
         <input
                 class="task-name-input"
                 type="text"
@@ -359,7 +419,6 @@
         >
 
 
-        <!-- shows whatever weight they choose -->
         <span
                 class="task-weight-number"
                 id="taskWeightNumber"
@@ -369,17 +428,13 @@
     </header>
 
 
-    <!-- everything under the header -->
     <section class="task-form-body">
 
 
-        <!-- top row with tags and weight -->
         <section class="task-form-row">
 
-            <!-- tags on the left -->
             <section class="task-tags">
 
-                <!-- adding another tag -->
                 <button
                         type="button"
                         class="add-tag-button"
@@ -388,7 +443,6 @@
                 </button>
 
 
-                <!-- sample tags for now -->
                 <button
                         type="button"
                         class="tag-button tag-green"
@@ -407,7 +461,6 @@
             </section>
 
 
-            <!-- choosing the task weight -->
             <section class="weight-wrapper">
 
                 <select
@@ -430,7 +483,6 @@
                 </select>
 
 
-                <!-- our own arrow -->
                 <span class="select-arrow">
                     ▼
                 </span>
@@ -440,11 +492,9 @@
         </section>
 
 
-        <!-- second row -->
         <section class="task-form-row">
 
 
-            <!-- deadline dropdown just for now -->
             <button
                     type="button"
                     class="fake-dropdown deadline-dropdown"
@@ -459,7 +509,6 @@
             </button>
 
 
-            <!-- assignee dropdown just for now -->
             <button
                     type="button"
                     class="fake-dropdown assignee-dropdown"
@@ -476,17 +525,14 @@
         </section>
 
 
-        <!-- task description -->
         <textarea
                 class="task-description"
                 placeholder="Description"
         ></textarea>
 
 
-        <!-- buttons at the bottom -->
         <section class="task-form-buttons">
 
-            <!-- closing without saving -->
             <button
                     type="button"
                     class="task-cancel-button"
@@ -496,7 +542,6 @@
             </button>
 
 
-            <!-- saving the task -->
             <button
                     type="button"
                     class="task-save-button"
@@ -512,15 +557,19 @@
 
 
 
-<!-- temporary js just for testing stuff -->
+<!-- ==================== TEMPORARY JS ==================== -->
+
 <script>
 
 
-    // keeping track of how many sprints there are
+    // keeping track of how many sprints have been created
     let sprintCount = 1;
 
 
-    // opening the project popup
+
+    // ==================== PROJECT POPUP ====================
+
+
     function openProjectPopup() {
 
         document
@@ -530,7 +579,6 @@
     }
 
 
-    // closing the project popup
     function closeProjectPopup() {
 
         document
@@ -540,22 +588,22 @@
     }
 
 
-    // opening the sample project
+
+    // ==================== PROJECT NAVIGATION ====================
+
+
     function openSampleProject() {
 
-        // hiding the dashboard
         document
             .getElementById("devDashboard")
             .style.display = "none";
 
 
-        // hiding the task form just in case
         document
             .getElementById("taskForm")
             .style.display = "none";
 
 
-        // showing the project page
         document
             .getElementById("projectOverview")
             .style.display = "block";
@@ -563,22 +611,18 @@
     }
 
 
-    // going back to all the projects
     function backToProjects() {
 
-        // hiding the project page
         document
             .getElementById("projectOverview")
             .style.display = "none";
 
 
-        // hiding the task form just in case
         document
             .getElementById("taskForm")
             .style.display = "none";
 
 
-        // showing the dashboard again
         document
             .getElementById("devDashboard")
             .style.display = "block";
@@ -586,42 +630,458 @@
     }
 
 
-    // adding another sprint
+
+    // ==================== SPRINT DATES ====================
+
+
+    // changing YYYY-MM-DD into DD/MM
+    function formatSprintDate(date) {
+
+        if (!date) {
+
+            return "--/--";
+
+        }
+
+
+        const parts = date.split("-");
+
+        const month = parts[1];
+
+        const day = parts[2];
+
+
+        return day + "/" + month;
+
+    }
+
+
+
+    // opening the date editor for the selected sprint
+    function openSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const dateDisplay =
+            sprintBox.querySelector(".sprint-date-display");
+
+
+        const dateEditor =
+            sprintBox.querySelector(".sprint-date-editor");
+
+
+        dateDisplay.style.display = "none";
+
+        dateEditor.style.display = "flex";
+
+    }
+
+
+
+    // updating date rules
+    function updateSprintDates(input) {
+
+        const sprintBox =
+            input.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(".sprint-start-date");
+
+
+        const endDateInput =
+            sprintBox.querySelector(".sprint-end-date");
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        // end date cannot be before start date
+        endDateInput.min = startDate;
+
+
+        // clearing end date if it becomes invalid
+        if (
+            startDate &&
+            endDate &&
+            endDate < startDate
+        ) {
+
+            endDateInput.value = "";
+
+        }
+
+    }
+
+
+
+    // closing date editor
+    function closeSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(".sprint-start-date");
+
+
+        const endDateInput =
+            sprintBox.querySelector(".sprint-end-date");
+
+
+        const dateDisplay =
+            sprintBox.querySelector(".sprint-date-display");
+
+
+        const dateEditor =
+            sprintBox.querySelector(".sprint-date-editor");
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        dateDisplay.textContent =
+            formatSprintDate(startDate)
+            + " - "
+            + formatSprintDate(endDate);
+
+
+        dateEditor.style.display =
+            "none";
+
+
+        dateDisplay.style.display =
+            "inline-block";
+
+    }
+
+
+
+    // ==================== DELETE SPRINT ====================
+
+
+    function deleteSprint(button) {
+
+        // finding the sprint this button belongs to
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        // getting sprint name
+        const sprintNameInput =
+            sprintBox.querySelector(".sprint-name-input");
+
+
+        const sprintName =
+            sprintNameInput.value;
+
+
+        // asking before deleting
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete "
+                + sprintName
+                + "?"
+            );
+
+
+        if (confirmed) {
+
+            sprintBox.remove();
+
+        }
+
+    }
+
+
+
+    // ==================== ADD SPRINT ====================
+
+
     function addSprint() {
 
-        // increasing the sprint number
+        // increasing sprint number
         sprintCount++;
 
 
-        // making the new sprint box
-        const newSprint = document.createElement("section");
 
-        newSprint.className = "sprint-box";
+        // -------------------- sprint box --------------------
 
+        const newSprint =
+            document.createElement("section");
 
-        // making the editable sprint name
-        const sprintName = document.createElement("input");
-
-        sprintName.className = "sprint-name-input";
-
-        sprintName.type = "text";
-
-        sprintName.value = "SPRINT " + sprintCount;
+        newSprint.className =
+            "sprint-box";
 
 
-        // making the task area
-        const taskArea = document.createElement("section");
 
-        taskArea.className = "task-area";
+        // -------------------- delete button --------------------
 
-
-        // putting everything into the sprint
-        newSprint.appendChild(sprintName);
-
-        newSprint.appendChild(taskArea);
+        const deleteButton =
+            document.createElement("button");
 
 
-        // adding it next to the other sprints
+        deleteButton.type =
+            "button";
+
+
+        deleteButton.className =
+            "delete-sprint-button";
+
+
+        deleteButton.textContent =
+            "×";
+
+
+        deleteButton.setAttribute(
+            "aria-label",
+            "Delete sprint"
+        );
+
+
+        deleteButton.onclick = function () {
+
+            deleteSprint(this);
+
+        };
+
+
+
+        // -------------------- sprint name --------------------
+
+        const sprintName =
+            document.createElement("input");
+
+
+        sprintName.className =
+            "sprint-name-input";
+
+
+        sprintName.type =
+            "text";
+
+
+        sprintName.value =
+            "SPRINT " + sprintCount;
+
+
+
+        // -------------------- date area --------------------
+
+        const sprintDates =
+            document.createElement("section");
+
+
+        sprintDates.className =
+            "sprint-dates";
+
+
+
+        // -------------------- compact date display --------------------
+
+        const dateDisplay =
+            document.createElement("button");
+
+
+        dateDisplay.type =
+            "button";
+
+
+        dateDisplay.className =
+            "sprint-date-display";
+
+
+        dateDisplay.textContent =
+            "--/-- - --/--";
+
+
+        dateDisplay.onclick = function () {
+
+            openSprintDates(this);
+
+        };
+
+
+
+        // -------------------- date editor --------------------
+
+        const dateEditor =
+            document.createElement("section");
+
+
+        dateEditor.className =
+            "sprint-date-editor";
+
+
+        dateEditor.style.display =
+            "none";
+
+
+
+        // -------------------- start date --------------------
+
+        const startDate =
+            document.createElement("input");
+
+
+        startDate.type =
+            "date";
+
+
+        startDate.className =
+            "sprint-start-date";
+
+
+        startDate.onchange = function () {
+
+            updateSprintDates(this);
+
+        };
+
+
+
+        // -------------------- dash --------------------
+
+        const dash =
+            document.createElement("span");
+
+
+        dash.textContent =
+            "-";
+
+
+
+        // -------------------- end date --------------------
+
+        const endDate =
+            document.createElement("input");
+
+
+        endDate.type =
+            "date";
+
+
+        endDate.className =
+            "sprint-end-date";
+
+
+        endDate.onchange = function () {
+
+            updateSprintDates(this);
+
+        };
+
+
+
+        // -------------------- done button --------------------
+
+        const doneButton =
+            document.createElement("button");
+
+
+        doneButton.type =
+            "button";
+
+
+        doneButton.className =
+            "date-done-button";
+
+
+        doneButton.textContent =
+            "✓";
+
+
+        doneButton.onclick = function () {
+
+            closeSprintDates(this);
+
+        };
+
+
+
+        // putting date controls together
+        dateEditor.appendChild(
+            startDate
+        );
+
+
+        dateEditor.appendChild(
+            dash
+        );
+
+
+        dateEditor.appendChild(
+            endDate
+        );
+
+
+        dateEditor.appendChild(
+            doneButton
+        );
+
+
+
+        // putting date area together
+        sprintDates.appendChild(
+            dateDisplay
+        );
+
+
+        sprintDates.appendChild(
+            dateEditor
+        );
+
+
+
+        // -------------------- task area --------------------
+
+        const taskArea =
+            document.createElement("section");
+
+
+        taskArea.className =
+            "task-area";
+
+
+
+        // -------------------- building sprint --------------------
+
+        newSprint.appendChild(
+            deleteButton
+        );
+
+
+        newSprint.appendChild(
+            sprintName
+        );
+
+
+        newSprint.appendChild(
+            sprintDates
+        );
+
+
+        newSprint.appendChild(
+            taskArea
+        );
+
+
+
+        // -------------------- putting sprint on page --------------------
+
         document
             .getElementById("sprintArea")
             .appendChild(newSprint);
@@ -629,16 +1089,17 @@
     }
 
 
-    // opening the task form
+
+    // ==================== TASK FORM ====================
+
+
     function openTaskForm() {
 
-        // hiding the project page
         document
             .getElementById("projectOverview")
             .style.display = "none";
 
 
-        // showing the task form
         document
             .getElementById("taskForm")
             .style.display = "block";
@@ -646,16 +1107,13 @@
     }
 
 
-    // going back to the project page
     function closeTaskForm() {
 
-        // hiding the task form
         document
             .getElementById("taskForm")
             .style.display = "none";
 
 
-        // showing the project again
         document
             .getElementById("projectOverview")
             .style.display = "block";
@@ -663,7 +1121,6 @@
     }
 
 
-    // changing the number at the top when the weight changes
     function updateTaskWeight(weight) {
 
         document

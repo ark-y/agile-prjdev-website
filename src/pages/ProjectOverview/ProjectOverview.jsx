@@ -1,6 +1,26 @@
 import "./ProjectOverview.css";
 
+import { useState } from "react";
+import "./ProjectOverview.css";
+
 function ProjectOverview() {
+
+    const [startDate, setStartDate] = useState("2026-09-11");
+    const [endDate, setEndDate] = useState("2026-09-25");
+    const [editingDates, setEditingDates] = useState(false);
+
+
+    // changing YYYY-MM-DD into DD/MM
+    function formatDate(date) {
+
+        if (!date) {
+            return "--/--";
+        }
+
+        const [year, month, day] = date.split("-");
+
+        return `${day}/${month}`;
+    }
 
     return (
 
@@ -54,13 +74,66 @@ function ProjectOverview() {
                     {/* sample sprint */}
                     <section className="sprint-box">
 
-                        {/* sprint name can be edited */}
                         <input
                             className="sprint-name-input"
                             type="text"
                             value="SPRINT 1"
                             readOnly
                         />
+
+
+                        {/* sprint dates */}
+                        <section className="sprint-dates">
+
+                            {!editingDates ? (
+
+                                // normal view
+                                <button
+                                    type="button"
+                                    className="sprint-date-display"
+                                    onClick={() => setEditingDates(true)}
+                                >
+                                    {formatDate(startDate)} - {formatDate(endDate)}
+                                </button>
+
+                            ) : (
+
+                                // editing view
+                                <section className="sprint-date-editor">
+
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(event) =>
+                                            setStartDate(event.target.value)
+                                        }
+                                    />
+
+                                    <span>-</span>
+
+                                    <input
+                                        type="date"
+                                        value={endDate}
+                                        min={startDate}
+                                        onChange={(event) =>
+                                            setEndDate(event.target.value)
+                                        }
+                                    />
+
+                                    <button
+                                        type="button"
+                                        className="date-done-button"
+                                        onClick={() => setEditingDates(false)}
+                                    >
+                                        ✓
+                                    </button>
+
+                                </section>
+
+                            )}
+
+                        </section>
+
 
                         {/* tasks will go here later */}
                         <section className="task-area">
