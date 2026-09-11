@@ -1,9 +1,16 @@
 import "./ProjectOverview.css";
 
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "./ProjectOverview.css";
 
 function ProjectOverview() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    // TODO: later we'll fetch the real project name from Supabase using `id`.
+    // For now, we can show a placeholder based on the id.
+    const projectName = `PROJECT ${id}`;
 
     const [startDate, setStartDate] = useState("2026-09-11");
     const [endDate, setEndDate] = useState("2026-09-25");
@@ -23,7 +30,6 @@ function ProjectOverview() {
     }
 
     return (
-
         // whole project page
         <main className="project-page">
 
@@ -31,7 +37,7 @@ function ProjectOverview() {
             <header className="project-header">
 
                 {/* project name */}
-                <h1>PROJECT 1</h1>
+                <h1>{projectName}</h1>
 
                 {/* icons on the right */}
                 <section className="project-header-icons">
@@ -53,7 +59,6 @@ function ProjectOverview() {
 
             {/* everything under the header */}
             <section className="project-body">
-
 
                 {/* backlog and sprints */}
                 <section className="sprint-area">
@@ -152,7 +157,6 @@ function ProjectOverview() {
                 {/* stuff on the far right */}
                 <aside className="project-sidebar">
 
-
                     {/* progress box */}
                     <section className="progress-box">
 
@@ -229,6 +233,7 @@ function ProjectOverview() {
             <button
                 type="button"
                 className="back-projects-button"
+                onClick={() => navigate("/dev")}
             >
                 ← Back to Projects
             </button>
