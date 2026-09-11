@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project 1 Dashboard</title>
+<link rel="stylesheet" href = "ClientLanding.css"/>
+
+<div class="client-page">
+
+    <div class="client-dashboard-header">
+        <h1>PROJECT 1</h1>
+        <div class="percentage" id="header-percentage">67%</div>
+    </div>
+
+    <div class="dashboard-content">
+
+        <div class="progress-section">
+            <div class="progress-donut-container">
+                <div class="progress-donut" id="progress-donut"></div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+
+            <div class="current-tasks">
+                <h2>Current Tasks</h2>
+                <div class="current-tasks-list">
+                    <div class="task-item">Task 1</div>
+                    <div class="task-item">Task 2</div>
+                    <div class="task-item">Long task 3</div>
+                    <div class="task-item">Tasks all around</div>
+                </div>
+            </div>
+
+            <div class="sprint-box">
+                <h3>Sprint 4</h3>
+                <div class="percentage">67%</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
+<script>
+  var donut = new ProgressBar.Circle('#progress-donut', {
+    color: '#6FD361',
+    trailColor: '#18273A',
+    strokeWidth: 15,
+    trailWidth: 15,
+    fill: null,
+    duration: 1200,
+    easing: 'easeOut',
+    svgStyle: {
+      display: 'block',
+      width: '100%',
+      height: '100%'
+    }
+  });
+
+  donut.animate(0.67); // 67%
+
+</script>
+
+</body>
+</html>
