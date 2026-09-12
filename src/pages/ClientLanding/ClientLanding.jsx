@@ -5,7 +5,7 @@ function ClientLanding(){
     const donutRef = useRef(null);
 
     useEffect(() => {
-        // Load progressbar.js from CDN once on mount
+        //The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js/""
         const script = document.createElement("script");
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js";
         script.async = true;
