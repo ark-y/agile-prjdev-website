@@ -1,16 +1,7 @@
 import "./ProjectOverview.css";
-
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import "./ProjectOverview.css";
 
 function ProjectOverview() {
-    const { id } = useParams();
-    const navigate = useNavigate();
-
-    // TODO: later we'll fetch the real project name from Supabase using `id`.
-    // For now, we can show a placeholder based on the id.
-    const projectName = `PROJECT ${id}`;
 
     const [startDate, setStartDate] = useState("2026-09-11");
     const [endDate, setEndDate] = useState("2026-09-25");
@@ -29,7 +20,9 @@ function ProjectOverview() {
         return `${day}/${month}`;
     }
 
+
     return (
+
         // whole project page
         <main className="project-page">
 
@@ -37,7 +30,7 @@ function ProjectOverview() {
             <header className="project-header">
 
                 {/* project name */}
-                <h1>{projectName}</h1>
+                <h1>PROJECT 1</h1>
 
                 {/* icons on the right */}
                 <section className="project-header-icons">
@@ -68,7 +61,6 @@ function ProjectOverview() {
 
                         <h2>BACKLOG</h2>
 
-                        {/* tasks will go here later */}
                         <section className="task-area">
 
                         </section>
@@ -79,6 +71,7 @@ function ProjectOverview() {
                     {/* sample sprint */}
                     <section className="sprint-box">
 
+                        {/* sprint name can be edited */}
                         <input
                             className="sprint-name-input"
                             type="text"
@@ -86,61 +79,6 @@ function ProjectOverview() {
                             readOnly
                         />
 
-
-                        {/* sprint dates */}
-                        <section className="sprint-dates">
-
-                            {!editingDates ? (
-
-                                // normal view
-                                <button
-                                    type="button"
-                                    className="sprint-date-display"
-                                    onClick={() => setEditingDates(true)}
-                                >
-                                    {formatDate(startDate)} - {formatDate(endDate)}
-                                </button>
-
-                            ) : (
-
-                                // editing view
-                                <section className="sprint-date-editor">
-
-                                    <input
-                                        type="date"
-                                        value={startDate}
-                                        onChange={(event) =>
-                                            setStartDate(event.target.value)
-                                        }
-                                    />
-
-                                    <span>-</span>
-
-                                    <input
-                                        type="date"
-                                        value={endDate}
-                                        min={startDate}
-                                        onChange={(event) =>
-                                            setEndDate(event.target.value)
-                                        }
-                                    />
-
-                                    <button
-                                        type="button"
-                                        className="date-done-button"
-                                        onClick={() => setEditingDates(false)}
-                                    >
-                                        ✓
-                                    </button>
-
-                                </section>
-
-                            )}
-
-                        </section>
-
-
-                        {/* tasks will go here later */}
                         <section className="task-area">
 
                         </section>
@@ -157,17 +95,14 @@ function ProjectOverview() {
                 {/* stuff on the far right */}
                 <aside className="project-sidebar">
 
-                    {/* progress box */}
                     <section className="progress-box">
 
                         <h2>PROGRESS</h2>
 
-                        {/* progress bar */}
                         <section className="progress-row">
 
                             <section className="progress-bar">
 
-                                {/* green part */}
                                 <span className="progress-fill"></span>
 
                             </section>
@@ -179,7 +114,6 @@ function ProjectOverview() {
                         </section>
 
 
-                        {/* info about the project */}
                         <section className="progress-info">
 
                             <p>Team list</p>
@@ -192,10 +126,8 @@ function ProjectOverview() {
                     </section>
 
 
-                    {/* buttons under progress */}
                     <section className="sidebar-buttons">
 
-                        {/* adding a task */}
                         <button className="sidebar-button">
 
                             <span>ADD</span>
@@ -209,7 +141,6 @@ function ProjectOverview() {
                         </button>
 
 
-                        {/* adding a sprint */}
                         <button className="sidebar-button">
 
                             <span>ADD</span>
@@ -229,11 +160,9 @@ function ProjectOverview() {
             </section>
 
 
-            {/* going back to all the projects */}
             <button
                 type="button"
                 className="back-projects-button"
-                onClick={() => navigate("/dev")}
             >
                 ← Back to Projects
             </button>

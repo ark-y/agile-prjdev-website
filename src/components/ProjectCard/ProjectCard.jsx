@@ -1,19 +1,17 @@
-import { useNavigate } from "react-router-dom";
 import "./ProjectCard.css";
 
-function ProjectCard({ projectId, projectName }) {
-    const navigate = useNavigate();
+function ProjectCard({ projectName }) {
 
     return (
+
         // card for each project
-        <button
-            className="project-card"
-            onClick={() => navigate(`/project/${projectId}`)}
-        >
+        <button className="project-card">
+
             {/* showing the projects name */}
             <span className="project-name">
                 {projectName}
             </span>
+
         </button>
     );
 }
