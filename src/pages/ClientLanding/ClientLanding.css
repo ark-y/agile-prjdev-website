@@ -1,13 +1,13 @@
 /* Font import */
 @import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200;300;400;500;600;700;800&display=swap');
- 
+
 /* Reset and base styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
- 
+
 html,
 body {
     height: 100%;
@@ -15,7 +15,7 @@ body {
     font-family: "Fustat", sans-serif;
     color: #18273A;
 }
- 
+
 /* Main page container */
 .client-page {
     min-height: 100vh;
@@ -23,7 +23,7 @@ body {
     display: flex;
     flex-direction: column;
 }
- 
+
 /* Header section */
 .client-dashboard-header {
     height: 150px;
@@ -34,7 +34,7 @@ body {
     padding: 0 55px;
     flex-shrink: 0;
 }
- 
+
 .client-dashboard-header h1 {
     margin: 0;
     color: #D9D9D9;
@@ -42,14 +42,14 @@ body {
     font-weight: 700;
     letter-spacing: 5px;
 }
- 
+
 .client-dashboard-header .percentage {
     color: #D9D9D9;
     font-size: 55px;
     font-weight: 700;
     letter-spacing: 5px;
 }
- 
+
 /* Main content area */
 .dashboard-content {
     flex: 1;
@@ -58,7 +58,7 @@ body {
     gap: 55px;
     align-items: flex-start;
 }
- 
+
 /* Left side - Progress donut chart */
 .progress-section {
     display: flex;
@@ -67,7 +67,7 @@ body {
     justify-content: center;
     flex-shrink: 0;
 }
- 
+
 .progress-donut-container {
     width: 320px;
     height: 320px;
@@ -75,12 +75,12 @@ body {
     align-items: center;
     justify-content: center;
 }
- 
+
 .progress-donut {
     width: 100%;
     height: 100%;
 }
- 
+
 /* Right side - Tasks and sprint info */
 .right-panel {
     flex: 1;
@@ -88,7 +88,7 @@ body {
     flex-direction: column;
     gap: 30px;
 }
- 
+
 /* Current Tasks box */
 .current-tasks {
     background-color: #A8A8A8;
@@ -96,7 +96,7 @@ body {
     padding: 35px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
- 
+
 .current-tasks h2 {
     color: #18273A;
     font-size: 36px;
@@ -106,22 +106,22 @@ body {
     padding-bottom: 15px;
     border-bottom: 2px solid #18273A;
 }
- 
+
 .current-tasks-list {
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
- 
+
 .current-tasks-list .task-item {
     color: #D9D9D9;
     font-size: 28px;
     font-weight: 400;
     letter-spacing: 3px;
 }
- 
+
 /* Sprint box */
-.sprint-box {
+.client-sprint-box {
     background-color: #A8A8A8;
     border-radius: 30px;
     padding: 35px;
@@ -131,16 +131,16 @@ body {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     min-height: 100px;
 }
- 
-.sprint-box h3 {
+
+.client-sprint-box h3 {
     color: #18273A;
     font-size: 36px;
     font-weight: 700;
     letter-spacing: 5px;
     margin: 0;
 }
- 
-.sprint-box .percentage {
+
+.client-sprint-box .percentage {
     color: #D9D9D9;
     font-size: 36px;
     font-weight: 700;
