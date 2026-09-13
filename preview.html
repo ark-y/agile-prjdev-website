@@ -44,10 +44,99 @@
             href="src/components/CreateTaskForm/CreateTaskForm.css"
     >
 
+
+    <!-- css for the login page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/Login/Login.css"
+    >
+
+
+    <!-- css for the client landing page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ClientLanding/ClientLanding.css"
+    >
+
 </head>
 
 
 <body>
+
+
+<!-- ==================== LOGIN PAGE ==================== -->
+
+<main
+        class="login-page"
+        id="loginPage"
+>
+
+    <h1>Login Page</h1>
+
+    <div class="button-group">
+        <button
+                class="credential-button dev-button"
+                onclick="openDevPage()">
+            Dev page
+        </button>
+
+        <button
+                class="credential-button client-button"
+                onclick="openClientPage()">
+            Client page
+        </button>
+    </div>
+
+    <button class="login-button">
+        <h2>LOGIN</h2>
+    </button>
+
+</main>
+
+
+<!-- ==================== CLIENT LANDING ==================== -->
+
+<main
+        class="client-page"
+        id="clientLanding"
+        style="display: none;"
+>
+
+    <header class="client-dashboard-header">
+        <h1>PROJECT 1</h1>
+        <span class="percentage" id="header-percentage">67%</span>
+    </header>
+
+    <section class="dashboard-content">
+
+        <section class="progress-section" aria-label="Overall progress">
+            <figure class="progress-donut-container">
+                <span class="progress-donut" id="progress-donut"></span>
+            </figure>
+        </section>
+
+        <section class="right-panel">
+
+            <article class="current-tasks">
+                <h2>Current Tasks</h2>
+                <ul class="current-tasks-list">
+                    <li class="task-item">Task 1</li>
+                    <li class="task-item">Task 2</li>
+                    <li class="task-item">Long task 3</li>
+                    <li class="task-item">Tasks all around</li>
+                </ul>
+            </article>
+
+            <article class="client-sprint-box">
+                <h3>Sprint 4</h3>
+                <span class="percentage">67%</span>
+            </article>
+
+        </section>
+
+    </section>
+
+</main>
 
 
 <!-- ==================== DEV DASHBOARD ==================== -->
@@ -55,6 +144,7 @@
 <main
         class="dev-page"
         id="devDashboard"
+        style="display: none;"
 >
 
     <!-- top blue bit -->
@@ -588,71 +678,6 @@
 
     }
 
-// ==================== CREATE PROJECT ====================
-
-
-function createProject() {
-
-    // getting what the user typed
-    const nameInput =
-        document.getElementById("projectName");
-
-
-    const projectName =
-        nameInput.value.trim();
-
-
-    // stopping if empty
-    if (projectName === "") {
-
-        alert("Please enter a project name.");
-
-        return;
-
-    }
-
-
-    // making a new project card
-    const newCard =
-        document.createElement("button");
-
-
-    newCard.className =
-        "project-card";
-
-
-    newCard.onclick =
-        openSampleProject;
-
-
-    // putting the project name inside
-    const nameSpan =
-        document.createElement("span");
-
-
-    nameSpan.className =
-        "project-name";
-
-
-    nameSpan.textContent =
-        projectName;
-
-
-    newCard.appendChild(nameSpan);
-
-
-    // adding it to the dashboard
-    document
-        .getElementById("projectsSection")
-        .appendChild(newCard);
-
-
-    // clearing the input and closing the popup
-    nameInput.value = "";
-
-    closeProjectPopup();
-
-}
 
 
     // ==================== PROJECT NAVIGATION ====================
@@ -1195,6 +1220,72 @@ function createProject() {
 
     }
 
+
+
+    // ==================== LOGIN NAVIGATION ====================
+
+
+    function openDevPage() {
+
+        document
+            .getElementById("loginPage")
+            .style.display = "none";
+
+
+        document
+            .getElementById("clientLanding")
+            .style.display = "none";
+
+
+        document
+            .getElementById("devDashboard")
+            .style.display = "block";
+
+    }
+
+
+    function openClientPage() {
+
+        document
+            .getElementById("loginPage")
+            .style.display = "none";
+
+
+        document
+            .getElementById("devDashboard")
+            .style.display = "none";
+
+
+        document
+            .getElementById("clientLanding")
+            .style.display = "flex";
+
+    }
+
+
+</script>
+
+
+<!-- progressbar.js for the client landing donut chart -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
+<script>
+
+    var donut = new ProgressBar.Circle('#progress-donut', {
+        color: '#6FD361',
+        trailColor: '#18273A',
+        strokeWidth: 15,
+        trailWidth: 15,
+        fill: null,
+        duration: 1200,
+        easing: 'easeOut',
+        svgStyle: {
+            display: 'block',
+            width: '100%',
+            height: '100%'
+        }
+    });
+
+    donut.set(0.67); // 67%
 
 </script>
 
