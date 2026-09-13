@@ -82,7 +82,7 @@
 
 
     <!-- where all the projects go -->
-    <section class="projects-section">
+    <section class="projects-section" id="projectsSection">
 
         <!-- making a new project -->
         <button
@@ -149,6 +149,7 @@
                 <button
                         type="button"
                         class="create-button"
+                        onclick="createProject()"
                 >
                     Create Project
                 </button>
@@ -587,6 +588,71 @@
 
     }
 
+// ==================== CREATE PROJECT ====================
+
+
+function createProject() {
+
+    // getting what the user typed
+    const nameInput =
+        document.getElementById("projectName");
+
+
+    const projectName =
+        nameInput.value.trim();
+
+
+    // stopping if empty
+    if (projectName === "") {
+
+        alert("Please enter a project name.");
+
+        return;
+
+    }
+
+
+    // making a new project card
+    const newCard =
+        document.createElement("button");
+
+
+    newCard.className =
+        "project-card";
+
+
+    newCard.onclick =
+        openSampleProject;
+
+
+    // putting the project name inside
+    const nameSpan =
+        document.createElement("span");
+
+
+    nameSpan.className =
+        "project-name";
+
+
+    nameSpan.textContent =
+        projectName;
+
+
+    newCard.appendChild(nameSpan);
+
+
+    // adding it to the dashboard
+    document
+        .getElementById("projectsSection")
+        .appendChild(newCard);
+
+
+    // clearing the input and closing the popup
+    nameInput.value = "";
+
+    closeProjectPopup();
+
+}
 
 
     // ==================== PROJECT NAVIGATION ====================
