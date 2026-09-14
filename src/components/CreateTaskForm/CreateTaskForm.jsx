@@ -1,41 +1,98 @@
+import { useState } from "react";
+
 import "./CreateTaskForm.css";
 
-function CreateTaskForm() {
+
+function CreateTaskForm({
+    onSaveTask,
+    onCancel
+}) {
+
+    // task name
+    const [taskName, setTaskName] =
+        useState("");
+
+
+    // task weight
+    const [taskWeight, setTaskWeight] =
+        useState("");
+
+
+    // task priority
+    const [taskPriority, setTaskPriority] =
+        useState("");
+
+
+    // saving task
+    function handleSaveTask() {
+
+        // task needs a name
+        if (taskName.trim() === "") {
+
+            return;
+
+        }
+
+
+        onSaveTask({
+
+            name: taskName.trim(),
+
+            weight: taskWeight,
+
+            priority: taskPriority
+
+        });
+
+    }
+
 
     return (
 
         // whole task form page
         <main className="task-form-page">
 
+
             {/* top blue bit */}
             <header className="task-form-header">
+
 
                 {/* task name */}
                 <input
                     className="task-name-input"
                     type="text"
                     placeholder="Task name"
+                    value={taskName}
+                    onChange={(event) =>
+                        setTaskName(event.target.value)
+                    }
                 />
 
-                {/* shows the weight of the task */}
+
+                {/* selected weight shown at top */}
                 <span className="task-weight-number">
 
+                    {taskWeight}
+
                 </span>
+
 
             </header>
 
 
-            {/* everything under the header */}
+
+            {/* everything under header */}
             <section className="task-form-body">
 
 
-                {/* top row with tags and weight */}
+                {/* top row */}
                 <section className="task-form-row">
 
-                    {/* tags on the left */}
+
+                    {/* tags */}
                     <section className="task-tags">
 
-                        {/* adding another tag */}
+
                         <button
                             type="button"
                             className="add-tag-button"
@@ -43,13 +100,14 @@ function CreateTaskForm() {
                             + tag
                         </button>
 
-                        {/* sample tags for now */}
+
                         <button
                             type="button"
                             className="tag-button tag-green"
                         >
                             Tag 1
                         </button>
+
 
                         <button
                             type="button"
@@ -58,48 +116,113 @@ function CreateTaskForm() {
                             Long Tag 2
                         </button>
 
-                    </section>
-
-
-                    {/* choosing the task weight */}
-                    <section className="weight-wrapper">
-
-                        <select className="weight-select">
-
-                            <option value="">Weight</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-
-                        </select>
-
-                        {/* our own arrow */}
-                        <span className="select-arrow">
-                            ▼
-                        </span>
 
                     </section>
+
+
+
+                    {/* priority and weight */}
+                    <section className="task-options">
+
+
+                        {/* priority */}
+                        <section className="priority-wrapper">
+
+
+                            <select
+                                className="priority-select"
+                                value={taskPriority}
+                                onChange={(event) =>
+                                    setTaskPriority(event.target.value)
+                                }
+                            >
+
+                                <option value="">
+                                    Priority
+                                </option>
+
+                                <option value="high">
+                                    ⌃ High
+                                </option>
+
+                                <option value="medium">
+                                    - Medium
+                                </option>
+
+                                <option value="low">
+                                    ⌄ Low
+                                </option>
+
+                            </select>
+
+
+                            <span className="select-arrow">
+                                ▼
+                            </span>
+
+
+                        </section>
+
+
+
+                        {/* weight */}
+                        <section className="weight-wrapper">
+
+
+                            <select
+                                className="weight-select"
+                                value={taskWeight}
+                                onChange={(event) =>
+                                    setTaskWeight(event.target.value)
+                                }
+                            >
+
+                                <option value="">
+                                    Weight
+                                </option>
+
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+
+                            </select>
+
+
+                            <span className="select-arrow">
+                                ▼
+                            </span>
+
+
+                        </section>
+
+
+                    </section>
+
 
                 </section>
+
 
 
                 {/* second row */}
                 <section className="task-form-row">
 
-                    {/* deadline dropdown just for now */}
+
+                    {/* deadline */}
                     <button
                         type="button"
                         className="fake-dropdown deadline-dropdown"
                     >
 
-                        <span>Deadline</span>
+                        <span>
+                            Deadline
+                        </span>
 
                         <span className="dropdown-arrow">
                             ▼
@@ -108,13 +231,16 @@ function CreateTaskForm() {
                     </button>
 
 
-                    {/* assignee dropdown just for now */}
+
+                    {/* assignee */}
                     <button
                         type="button"
                         className="fake-dropdown assignee-dropdown"
                     >
 
-                        <span>Assignee</span>
+                        <span>
+                            Assignee
+                        </span>
 
                         <span className="dropdown-arrow">
                             ▼
@@ -122,41 +248,52 @@ function CreateTaskForm() {
 
                     </button>
 
+
                 </section>
 
 
-                {/* task description */}
+
+                {/* description */}
                 <textarea
                     className="task-description"
                     placeholder="Description"
                 ></textarea>
 
 
-                {/* buttons at the bottom */}
+
+                {/* buttons */}
                 <section className="task-form-buttons">
 
-                    {/* closing without saving */}
+
                     <button
                         type="button"
                         className="task-cancel-button"
+                        onClick={onCancel}
                     >
                         Cancel
                     </button>
 
-                    {/* saving the task */}
+
                     <button
                         type="button"
                         className="task-save-button"
+                        onClick={handleSaveTask}
                     >
                         Save Task
                     </button>
 
+
                 </section>
+
 
             </section>
 
+
         </main>
+
     );
+
 }
+
 
 export default CreateTaskForm;

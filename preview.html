@@ -147,21 +147,18 @@
         style="display: none;"
 >
 
-    <!-- top blue bit -->
     <header class="dashboard-header">
 
         <h1>X'S DASHBOARD</h1>
 
 
-        <!-- icons on the right -->
         <section class="dashboard-icons">
 
-            <!-- messages -->
             <button class="message-button">
                 📥
             </button>
 
-            <!-- settings -->
+
             <button class="settings-button">
                 ⚙
             </button>
@@ -171,10 +168,10 @@
     </header>
 
 
-    <!-- where all the projects go -->
     <section class="projects-section" id="projectsSection">
 
-        <!-- making a new project -->
+
+        <!-- add project -->
         <button
                 class="add-project"
                 onclick="openProjectPopup()"
@@ -183,7 +180,7 @@
         </button>
 
 
-        <!-- sample project just for testing -->
+        <!-- sample project -->
         <button
                 class="project-card"
                 onclick="openSampleProject()"
@@ -195,7 +192,9 @@
 
         </button>
 
+
     </section>
+
 
 
     <!-- create project popup -->
@@ -204,16 +203,17 @@
             id="projectPopup"
     >
 
-        <!-- actual popup -->
         <form class="create-project-popup">
 
-            <h2>Create Project</h2>
+            <h2>
+                Create Project
+            </h2>
 
 
-            <!-- getting the project name -->
             <label for="projectName">
                 Project Name
             </label>
+
 
             <input
                     type="text"
@@ -222,10 +222,8 @@
             >
 
 
-            <!-- buttons at the bottom -->
             <section class="popup-buttons">
 
-                <!-- closing the popup -->
                 <button
                         type="button"
                         class="cancel-button"
@@ -235,11 +233,9 @@
                 </button>
 
 
-                <!-- making the project -->
                 <button
                         type="button"
                         class="create-button"
-                        onclick="createProject()"
                 >
                     Create Project
                 </button>
@@ -262,22 +258,20 @@
         style="display: none;"
 >
 
-    <!-- same header as dev landing -->
     <header class="project-header">
 
-        <!-- project name -->
-        <h1>SAMPLE PROJECT</h1>
+        <h1>
+            SAMPLE PROJECT
+        </h1>
 
 
-        <!-- icons on the right -->
         <section class="project-header-icons">
 
-            <!-- messages -->
             <button class="message-button">
                 📥
             </button>
 
-            <!-- settings -->
+
             <button class="settings-button">
                 ⚙
             </button>
@@ -287,7 +281,7 @@
     </header>
 
 
-    <!-- everything under the header -->
+
     <section class="project-body">
 
 
@@ -297,20 +291,31 @@
                 id="sprintArea"
         >
 
-            <!-- backlog is always first -->
+
+            <!-- ==================== BACKLOG ==================== -->
+
             <section class="sprint-box">
 
-                <h2>BACKLOG</h2>
+                <h2>
+                    BACKLOG
+                </h2>
 
-                <section class="task-area">
 
+                <!-- tasks get added here -->
+                <section
+                        class="task-area"
+                        id="backlogTaskArea"
+                >
                 </section>
 
             </section>
 
 
-            <!-- sample sprint -->
+
+            <!-- ==================== SPRINT 1 ==================== -->
+
             <section class="sprint-box">
+
 
                 <!-- delete sprint -->
                 <button
@@ -334,6 +339,7 @@
                 <!-- sprint dates -->
                 <section class="sprint-dates">
 
+
                     <!-- compact date -->
                     <button
                             type="button"
@@ -349,6 +355,7 @@
                             class="sprint-date-editor"
                             style="display: none;"
                     >
+
 
                         <input
                                 type="date"
@@ -380,42 +387,55 @@
                             ✓
                         </button>
 
+
                     </section>
+
 
                 </section>
 
 
+                <!-- tasks later -->
                 <section class="task-area">
 
                 </section>
 
+
             </section>
+
 
         </section>
 
 
-        <!-- fade before the grey boxes -->
-        <section class="sidebar-fade"></section>
+
+        <!-- fade -->
+        <section class="sidebar-fade">
+
+        </section>
 
 
-        <!-- stuff on the far right -->
+
+        <!-- right side -->
         <aside class="project-sidebar">
 
 
-            <!-- progress box -->
+            <!-- progress -->
             <section class="progress-box">
 
-                <h2>PROGRESS</h2>
+                <h2>
+                    PROGRESS
+                </h2>
 
 
-                <!-- progress bar -->
                 <section class="progress-row">
 
                     <section class="progress-bar">
 
-                        <span class="progress-fill"></span>
+                        <span class="progress-fill">
+
+                        </span>
 
                     </section>
+
 
                     <span class="progress-number">
                         46%
@@ -424,63 +444,92 @@
                 </section>
 
 
-                <!-- info about the project -->
                 <section class="progress-info">
 
-                    <p>Team list</p>
-                    <p>Project timeline</p>
-                    <p>Project due date</p>
-                    <p>Client</p>
+                    <p>
+                        Team list
+                    </p>
+
+                    <p>
+                        Project timeline
+                    </p>
+
+                    <p>
+                        Project due date
+                    </p>
+
+                    <p>
+                        Client
+                    </p>
 
                 </section>
 
             </section>
 
 
-            <!-- buttons under progress -->
+
+            <!-- sidebar buttons -->
             <section class="sidebar-buttons">
 
-                <!-- adding a task -->
+
+                <!-- add task -->
                 <button
                         class="sidebar-button"
                         onclick="openTaskForm()"
                 >
 
-                    <span>ADD</span>
+                    <span>
+                        ADD
+                    </span>
+
 
                     <span class="sidebar-plus">
                         +
                     </span>
 
-                    <span>TASK</span>
+
+                    <span>
+                        TASK
+                    </span>
 
                 </button>
 
 
-                <!-- adding a sprint -->
+
+                <!-- add sprint -->
                 <button
                         class="sidebar-button"
                         onclick="addSprint()"
                 >
 
-                    <span>ADD</span>
+                    <span>
+                        ADD
+                    </span>
+
 
                     <span class="sidebar-plus">
                         +
                     </span>
 
-                    <span>SPRINT</span>
+
+                    <span>
+                        SPRINT
+                    </span>
 
                 </button>
 
+
             </section>
 
+
         </aside>
+
 
     </section>
 
 
-    <!-- going back to all the projects -->
+
+    <!-- back -->
     <button
             type="button"
             class="back-projects-button"
@@ -488,6 +537,7 @@
     >
         ← Back to Projects
     </button>
+
 
 </main>
 
@@ -501,30 +551,42 @@
         style="display: none;"
 >
 
+
+    <!-- header -->
     <header class="task-form-header">
 
+
+        <!-- task name -->
         <input
                 class="task-name-input"
+                id="taskNameInput"
                 type="text"
                 placeholder="Task name"
         >
 
 
+        <!-- selected weight -->
         <span
                 class="task-weight-number"
                 id="taskWeightNumber"
         >
         </span>
 
+
     </header>
+
 
 
     <section class="task-form-body">
 
 
+        <!-- first row -->
         <section class="task-form-row">
 
+
+            <!-- tags -->
             <section class="task-tags">
+
 
                 <button
                         type="button"
@@ -549,81 +611,162 @@
                     Long Tag 2
                 </button>
 
-            </section>
-
-
-            <section class="weight-wrapper">
-
-                <select
-                        class="weight-select"
-                        onchange="updateTaskWeight(this.value)"
-                >
-
-                    <option value="">Weight</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-
-                </select>
-
-
-                <span class="select-arrow">
-                    ▼
-                </span>
 
             </section>
+
+
+
+            <!-- priority and weight -->
+            <section class="task-options">
+
+
+                <!-- ==================== PRIORITY ==================== -->
+
+                <section class="priority-wrapper">
+
+
+                    <select
+                            class="priority-select"
+                            id="taskPriorityInput"
+                    >
+
+                        <option value="">
+                            Priority
+                        </option>
+
+
+                        <option value="high">
+                            ⌃ High
+                        </option>
+
+
+                        <option value="medium">
+                            - Medium
+                        </option>
+
+
+                        <option value="low">
+                            ⌄ Low
+                        </option>
+
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+
+                <!-- ==================== WEIGHT ==================== -->
+
+                <section class="weight-wrapper">
+
+
+                    <select
+                            class="weight-select"
+                            id="taskWeightInput"
+                            onchange="updateTaskWeight(this.value)"
+                    >
+
+                        <option value="">
+                            Weight
+                        </option>
+
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+            </section>
+
 
         </section>
 
 
+
+        <!-- second row -->
         <section class="task-form-row">
 
 
+            <!-- deadline -->
             <button
                     type="button"
                     class="fake-dropdown deadline-dropdown"
             >
 
-                <span>Deadline</span>
+                <span>
+                    Deadline
+                </span>
+
 
                 <span class="dropdown-arrow">
                     ▼
                 </span>
 
+
             </button>
 
 
+
+            <!-- assignee -->
             <button
                     type="button"
                     class="fake-dropdown assignee-dropdown"
             >
 
-                <span>Assignee</span>
+                <span>
+                    Assignee
+                </span>
+
 
                 <span class="dropdown-arrow">
                     ▼
                 </span>
 
+
             </button>
+
 
         </section>
 
 
+
+        <!-- description -->
         <textarea
                 class="task-description"
+                id="taskDescriptionInput"
                 placeholder="Description"
         ></textarea>
 
 
+
+        <!-- buttons -->
         <section class="task-form-buttons">
 
+
+            <!-- cancel -->
             <button
                     type="button"
                     class="task-cancel-button"
@@ -633,16 +776,22 @@
             </button>
 
 
+
+            <!-- save -->
             <button
                     type="button"
                     class="task-save-button"
+                    onclick="saveTask()"
             >
                 Save Task
             </button>
 
+
         </section>
 
+
     </section>
+
 
 </main>
 
@@ -653,7 +802,7 @@
 <script>
 
 
-    // keeping track of how many sprints have been created
+    // keeping track of sprint numbers
     let sprintCount = 1;
 
 
@@ -725,7 +874,6 @@
     // ==================== SPRINT DATES ====================
 
 
-    // changing YYYY-MM-DD into DD/MM
     function formatSprintDate(date) {
 
         if (!date) {
@@ -735,11 +883,16 @@
         }
 
 
-        const parts = date.split("-");
+        const parts =
+            date.split("-");
 
-        const month = parts[1];
 
-        const day = parts[2];
+        const month =
+            parts[1];
+
+
+        const day =
+            parts[2];
 
 
         return day + "/" + month;
@@ -748,7 +901,6 @@
 
 
 
-    // opening the date editor for the selected sprint
     function openSprintDates(button) {
 
         const sprintBox =
@@ -756,22 +908,28 @@
 
 
         const dateDisplay =
-            sprintBox.querySelector(".sprint-date-display");
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
 
 
         const dateEditor =
-            sprintBox.querySelector(".sprint-date-editor");
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
 
 
-        dateDisplay.style.display = "none";
+        dateDisplay.style.display =
+            "none";
 
-        dateEditor.style.display = "flex";
+
+        dateEditor.style.display =
+            "flex";
 
     }
 
 
 
-    // updating date rules
     function updateSprintDates(input) {
 
         const sprintBox =
@@ -779,11 +937,15 @@
 
 
         const startDateInput =
-            sprintBox.querySelector(".sprint-start-date");
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
 
 
         const endDateInput =
-            sprintBox.querySelector(".sprint-end-date");
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
 
 
         const startDate =
@@ -794,18 +956,18 @@
             endDateInput.value;
 
 
-        // end date cannot be before start date
-        endDateInput.min = startDate;
+        endDateInput.min =
+            startDate;
 
 
-        // clearing end date if it becomes invalid
         if (
             startDate &&
             endDate &&
             endDate < startDate
         ) {
 
-            endDateInput.value = "";
+            endDateInput.value =
+                "";
 
         }
 
@@ -813,7 +975,6 @@
 
 
 
-    // closing date editor
     function closeSprintDates(button) {
 
         const sprintBox =
@@ -821,19 +982,27 @@
 
 
         const startDateInput =
-            sprintBox.querySelector(".sprint-start-date");
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
 
 
         const endDateInput =
-            sprintBox.querySelector(".sprint-end-date");
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
 
 
         const dateDisplay =
-            sprintBox.querySelector(".sprint-date-display");
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
 
 
         const dateEditor =
-            sprintBox.querySelector(".sprint-date-editor");
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
 
 
         const startDate =
@@ -866,21 +1035,20 @@
 
     function deleteSprint(button) {
 
-        // finding the sprint this button belongs to
         const sprintBox =
             button.closest(".sprint-box");
 
 
-        // getting sprint name
         const sprintNameInput =
-            sprintBox.querySelector(".sprint-name-input");
+            sprintBox.querySelector(
+                ".sprint-name-input"
+            );
 
 
         const sprintName =
             sprintNameInput.value;
 
 
-        // asking before deleting
         const confirmed =
             confirm(
                 "Are you sure you want to delete "
@@ -904,23 +1072,20 @@
 
     function addSprint() {
 
-        // increasing sprint number
         sprintCount++;
 
 
-
-        // -------------------- sprint box --------------------
-
+        // sprint container
         const newSprint =
             document.createElement("section");
+
 
         newSprint.className =
             "sprint-box";
 
 
 
-        // -------------------- delete button --------------------
-
+        // delete button
         const deleteButton =
             document.createElement("button");
 
@@ -943,16 +1108,16 @@
         );
 
 
-        deleteButton.onclick = function () {
+        deleteButton.onclick =
+            function () {
 
-            deleteSprint(this);
+                deleteSprint(this);
 
-        };
+            };
 
 
 
-        // -------------------- sprint name --------------------
-
+        // sprint name
         const sprintName =
             document.createElement("input");
 
@@ -970,8 +1135,7 @@
 
 
 
-        // -------------------- date area --------------------
-
+        // date area
         const sprintDates =
             document.createElement("section");
 
@@ -981,8 +1145,7 @@
 
 
 
-        // -------------------- compact date display --------------------
-
+        // compact date
         const dateDisplay =
             document.createElement("button");
 
@@ -999,16 +1162,16 @@
             "--/-- - --/--";
 
 
-        dateDisplay.onclick = function () {
+        dateDisplay.onclick =
+            function () {
 
-            openSprintDates(this);
+                openSprintDates(this);
 
-        };
+            };
 
 
 
-        // -------------------- date editor --------------------
-
+        // date editor
         const dateEditor =
             document.createElement("section");
 
@@ -1022,8 +1185,7 @@
 
 
 
-        // -------------------- start date --------------------
-
+        // start date
         const startDate =
             document.createElement("input");
 
@@ -1036,16 +1198,16 @@
             "sprint-start-date";
 
 
-        startDate.onchange = function () {
+        startDate.onchange =
+            function () {
 
-            updateSprintDates(this);
+                updateSprintDates(this);
 
-        };
+            };
 
 
 
-        // -------------------- dash --------------------
-
+        // dash
         const dash =
             document.createElement("span");
 
@@ -1055,8 +1217,7 @@
 
 
 
-        // -------------------- end date --------------------
-
+        // end date
         const endDate =
             document.createElement("input");
 
@@ -1069,16 +1230,16 @@
             "sprint-end-date";
 
 
-        endDate.onchange = function () {
+        endDate.onchange =
+            function () {
 
-            updateSprintDates(this);
+                updateSprintDates(this);
 
-        };
+            };
 
 
 
-        // -------------------- done button --------------------
-
+        // done button
         const doneButton =
             document.createElement("button");
 
@@ -1095,15 +1256,16 @@
             "✓";
 
 
-        doneButton.onclick = function () {
+        doneButton.onclick =
+            function () {
 
-            closeSprintDates(this);
+                closeSprintDates(this);
 
-        };
+            };
 
 
 
-        // putting date controls together
+        // build date editor
         dateEditor.appendChild(
             startDate
         );
@@ -1125,7 +1287,7 @@
 
 
 
-        // putting date area together
+        // build date area
         sprintDates.appendChild(
             dateDisplay
         );
@@ -1137,8 +1299,7 @@
 
 
 
-        // -------------------- task area --------------------
-
+        // task area
         const taskArea =
             document.createElement("section");
 
@@ -1148,8 +1309,7 @@
 
 
 
-        // -------------------- building sprint --------------------
-
+        // build sprint
         newSprint.appendChild(
             deleteButton
         );
@@ -1171,8 +1331,7 @@
 
 
 
-        // -------------------- putting sprint on page --------------------
-
+        // add sprint
         document
             .getElementById("sprintArea")
             .appendChild(newSprint);
@@ -1198,6 +1357,7 @@
     }
 
 
+
     function closeTaskForm() {
 
         document
@@ -1212,6 +1372,7 @@
     }
 
 
+
     function updateTaskWeight(weight) {
 
         document
@@ -1222,52 +1383,295 @@
 
 
 
+    // ==================== SAVE TASK ====================
+
+
+    function saveTask() {
+
+
+        // task name
+        const taskNameInput =
+            document.getElementById(
+                "taskNameInput"
+            );
+
+
+        const taskName =
+            taskNameInput.value.trim();
+
+
+
+        // priority
+        const taskPriorityInput =
+            document.getElementById(
+                "taskPriorityInput"
+            );
+
+
+        const taskPriority =
+            taskPriorityInput.value;
+
+
+
+        // weight
+        const taskWeightInput =
+            document.getElementById(
+                "taskWeightInput"
+            );
+
+
+        const taskWeight =
+            taskWeightInput.value;
+
+
+
+        // task needs a name
+        if (taskName === "") {
+
+            return;
+
+        }
+
+
+
+        // ==================== CREATE TASK CARD ====================
+
+
+        const taskCard =
+            document.createElement("section");
+
+
+        taskCard.className =
+            "task-card";
+
+
+
+        // grey status circle
+        const statusCircle =
+            document.createElement("span");
+
+
+        statusCircle.className =
+            "task-status-circle";
+
+
+
+        // task name
+        const taskNameText =
+            document.createElement("span");
+
+
+        taskNameText.className =
+            "task-card-name";
+
+
+        taskNameText.textContent =
+            taskName;
+
+
+
+        // right side information
+        const taskInfo =
+            document.createElement("section");
+
+
+        taskInfo.className =
+            "task-card-info";
+
+
+
+        // ==================== PRIORITY ====================
+
+
+        if (taskPriority !== "") {
+
+
+            const priorityText =
+                document.createElement("span");
+
+
+            priorityText.className =
+                "task-priority";
+
+
+            if (taskPriority === "high") {
+
+                priorityText.textContent =
+                    "⌃";
+
+            }
+
+
+            if (taskPriority === "medium") {
+
+                priorityText.textContent =
+                    "-";
+
+            }
+
+
+            if (taskPriority === "low") {
+
+                priorityText.textContent =
+                    "⌄";
+
+            }
+
+
+            taskInfo.appendChild(
+                priorityText
+            );
+
+        }
+
+
+
+        // ==================== WEIGHT ====================
+
+
+        if (taskWeight !== "") {
+
+
+            const weightText =
+                document.createElement("span");
+
+
+            weightText.className =
+                "task-card-weight";
+
+
+            weightText.textContent =
+                taskWeight;
+
+
+            taskInfo.appendChild(
+                weightText
+            );
+
+        }
+
+
+
+        // ==================== BUILD TASK CARD ====================
+
+
+        taskCard.appendChild(
+            statusCircle
+        );
+
+
+        taskCard.appendChild(
+            taskNameText
+        );
+
+
+        taskCard.appendChild(
+            taskInfo
+        );
+
+
+
+        // add task to backlog
+        document
+            .getElementById(
+                "backlogTaskArea"
+            )
+            .appendChild(
+                taskCard
+            );
+
+
+
+        // ==================== CLEAR FORM ====================
+
+
+        taskNameInput.value =
+            "";
+
+
+        taskPriorityInput.value =
+            "";
+
+
+        taskWeightInput.value =
+            "";
+
+
+        document
+            .getElementById(
+                "taskWeightNumber"
+            )
+            .textContent = "";
+
+
+        const description =
+            document.getElementById(
+                "taskDescriptionInput"
+            );
+
+
+        if (description) {
+
+            description.value =
+                "";
+
+        }
+
+
+
+        // return to project overview
+        closeTaskForm();
+
+    }
+
+
+
+
     // ==================== LOGIN NAVIGATION ====================
 
 
-    function openDevPage() {
+        function openDevPage() {
 
-        document
-            .getElementById("loginPage")
-            .style.display = "none";
-
-
-        document
-            .getElementById("clientLanding")
-            .style.display = "none";
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
 
 
-        document
-            .getElementById("devDashboard")
-            .style.display = "block";
-
-    }
+            document
+                .getElementById("clientLanding")
+                .style.display = "none";
 
 
-    function openClientPage() {
+            document
+                .getElementById("devDashboard")
+                .style.display = "block";
 
-        document
-            .getElementById("loginPage")
-            .style.display = "none";
-
-
-        document
-            .getElementById("devDashboard")
-            .style.display = "none";
+        }
 
 
-        document
-            .getElementById("clientLanding")
-            .style.display = "flex";
+        function openClientPage() {
 
-    }
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
 
+
+            document
+                .getElementById("devDashboard")
+                .style.display = "none";
+
+
+            document
+                .getElementById("clientLanding")
+                .style.display = "flex";
+
+        }
 
 </script>
 
 
 <!-- progressbar.js for the client landing donut chart -->
- <!-- The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js -->
+<!-- The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
 <script>
 
@@ -1289,6 +1693,7 @@
     donut.set(0.67); // 67%
 
 </script>
+
 
 </body>
 

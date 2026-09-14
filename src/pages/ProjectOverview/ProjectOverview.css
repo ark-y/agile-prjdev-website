@@ -11,7 +11,7 @@
 }
 
 
-/* same top blue bit as dev landing */
+/* header */
 .project-header {
     height: 150px;
 
@@ -39,7 +39,7 @@
 }
 
 
-/* icons on the right */
+/* icons */
 .project-header-icons {
     display: flex;
     align-items: center;
@@ -48,7 +48,7 @@
 }
 
 
-/* removing normal button look */
+/* icon buttons */
 .project-header-icons button {
     border: none;
     background: none;
@@ -57,7 +57,7 @@
 }
 
 
-/* message icon */
+/* message */
 .message-button {
     color: #D9D9D9;
 
@@ -67,7 +67,7 @@
 }
 
 
-/* settings icon */
+/* settings */
 .settings-button {
     color: #D9D9D9;
 
@@ -75,45 +75,76 @@
 }
 
 
-/* everything under the header */
+/* everything below header */
 .project-body {
     position: relative;
 
     min-height: 600px;
 
-    overflow: hidden;
+    overflow-y: hidden;
 
     isolation: isolate;
 }
 
 
-/* backlog and sprint boxes */
+/* sprint scrolling area */
 .sprint-area {
     display: flex;
 
     gap: 25px;
 
-    padding: 40px 50px;
+    padding: 40px 430px 28px 50px;
 
     overflow-x: auto;
+    overflow-y: hidden;
 
     box-sizing: border-box;
-
-    scrollbar-width: none;
 
     position: relative;
 
     z-index: 1;
+
+    scroll-behavior: smooth;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(24, 39, 58, 0.35)
+        transparent;
 }
 
 
-/* hiding scrollbar */
+/* scrollbar */
 .sprint-area::-webkit-scrollbar {
-    display: none;
+    height: 8px;
 }
 
 
-/* backlog and each sprint */
+/* track */
+.sprint-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* handle */
+.sprint-area::-webkit-scrollbar-thumb {
+    background-color: rgba(24, 39, 58, 0.35);
+
+    border-radius: 20px;
+
+    border: 2px solid transparent;
+
+    background-clip: padding-box;
+}
+
+
+/* scrollbar hover */
+.sprint-area::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(24, 39, 58, 0.6);
+}
+
+
+/* backlog and sprint boxes */
 .sprint-box {
     position: relative;
 
@@ -147,7 +178,7 @@
 }
 
 
-/* editable sprint name */
+/* sprint name */
 .sprint-name-input {
     width: 100%;
 
@@ -168,7 +199,7 @@
 }
 
 
-/* changes it a little when editing */
+/* editing sprint name */
 .sprint-name-input:focus {
     background-color: rgba(217, 217, 217, 0.08);
 
@@ -176,7 +207,7 @@
 }
 
 
-/* delete sprint button */
+/* delete sprint */
 .delete-sprint-button {
     position: absolute;
 
@@ -198,7 +229,6 @@
 
     font-family: "Fustat", sans-serif;
     font-size: 24px;
-    line-height: 1;
 
     cursor: pointer;
 
@@ -206,7 +236,7 @@
 }
 
 
-/* delete button hover */
+/* delete hover */
 .delete-sprint-button:hover {
     background-color: rgba(217, 217, 217, 0.12);
 
@@ -214,7 +244,7 @@
 }
 
 
-/* sprint date area */
+/* sprint dates */
 .sprint-dates {
     margin-top: 10px;
 
@@ -223,7 +253,7 @@
 }
 
 
-/* normal date display */
+/* date display */
 .sprint-date-display {
     border: none;
 
@@ -241,13 +271,13 @@
 }
 
 
-/* showing the user it can be clicked */
+/* date hover */
 .sprint-date-display:hover {
     background-color: rgba(217, 217, 217, 0.1);
 }
 
 
-/* date editing area */
+/* date editor */
 .sprint-date-editor {
     display: flex;
     align-items: center;
@@ -259,7 +289,7 @@
 }
 
 
-/* actual date inputs */
+/* date inputs */
 .sprint-date-editor input {
     width: 90px;
 
@@ -275,7 +305,7 @@
 }
 
 
-/* done button */
+/* date done */
 .date-done-button {
     border: none;
 
@@ -288,13 +318,109 @@
 }
 
 
-/* where tasks will go */
+/* tasks area */
 .task-area {
     margin-top: 25px;
 }
 
 
-/* whole overlay covering the right side */
+/* individual task */
+.task-card {
+    width: 100%;
+
+    min-height: 48px;
+
+    background-color: #D9D9D9;
+
+    border-radius: 15px;
+
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+
+/* status circle */
+.task-status-circle {
+    width: 14px;
+    height: 14px;
+
+    min-width: 14px;
+
+    border-radius: 50%;
+
+    background-color: #8A8A8A;
+}
+
+
+/* task name */
+.task-card-name {
+    color: #18273A;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 16px;
+
+    overflow-wrap: anywhere;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+/* right side of task card */
+.task-card-info {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+
+/* priority symbol */
+.task-priority {
+    color: #18273A;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+
+/* weight */
+.task-card-weight {
+    min-width: 27px;
+    height: 27px;
+
+    padding: 0 5px;
+
+    box-sizing: border-box;
+
+    border-radius: 50%;
+
+    background-color: #18273A;
+    color: #D9D9D9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* fade */
 .sidebar-fade {
     position: absolute;
 
@@ -318,7 +444,7 @@
 }
 
 
-/* whole right side */
+/* sidebar */
 .project-sidebar {
     position: absolute;
 
@@ -331,7 +457,7 @@
 }
 
 
-/* progress box */
+/* progress */
 .progress-box {
     width: 100%;
 
@@ -357,7 +483,7 @@
 }
 
 
-/* progress bar and number */
+/* progress row */
 .progress-row {
     display: flex;
     align-items: center;
@@ -366,7 +492,7 @@
 }
 
 
-/* whole progress bar */
+/* progress bar */
 .progress-bar {
     height: 14px;
 
@@ -380,7 +506,7 @@
 }
 
 
-/* green part */
+/* progress fill */
 .progress-fill {
     display: block;
 
@@ -393,7 +519,7 @@
 }
 
 
-/* 46% */
+/* progress number */
 .progress-number {
     color: #D9D9D9;
 
@@ -401,13 +527,13 @@
 }
 
 
-/* text under progress */
+/* info */
 .progress-info {
     margin-top: 17px;
 }
 
 
-/* each line */
+/* info lines */
 .progress-info p {
     margin: 2px 0;
 
@@ -417,7 +543,7 @@
 }
 
 
-/* the two boxes under progress */
+/* sidebar buttons */
 .sidebar-buttons {
     display: flex;
 
@@ -427,7 +553,7 @@
 }
 
 
-/* add task and add sprint */
+/* add task and sprint */
 .sidebar-button {
     width: 50%;
     height: 215px;
@@ -452,7 +578,7 @@
 }
 
 
-/* big + */
+/* plus */
 .sidebar-plus {
     font-size: 68px;
 
@@ -460,13 +586,13 @@
 }
 
 
-/* slight hover */
+/* sidebar hover */
 .sidebar-button:hover {
     background-color: rgba(0, 0, 0, 0.35);
 }
 
 
-/* button for going back to all the projects */
+/* back */
 .back-projects-button {
     margin: 0 0 35px 50px;
 
@@ -485,7 +611,7 @@
 }
 
 
-/* changes it a little when hovering */
+/* back hover */
 .back-projects-button:hover {
     opacity: 0.9;
 }
