@@ -1,6 +1,5 @@
 <!-- temp preview folder for project -->
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,11 +9,13 @@
 
     <title>UI Preview</title>
 
+
     <!-- css for the dev dashboard -->
     <link
             rel="stylesheet"
             href="src/pages/DevLanding/DevLanding.css"
     >
+
 
     <!-- css for the create project popup -->
     <link
@@ -22,10 +23,39 @@
             href="src/components/CreateProjectForm/CreateProjectForm.css"
     >
 
+
     <!-- css for the project cards -->
     <link
             rel="stylesheet"
             href="src/components/ProjectCard/ProjectCard.css"
+    >
+
+
+    <!-- css for the project overview -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ProjectOverview/ProjectOverview.css"
+    >
+
+
+    <!-- css for the task form -->
+    <link
+            rel="stylesheet"
+            href="src/components/CreateTaskForm/CreateTaskForm.css"
+    >
+
+
+    <!-- css for the login page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/Login/Login.css"
+    >
+
+
+    <!-- css for the client landing page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ClientLanding/ClientLanding.css"
     >
 
 </head>
@@ -33,25 +63,102 @@
 
 <body>
 
-<!-- whole dev dashboard -->
-<main class="dev-page">
+
+<!-- ==================== LOGIN PAGE ==================== -->
+
+<main
+        class="login-page"
+        id="loginPage"
+>
+
+    <h1>Login Page</h1>
+
+    <div class="button-group"> <!-- Test buttons for sprint one -->
+        <button
+                class="credential-button dev-button"
+                onclick="openDevPage()">
+            Dev page
+        </button>
+
+        <button
+                class="credential-button client-button"
+                onclick="openClientPage()">
+            Client page
+        </button>
+    </div>
+
+    <button class="login-button">
+        <h2>LOGIN</h2>
+    </button>
+
+</main>
 
 
-    <!-- top blue bit -->
+<!-- ==================== CLIENT LANDING ==================== -->
+
+<main
+        class="client-page"
+        id="clientLanding"
+        style="display: none;"
+>
+
+    <header class="client-dashboard-header">
+        <h1>PROJECT 1</h1>
+        <span class="percentage" id="header-percentage">67%</span>
+    </header>
+
+    <section class="dashboard-content">
+
+        <section class="progress-section" aria-label="Overall progress">
+            <figure class="progress-donut-container">
+                <span class="progress-donut" id="progress-donut"></span>
+            </figure>
+        </section>
+
+        <section class="right-panel">
+
+            <article class="current-tasks">
+                <h2>Current Tasks</h2>
+                <ul class="current-tasks-list">
+                    <li class="task-item">Task 1</li>
+                    <li class="task-item">Task 2</li>
+                    <li class="task-item">Long task 3</li>
+                    <li class="task-item">Tasks all around</li>
+                </ul>
+            </article>
+
+            <article class="client-sprint-box">
+                <h3>Sprint 4</h3>
+                <span class="percentage">67%</span>
+            </article>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<!-- ==================== DEV DASHBOARD ==================== -->
+
+<main
+        class="dev-page"
+        id="devDashboard"
+        style="display: none;"
+>
+
     <header class="dashboard-header">
 
         <h1>X'S DASHBOARD</h1>
 
 
-        <!-- icons on the right -->
         <section class="dashboard-icons">
 
-            <!-- messages -->
             <button class="message-button">
                 📥
             </button>
 
-            <!-- settings -->
+
             <button class="settings-button">
                 ⚙
             </button>
@@ -61,10 +168,10 @@
     </header>
 
 
-    <!-- where all the projects go -->
-    <section class="projects-section">
+    <section class="projects-section" id="projectsSection">
 
-        <!-- making a new project -->
+
+        <!-- add project -->
         <button
                 class="add-project"
                 onclick="openProjectPopup()"
@@ -73,18 +180,18 @@
         </button>
 
 
-        <!-- sample project just for testing -->
+        <!-- sample project -->
         <button
                 class="project-card"
                 onclick="openSampleProject()"
         >
 
-            <!-- showing the projects name -->
             <span class="project-name">
                 Sample Project
             </span>
 
         </button>
+
 
     </section>
 
@@ -96,16 +203,17 @@
             id="projectPopup"
     >
 
-        <!-- actual popup -->
         <form class="create-project-popup">
 
-            <h2>Create Project</h2>
+            <h2>
+                Create Project
+            </h2>
 
 
-            <!-- getting the project name -->
             <label for="projectName">
                 Project Name
             </label>
+
 
             <input
                     type="text"
@@ -114,10 +222,8 @@
             >
 
 
-            <!-- buttons at the bottom -->
             <section class="popup-buttons">
 
-                <!-- closing the popup -->
                 <button
                         type="button"
                         class="cancel-button"
@@ -127,10 +233,10 @@
                 </button>
 
 
-                <!-- making the project -->
                 <button
                         type="button"
                         class="create-button"
+                        onclick="createProject()"
                 >
                     Create Project
                 </button>
@@ -145,10 +251,627 @@
 
 
 
-<!-- temporary js just for testing stuff -->
+<!-- ==================== PROJECT OVERVIEW ==================== -->
+
+<main
+        class="project-page"
+        id="projectOverview"
+        style="display: none;"
+>
+
+    <header class="project-header">
+
+        <h1>
+            SAMPLE PROJECT
+        </h1>
+
+
+        <section class="project-header-icons">
+
+            <button class="message-button">
+                📥
+            </button>
+
+
+            <button class="settings-button">
+                ⚙
+            </button>
+
+        </section>
+
+    </header>
+
+
+
+    <section class="project-body">
+
+
+        <!-- backlog and sprints -->
+        <section
+                class="sprint-area"
+                id="sprintArea"
+        >
+
+
+            <!-- ==================== BACKLOG ==================== -->
+
+            <section class="sprint-box">
+
+                <h2>
+                    BACKLOG
+                </h2>
+
+
+                <!-- tasks get added here -->
+                <section
+                        class="task-area"
+                        id="backlogTaskArea"
+                >
+                </section>
+
+            </section>
+
+
+
+            <!-- ==================== SPRINT 1 ==================== -->
+
+            <section class="sprint-box">
+
+
+                <!-- delete sprint -->
+                <button
+                        type="button"
+                        class="delete-sprint-button"
+                        onclick="deleteSprint(this)"
+                        aria-label="Delete sprint"
+                >
+                    ×
+                </button>
+
+
+                <!-- sprint name -->
+                <input
+                        class="sprint-name-input"
+                        type="text"
+                        value="SPRINT 1"
+                >
+
+
+                <!-- sprint dates -->
+                <section class="sprint-dates">
+
+
+                    <!-- compact date -->
+                    <button
+                            type="button"
+                            class="sprint-date-display"
+                            onclick="openSprintDates(this)"
+                    >
+                        11/09 - 25/09
+                    </button>
+
+
+                    <!-- date editor -->
+                    <section
+                            class="sprint-date-editor"
+                            style="display: none;"
+                    >
+
+
+                        <input
+                                type="date"
+                                class="sprint-start-date"
+                                value="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <span>
+                            -
+                        </span>
+
+
+                        <input
+                                type="date"
+                                class="sprint-end-date"
+                                value="2026-09-25"
+                                min="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <button
+                                type="button"
+                                class="date-done-button"
+                                onclick="closeSprintDates(this)"
+                        >
+                            ✓
+                        </button>
+
+
+                    </section>
+
+
+                </section>
+
+
+                <!-- tasks later -->
+                <section class="task-area">
+
+                </section>
+
+
+            </section>
+
+
+        </section>
+
+
+
+        <!-- fade -->
+        <section class="sidebar-fade">
+
+        </section>
+
+
+
+        <!-- right side -->
+        <aside class="project-sidebar">
+
+
+            <!-- progress -->
+            <section class="progress-box">
+
+                <h2>
+                    PROGRESS
+                </h2>
+
+
+                <section class="progress-row">
+
+                    <section class="progress-bar">
+
+                        <span class="progress-fill">
+
+                        </span>
+
+                    </section>
+
+
+                    <span class="progress-number">
+                        46%
+                    </span>
+
+                </section>
+
+
+                <section class="progress-info">
+
+                    <p>
+                        Team list
+                    </p>
+
+                    <p>
+                        Project timeline
+                    </p>
+
+                    <p>
+                        Project due date
+                    </p>
+
+                    <p>
+                        Client
+                    </p>
+
+                </section>
+
+            </section>
+
+
+
+            <!-- sidebar buttons -->
+            <section class="sidebar-buttons">
+
+
+                <!-- add task -->
+                <button
+                        class="sidebar-button"
+                        onclick="openTaskForm()"
+                >
+
+                    <span>
+                        ADD
+                    </span>
+
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+
+                    <span>
+                        TASK
+                    </span>
+
+                </button>
+
+
+
+                <!-- add sprint -->
+                <button
+                        class="sidebar-button"
+                        onclick="addSprint()"
+                >
+
+                    <span>
+                        ADD
+                    </span>
+
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+
+                    <span>
+                        SPRINT
+                    </span>
+
+                </button>
+
+
+            </section>
+
+
+        </aside>
+
+
+    </section>
+
+
+
+    <!-- back -->
+    <button
+            type="button"
+            class="back-projects-button"
+            onclick="backToProjects()"
+    >
+        ← Back to Projects
+    </button>
+
+
+</main>
+
+
+
+<!-- ==================== TASK FORM ==================== -->
+
+<main
+        class="task-form-page"
+        id="taskForm"
+        style="display: none;"
+>
+
+
+    <!-- header -->
+    <header class="task-form-header">
+
+
+        <!-- task name -->
+        <input
+                class="task-name-input"
+                id="taskNameInput"
+                type="text"
+                placeholder="Task name"
+        >
+
+
+        <!-- selected weight -->
+        <span
+                class="task-weight-number"
+                id="taskWeightNumber"
+        >
+        </span>
+
+
+    </header>
+
+
+
+    <section class="task-form-body">
+
+
+        <!-- first row -->
+        <section class="task-form-row">
+
+
+            <!-- tags -->
+            <section class="task-tags">
+
+
+                <button
+                        type="button"
+                        class="add-tag-button"
+                >
+                    + tag
+                </button>
+
+
+                <button
+                        type="button"
+                        class="tag-button tag-green"
+                >
+                    Tag 1
+                </button>
+
+
+                <button
+                        type="button"
+                        class="tag-button tag-purple"
+                >
+                    Long Tag 2
+                </button>
+
+
+            </section>
+
+
+
+            <!-- priority and weight -->
+            <section class="task-options">
+
+
+                <!-- ==================== PRIORITY ==================== -->
+
+                <section class="priority-wrapper">
+
+
+                    <select
+                            class="priority-select"
+                            id="taskPriorityInput"
+                    >
+
+                        <option value="">
+                            Priority
+                        </option>
+
+
+                        <option value="high">
+                            ⌃ High
+                        </option>
+
+
+                        <option value="medium">
+                            - Medium
+                        </option>
+
+
+                        <option value="low">
+                            ⌄ Low
+                        </option>
+
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+
+                <!-- ==================== WEIGHT ==================== -->
+
+                <section class="weight-wrapper">
+
+
+                    <select
+                            class="weight-select"
+                            id="taskWeightInput"
+                            onchange="updateTaskWeight(this.value)"
+                    >
+
+                        <option value="">
+                            Weight
+                        </option>
+
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+            </section>
+
+
+        </section>
+
+
+
+        <!-- second row -->
+        <section class="task-form-row">
+
+
+            <!-- deadline dropdown -->
+            <section class="deadline-wrapper">
+
+                <button
+                        type="button"
+                        class="fake-dropdown deadline-dropdown"
+                        id="deadlineButton"
+                        onclick="toggleDeadlineCalendar()"
+                >
+
+                    <span id="deadlineLabel">Deadline</span>
+
+                    <span class="dropdown-arrow">
+                        ▼
+                    </span>
+
+                </button>
+
+
+                <!-- the calendar popup itself -->
+                <section
+                        class="deadline-calendar"
+                        id="deadlineCalendar"
+                        style="display: none;"
+                >
+
+                    <!-- month/year header with arrows -->
+                    <section class="calendar-header">
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarPrevMonth()"
+                        >
+                            ‹
+                        </button>
+
+                        <span
+                                class="calendar-month-label"
+                                id="calendarMonthLabel"
+                        >
+                        </span>
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarNextMonth()"
+                        >
+                            ›
+                        </button>
+
+                    </section>
+
+
+                    <!-- weekday letters -->
+                    <section class="calendar-weekdays">
+
+                        <span class="calendar-weekday">S</span>
+                        <span class="calendar-weekday">M</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">W</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">F</span>
+                        <span class="calendar-weekday">S</span>
+
+                    </section>
+
+
+                    <!-- the day grid, filled in by js -->
+                    <section
+                            class="calendar-days"
+                            id="calendarDays"
+                    >
+                    </section>
+
+                </section>
+
+            </section>
+
+
+
+            <!-- assignee -->
+            <button
+                    type="button"
+                    class="fake-dropdown assignee-dropdown"
+            >
+
+                <span>
+                    Assignee
+                </span>
+
+
+                <span class="dropdown-arrow">
+                    ▼
+                </span>
+
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- description -->
+        <textarea
+                class="task-description"
+                id="taskDescriptionInput"
+                placeholder="Description"
+        ></textarea>
+
+
+
+        <!-- buttons -->
+        <section class="task-form-buttons">
+
+
+            <!-- cancel -->
+            <button
+                    type="button"
+                    class="task-cancel-button"
+                    onclick="closeTaskForm()"
+            >
+                Cancel
+            </button>
+
+
+
+            <!-- save -->
+            <button
+                    type="button"
+                    class="task-save-button"
+                    onclick="saveTask()"
+            >
+                Save Task
+            </button>
+
+
+        </section>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ==================== TEMPORARY JS ==================== -->
+
 <script>
 
-    // opening the popup
+
+    // keeping track of sprint numbers
+    let sprintCount = 1;
+
+
+
+    // ==================== PROJECT POPUP ====================
+
+
     function openProjectPopup() {
 
         document
@@ -158,7 +881,6 @@
     }
 
 
-    // closing the popup
     function closeProjectPopup() {
 
         document
@@ -168,14 +890,1093 @@
     }
 
 
-    // opening the sample project
+
+    // ==================== CREATE PROJECT ====================
+
+
+function createProject() {
+
+   // getting what the user typed
+   const nameInput =
+       document.getElementById("projectName");
+
+
+   const projectName =
+       nameInput.value.trim();
+
+
+   // stopping if empty
+   if (projectName === "") {
+
+       alert("Please enter a project name.");
+
+       return;
+
+   }
+
+
+   // making a new project card
+   const newCard =
+       document.createElement("button");
+
+
+   newCard.className =
+       "project-card";
+
+
+   newCard.onclick =
+       openSampleProject;
+
+
+   // putting the project name inside
+   const nameSpan =
+       document.createElement("span");
+
+
+   nameSpan.className =
+       "project-name";
+
+
+   nameSpan.textContent =
+       projectName;
+
+
+   newCard.appendChild(nameSpan);
+
+
+   // adding it to the dashboard
+   document
+       .getElementById("projectsSection")
+       .appendChild(newCard);
+
+
+   // clearing the input and closing the popup
+   nameInput.value = "";
+
+   closeProjectPopup();
+
+}
+
+
+    // ==================== PROJECT NAVIGATION ====================
+
+
     function openSampleProject() {
 
-        window.location.href = "SprintView.html";
+        document
+            .getElementById("devDashboard")
+            .style.display = "none";
+
+
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "block";
 
     }
 
+
+    function backToProjects() {
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "none";
+
+
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        document
+            .getElementById("devDashboard")
+            .style.display = "block";
+
+    }
+
+
+
+    // ==================== SPRINT DATES ====================
+
+
+    function formatSprintDate(date) {
+
+        if (!date) {
+
+            return "--/--";
+
+        }
+
+
+        const parts =
+            date.split("-");
+
+
+        const month =
+            parts[1];
+
+
+        const day =
+            parts[2];
+
+
+        return day + "/" + month;
+
+    }
+
+
+
+    function openSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const dateDisplay =
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
+
+
+        const dateEditor =
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
+
+
+        dateDisplay.style.display =
+            "none";
+
+
+        dateEditor.style.display =
+            "flex";
+
+    }
+
+
+
+    function updateSprintDates(input) {
+
+        const sprintBox =
+            input.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
+
+
+        const endDateInput =
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        endDateInput.min =
+            startDate;
+
+
+        if (
+            startDate &&
+            endDate &&
+            endDate < startDate
+        ) {
+
+            endDateInput.value =
+                "";
+
+        }
+
+    }
+
+
+
+    function closeSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
+
+
+        const endDateInput =
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
+
+
+        const dateDisplay =
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
+
+
+        const dateEditor =
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        dateDisplay.textContent =
+            formatSprintDate(startDate)
+            + " - "
+            + formatSprintDate(endDate);
+
+
+        dateEditor.style.display =
+            "none";
+
+
+        dateDisplay.style.display =
+            "inline-block";
+
+    }
+
+
+
+    // ==================== DELETE SPRINT ====================
+
+
+    function deleteSprint(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const sprintNameInput =
+            sprintBox.querySelector(
+                ".sprint-name-input"
+            );
+
+
+        const sprintName =
+            sprintNameInput.value;
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete "
+                + sprintName
+                + "?"
+            );
+
+
+        if (confirmed) {
+
+            sprintBox.remove();
+
+        }
+
+    }
+
+
+
+    // ==================== ADD SPRINT ====================
+
+
+    function addSprint() {
+
+        sprintCount++;
+
+
+        // sprint container
+        const newSprint =
+            document.createElement("section");
+
+
+        newSprint.className =
+            "sprint-box";
+
+
+
+        // delete button
+        const deleteButton =
+            document.createElement("button");
+
+
+        deleteButton.type =
+            "button";
+
+
+        deleteButton.className =
+            "delete-sprint-button";
+
+
+        deleteButton.textContent =
+            "×";
+
+
+        deleteButton.setAttribute(
+            "aria-label",
+            "Delete sprint"
+        );
+
+
+        deleteButton.onclick =
+            function () {
+
+                deleteSprint(this);
+
+            };
+
+
+
+        // sprint name
+        const sprintName =
+            document.createElement("input");
+
+
+        sprintName.className =
+            "sprint-name-input";
+
+
+        sprintName.type =
+            "text";
+
+
+        sprintName.value =
+            "SPRINT " + sprintCount;
+
+
+
+        // date area
+        const sprintDates =
+            document.createElement("section");
+
+
+        sprintDates.className =
+            "sprint-dates";
+
+
+
+        // compact date
+        const dateDisplay =
+            document.createElement("button");
+
+
+        dateDisplay.type =
+            "button";
+
+
+        dateDisplay.className =
+            "sprint-date-display";
+
+
+        dateDisplay.textContent =
+            "--/-- - --/--";
+
+
+        dateDisplay.onclick =
+            function () {
+
+                openSprintDates(this);
+
+            };
+
+
+
+        // date editor
+        const dateEditor =
+            document.createElement("section");
+
+
+        dateEditor.className =
+            "sprint-date-editor";
+
+
+        dateEditor.style.display =
+            "none";
+
+
+
+        // start date
+        const startDate =
+            document.createElement("input");
+
+
+        startDate.type =
+            "date";
+
+
+        startDate.className =
+            "sprint-start-date";
+
+
+        startDate.onchange =
+            function () {
+
+                updateSprintDates(this);
+
+            };
+
+
+
+        // dash
+        const dash =
+            document.createElement("span");
+
+
+        dash.textContent =
+            "-";
+
+
+
+        // end date
+        const endDate =
+            document.createElement("input");
+
+
+        endDate.type =
+            "date";
+
+
+        endDate.className =
+            "sprint-end-date";
+
+
+        endDate.onchange =
+            function () {
+
+                updateSprintDates(this);
+
+            };
+
+
+
+        // done button
+        const doneButton =
+            document.createElement("button");
+
+
+        doneButton.type =
+            "button";
+
+
+        doneButton.className =
+            "date-done-button";
+
+
+        doneButton.textContent =
+            "✓";
+
+
+        doneButton.onclick =
+            function () {
+
+                closeSprintDates(this);
+
+            };
+
+
+
+        // build date editor
+        dateEditor.appendChild(
+            startDate
+        );
+
+
+        dateEditor.appendChild(
+            dash
+        );
+
+
+        dateEditor.appendChild(
+            endDate
+        );
+
+
+        dateEditor.appendChild(
+            doneButton
+        );
+
+
+
+        // build date area
+        sprintDates.appendChild(
+            dateDisplay
+        );
+
+
+        sprintDates.appendChild(
+            dateEditor
+        );
+
+
+
+        // task area
+        const taskArea =
+            document.createElement("section");
+
+
+        taskArea.className =
+            "task-area";
+
+
+
+        // build sprint
+        newSprint.appendChild(
+            deleteButton
+        );
+
+
+        newSprint.appendChild(
+            sprintName
+        );
+
+
+        newSprint.appendChild(
+            sprintDates
+        );
+
+
+        newSprint.appendChild(
+            taskArea
+        );
+
+
+
+        // add sprint
+        document
+            .getElementById("sprintArea")
+            .appendChild(newSprint);
+
+    }
+
+
+
+    // ==================== TASK FORM ====================
+
+
+    function openTaskForm() {
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "none";
+
+
+        document
+            .getElementById("taskForm")
+            .style.display = "block";
+
+    }
+
+
+
+    function closeTaskForm() {
+
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "block";
+
+    }
+
+
+
+    function updateTaskWeight(weight) {
+
+        document
+            .getElementById("taskWeightNumber")
+            .textContent = weight;
+
+    }
+
+
+
+    // ==================== SAVE TASK ====================
+
+
+    function saveTask() {
+
+
+        // task name
+        const taskNameInput =
+            document.getElementById(
+                "taskNameInput"
+            );
+
+
+        const taskName =
+            taskNameInput.value.trim();
+
+
+
+        // priority
+        const taskPriorityInput =
+            document.getElementById(
+                "taskPriorityInput"
+            );
+
+
+        const taskPriority =
+            taskPriorityInput.value;
+
+
+
+        // weight
+        const taskWeightInput =
+            document.getElementById(
+                "taskWeightInput"
+            );
+
+
+        const taskWeight =
+            taskWeightInput.value;
+
+
+
+        // task needs a name
+        if (taskName === "") {
+
+            return;
+
+        }
+
+
+
+        // ==================== CREATE TASK CARD ====================
+
+
+        const taskCard =
+            document.createElement("section");
+
+
+        taskCard.className =
+            "task-card";
+
+
+
+        // grey status circle
+        const statusCircle =
+            document.createElement("span");
+
+
+        statusCircle.className =
+            "task-status-circle";
+
+
+
+        // task name
+        const taskNameText =
+            document.createElement("span");
+
+
+        taskNameText.className =
+            "task-card-name";
+
+
+        taskNameText.textContent =
+            taskName;
+
+
+
+        // right side information
+        const taskInfo =
+            document.createElement("section");
+
+
+        taskInfo.className =
+            "task-card-info";
+
+
+
+        // ==================== PRIORITY ====================
+
+
+        if (taskPriority !== "") {
+
+
+            const priorityText =
+                document.createElement("span");
+
+
+            priorityText.className =
+                "task-priority";
+
+
+            if (taskPriority === "high") {
+
+                priorityText.textContent =
+                    "⌃";
+
+            }
+
+
+            if (taskPriority === "medium") {
+
+                priorityText.textContent =
+                    "-";
+
+            }
+
+
+            if (taskPriority === "low") {
+
+                priorityText.textContent =
+                    "⌄";
+
+            }
+
+
+            taskInfo.appendChild(
+                priorityText
+            );
+
+        }
+
+
+
+        // ==================== WEIGHT ====================
+
+
+        if (taskWeight !== "") {
+
+
+            const weightText =
+                document.createElement("span");
+
+
+            weightText.className =
+                "task-card-weight";
+
+
+            weightText.textContent =
+                taskWeight;
+
+
+            taskInfo.appendChild(
+                weightText
+            );
+
+        }
+
+
+        // ==================== BUILD TASK CARD ====================
+
+
+        taskCard.appendChild(
+            statusCircle
+        );
+
+
+        taskCard.appendChild(
+            taskNameText
+        );
+
+
+        taskCard.appendChild(
+            taskInfo
+        );
+
+
+
+        // add task to backlog
+        document
+            .getElementById(
+                "backlogTaskArea"
+            )
+            .appendChild(
+                taskCard
+            );
+
+
+
+        // ==================== CLEAR FORM ====================
+
+
+        taskNameInput.value =
+            "";
+
+
+        taskPriorityInput.value =
+            "";
+
+
+        taskWeightInput.value =
+            "";
+
+
+        document
+            .getElementById(
+                "taskWeightNumber"
+            )
+            .textContent = "";
+
+
+        const description =
+            document.getElementById(
+                "taskDescriptionInput"
+            );
+
+
+        if (description) {
+
+            description.value =
+                "";
+
+        }
+
+
+        // clear selected deadline
+        calendarSelectedDate = null;
+
+        document
+            .getElementById("deadlineLabel")
+            .textContent = "Deadline";
+
+        document
+            .getElementById("deadlineCalendar")
+            .style.display = "none";
+
+
+
+        // return to project overview
+        closeTaskForm();
+
+    }
+
+
+
+
+    // ==================== DEADLINE CALENDAR ====================
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // what month/year the calendar is currently showing
+    const today = new Date();
+    let calendarViewYear = today.getFullYear();
+    let calendarViewMonth = today.getMonth();
+
+    // the date the user has actually picked, if any
+    let calendarSelectedDate = null;
+
+
+    // showing/hiding the calendar popup
+    function toggleDeadlineCalendar() {
+
+        const calendar = document.getElementById("deadlineCalendar");
+
+        const isOpen = calendar.style.display === "block";
+
+        if (isOpen) {
+            calendar.style.display = "none";
+        } else {
+            renderCalendar();
+            calendar.style.display = "block";
+        }
+
+    }
+
+
+    // going back a month
+    function calendarPrevMonth() {
+
+        if (calendarViewMonth === 0) {
+            calendarViewMonth = 11;
+            calendarViewYear--;
+        } else {
+            calendarViewMonth--;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // going forward a month
+    function calendarNextMonth() {
+
+        if (calendarViewMonth === 11) {
+            calendarViewMonth = 0;
+            calendarViewYear++;
+        } else {
+            calendarViewMonth++;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // user picked a day in the grid
+    function selectDeadlineDay(day) {
+
+        calendarSelectedDate = new Date(calendarViewYear, calendarViewMonth, day);
+
+        document
+            .getElementById("deadlineLabel")
+            .textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " "
+                + calendarSelectedDate.getDate() + ", "
+                + calendarSelectedDate.getFullYear();
+
+        document
+            .getElementById("deadlineCalendar")
+            .style.display = "none";
+
+    }
+
+
+    // rebuilding the header + day grid for the current view month
+    function renderCalendar() {
+
+        document
+            .getElementById("calendarMonthLabel")
+            .textContent = monthNames[calendarViewMonth] + " " + calendarViewYear;
+
+
+        const daysContainer = document.getElementById("calendarDays");
+
+        daysContainer.innerHTML = "";
+
+
+        const firstWeekday = new Date(calendarViewYear, calendarViewMonth, 1).getDay();
+        const daysInMonth = new Date(calendarViewYear, calendarViewMonth + 1, 0).getDate();
+
+
+        // empty cells before the 1st
+        for (let i = 0; i < firstWeekday; i++) {
+
+            const emptyCell = document.createElement("button");
+
+            emptyCell.type = "button";
+            emptyCell.className = "calendar-day calendar-day-empty";
+            emptyCell.disabled = true;
+
+            daysContainer.appendChild(emptyCell);
+
+        }
+
+
+        // the actual day buttons
+        for (let day = 1; day <= daysInMonth; day++) {
+
+            const dayButton = document.createElement("button");
+
+            dayButton.type = "button";
+            dayButton.className = "calendar-day";
+            dayButton.textContent = day;
+
+            const isSelected =
+                calendarSelectedDate &&
+                day === calendarSelectedDate.getDate() &&
+                calendarViewMonth === calendarSelectedDate.getMonth() &&
+                calendarViewYear === calendarSelectedDate.getFullYear();
+
+            if (isSelected) {
+                dayButton.className += " calendar-day-selected";
+            }
+
+            dayButton.onclick = function () {
+                selectDeadlineDay(day);
+            };
+
+            daysContainer.appendChild(dayButton);
+
+        }
+
+    }
+
+
+    // ==================== LOGIN NAVIGATION ====================
+
+
+        function openDevPage() {
+
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
+
+
+            document
+                .getElementById("clientLanding")
+                .style.display = "none";
+
+
+            document
+                .getElementById("devDashboard")
+                .style.display = "block";
+
+        }
+
+
+        function openClientPage() {
+
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
+
+
+            document
+                .getElementById("devDashboard")
+                .style.display = "none";
+
+
+            document
+                .getElementById("clientLanding")
+                .style.display = "flex";
+
+        }
+
 </script>
+
+
+<!-- progressbar.js for the client landing donut chart -->
+<!-- The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
+<script>
+
+    var donut = new ProgressBar.Circle('#progress-donut', {
+        color: '#6FD361',
+        trailColor: '#18273A',
+        strokeWidth: 15,
+        trailWidth: 15,
+        fill: null,
+        duration: 1200,
+        easing: 'easeOut',
+        svgStyle: {
+            display: 'block',
+            width: '100%',
+            height: '100%'
+        }
+    });
+
+    donut.set(0.67); // 67%
+
+</script>
+
 
 </body>
 
