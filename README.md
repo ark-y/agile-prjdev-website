@@ -5,6 +5,11 @@ FIT2101 S2 2026 group repository.
 ## Team
 
 Add your team members and roles here.
+Alex Nguyen: Product Owner
+Azza Alkaabi: Developer
+Parampal Singh: Developer
+Parvathi Deepu: Developer
+Tessica Gomez: Scrum Master
 
 ## Getting Started
 
@@ -16,6 +21,55 @@ Add your team members and roles here.
 ## Repository Structure
 
 Update this section as your project grows.
+CL_Thursday5pm_Team7
+    ├── backend
+    │   └── schema.sql
+    ├── preview.html
+    ├── README.md
+    └── src
+        ├── App.jsx
+        ├── components
+        │   ├── CreateProjectForm
+        │   │   ├── CreateProjectForm.css
+        │   │   └── CreateProjectForm.jsx
+        │   ├── CreateTaskForm
+        │   │   ├── CreateTaskForm.css
+        │   │   └── CreateTaskForm.jsx
+        │   ├── Navbar
+        │   │   ├── Navbar.css
+        │   │   └── Navbar.jsx
+        │   ├── ProjectCard
+        │   │   ├── ProjectCard.css
+        │   │   └── ProjectCard.jsx
+        │   ├── Sidebar
+        │   │   ├── Sidebar.css
+        │   │   └── Sidebar.jsx
+        │   └── TaskCard
+        │       ├── TaskCard.css
+        │       └── TaskCard.jsx
+        ├── context
+        │   └── AuthContent.jsx
+        ├── main.jsx
+        ├── pages
+        │   ├── ClientLanding
+        │   │   ├── ClientLanding.css
+        │   │   └── ClientLanding.jsx
+        │   ├── DevLanding
+        │   │   ├── DevLanding.css
+        │   │   └── DevLanding.jsx
+        │   ├── Login
+        │   │   ├── Login.css
+        │   │   └── Login.jsx
+        │   └── ProjectOverview
+        │       ├── ProjectOverview.css
+        │       └── ProjectOverview.jsx
+        ├── services
+        │   ├── projectServices.js
+        │   ├── sprintService.js
+        │   ├── supabase.js
+        │   └── taskServices.js
+        └── styles
+            └── global.css
 
 ## Notes
 
