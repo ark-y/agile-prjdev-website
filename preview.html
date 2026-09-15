@@ -711,23 +711,84 @@
         <section class="task-form-row">
 
 
-            <!-- deadline -->
-            <button
-                    type="button"
-                    class="fake-dropdown deadline-dropdown"
-            >
+            <!-- deadline dropdown -->
+            <section class="deadline-wrapper">
 
-                <span>
-                    Deadline
-                </span>
+                <button
+                        type="button"
+                        class="fake-dropdown deadline-dropdown"
+                        id="deadlineButton"
+                        onclick="toggleDeadlineCalendar()"
+                >
+
+                    <span id="deadlineLabel">Deadline</span>
+
+                    <span class="dropdown-arrow">
+                        ▼
+                    </span>
+
+                </button>
 
 
-                <span class="dropdown-arrow">
-                    ▼
-                </span>
+                <!-- the calendar popup itself -->
+                <section
+                        class="deadline-calendar"
+                        id="deadlineCalendar"
+                        style="display: none;"
+                >
+
+                    <!-- month/year header with arrows -->
+                    <section class="calendar-header">
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarPrevMonth()"
+                        >
+                            ‹
+                        </button>
+
+                        <span
+                                class="calendar-month-label"
+                                id="calendarMonthLabel"
+                        >
+                        </span>
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarNextMonth()"
+                        >
+                            ›
+                        </button>
+
+                    </section>
 
 
-            </button>
+                    <!-- weekday letters -->
+                    <section class="calendar-weekdays">
+
+                        <span class="calendar-weekday">S</span>
+                        <span class="calendar-weekday">M</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">W</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">F</span>
+                        <span class="calendar-weekday">S</span>
+
+                    </section>
+
+
+                    <!-- the day grid, filled in by js -->
+                    <section
+                            class="calendar-days"
+                            id="calendarDays"
+                    >
+                    </section>
+
+                </section>
+
+            </section>
 
 
 
@@ -1693,6 +1754,149 @@ function createProject() {
     }
 
 
+
+
+    // ==================== DEADLINE CALENDAR ====================
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // what month/year the calendar is currently showing
+    const today = new Date();
+    let calendarViewYear = today.getFullYear();
+    let calendarViewMonth = today.getMonth();
+
+    // the date the user has actually picked, if any
+    let calendarSelectedDate = null;
+
+
+    // showing/hiding the calendar popup
+    function toggleDeadlineCalendar() {
+
+        const calendar = document.getElementById("deadlineCalendar");
+
+        const isOpen = calendar.style.display === "block";
+
+        if (isOpen) {
+            calendar.style.display = "none";
+        } else {
+            renderCalendar();
+            calendar.style.display = "block";
+        }
+
+    }
+
+
+    // going back a month
+    function calendarPrevMonth() {
+
+        if (calendarViewMonth === 0) {
+            calendarViewMonth = 11;
+            calendarViewYear--;
+        } else {
+            calendarViewMonth--;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // going forward a month
+    function calendarNextMonth() {
+
+        if (calendarViewMonth === 11) {
+            calendarViewMonth = 0;
+            calendarViewYear++;
+        } else {
+            calendarViewMonth++;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // user picked a day in the grid
+    function selectDeadlineDay(day) {
+
+        calendarSelectedDate = new Date(calendarViewYear, calendarViewMonth, day);
+
+        document
+            .getElementById("deadlineLabel")
+            .textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " "
+                + calendarSelectedDate.getDate() + ", "
+                + calendarSelectedDate.getFullYear();
+
+        document
+            .getElementById("deadlineCalendar")
+            .style.display = "none";
+
+    }
+
+
+    // rebuilding the header + day grid for the current view month
+    function renderCalendar() {
+
+        document
+            .getElementById("calendarMonthLabel")
+            .textContent = monthNames[calendarViewMonth] + " " + calendarViewYear;
+
+
+        const daysContainer = document.getElementById("calendarDays");
+
+        daysContainer.innerHTML = "";
+
+
+        const firstWeekday = new Date(calendarViewYear, calendarViewMonth, 1).getDay();
+        const daysInMonth = new Date(calendarViewYear, calendarViewMonth + 1, 0).getDate();
+
+
+        // empty cells before the 1st
+        for (let i = 0; i < firstWeekday; i++) {
+
+            const emptyCell = document.createElement("button");
+
+            emptyCell.type = "button";
+            emptyCell.className = "calendar-day calendar-day-empty";
+            emptyCell.disabled = true;
+
+            daysContainer.appendChild(emptyCell);
+
+        }
+
+
+        // the actual day buttons
+        for (let day = 1; day <= daysInMonth; day++) {
+
+            const dayButton = document.createElement("button");
+
+            dayButton.type = "button";
+            dayButton.className = "calendar-day";
+            dayButton.textContent = day;
+
+            const isSelected =
+                calendarSelectedDate &&
+                day === calendarSelectedDate.getDate() &&
+                calendarViewMonth === calendarSelectedDate.getMonth() &&
+                calendarViewYear === calendarSelectedDate.getFullYear();
+
+            if (isSelected) {
+                dayButton.className += " calendar-day-selected";
+            }
+
+            dayButton.onclick = function () {
+                selectDeadlineDay(day);
+            };
+
+            daysContainer.appendChild(dayButton);
+
+        }
+
+    }
 
 
     // ==================== LOGIN NAVIGATION ====================

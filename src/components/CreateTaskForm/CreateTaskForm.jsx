@@ -3,6 +3,14 @@ import { useState } from "react";
 import "./CreateTaskForm.css";
 
 
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+
+const MONTH_NAMES = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
+
 function CreateTaskForm({
     onSaveTask,
     onCancel
@@ -23,6 +31,102 @@ function CreateTaskForm({
         useState("");
 
 
+    // whether the deadline calendar is open
+    const [isCalendarOpen, setIsCalendarOpen] =
+        useState(false);
+
+
+    // the date the user has picked, if any
+    const [selectedDate, setSelectedDate] =
+        useState(null);
+
+
+    // month/year currently shown in the calendar
+    const today = new Date();
+
+    const [viewYear, setViewYear] =
+        useState(today.getFullYear());
+
+    const [viewMonth, setViewMonth] =
+        useState(today.getMonth());
+
+
+    // move calendar back one month
+    function goToPreviousMonth() {
+
+        if (viewMonth === 0) {
+
+            setViewMonth(11);
+            setViewYear(viewYear - 1);
+
+        } else {
+
+            setViewMonth(viewMonth - 1);
+
+        }
+
+    }
+
+
+    // move calendar forward one month
+    function goToNextMonth() {
+
+        if (viewMonth === 11) {
+
+            setViewMonth(0);
+            setViewYear(viewYear + 1);
+
+        } else {
+
+            setViewMonth(viewMonth + 1);
+
+        }
+
+    }
+
+
+    // user picked a deadline
+    function handleSelectDay(day) {
+
+        setSelectedDate(
+            new Date(viewYear, viewMonth, day)
+        );
+
+        setIsCalendarOpen(false);
+
+    }
+
+
+    // text shown on deadline button
+    const deadlineLabel = selectedDate
+        ? `${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`
+        : "Deadline";
+
+
+    // building calendar cells
+    const firstWeekday =
+        new Date(viewYear, viewMonth, 1).getDay();
+
+    const daysInMonth =
+        new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    const calendarCells = [];
+
+
+    for (let i = 0; i < firstWeekday; i++) {
+
+        calendarCells.push(null);
+
+    }
+
+
+    for (let day = 1; day <= daysInMonth; day++) {
+
+        calendarCells.push(day);
+
+    }
+
+
     // saving task
     function handleSaveTask() {
 
@@ -40,7 +144,9 @@ function CreateTaskForm({
 
             weight: taskWeight,
 
-            priority: taskPriority
+            priority: taskPriority,
+
+            deadline: selectedDate
 
         });
 
@@ -215,20 +321,121 @@ function CreateTaskForm({
 
 
                     {/* deadline */}
-                    <button
-                        type="button"
-                        className="fake-dropdown deadline-dropdown"
-                    >
+                    <section className="deadline-wrapper">
 
-                        <span>
-                            Deadline
-                        </span>
 
-                        <span className="dropdown-arrow">
-                            ▼
-                        </span>
+                        <button
+                            type="button"
+                            className="fake-dropdown deadline-dropdown"
+                            onClick={() =>
+                                setIsCalendarOpen(!isCalendarOpen)
+                            }
+                        >
 
-                    </button>
+                            <span>
+                                {deadlineLabel}
+                            </span>
+
+                            <span className="dropdown-arrow">
+                                ▼
+                            </span>
+
+                        </button>
+
+
+                        {/* calendar popup */}
+                        {isCalendarOpen && (
+
+                            <section className="deadline-calendar">
+
+
+                                <section className="calendar-header">
+
+
+                                    <button
+                                        type="button"
+                                        className="calendar-nav-button"
+                                        onClick={goToPreviousMonth}
+                                    >
+                                        ‹
+                                    </button>
+
+
+                                    <span className="calendar-month-label">
+                                        {MONTH_NAMES[viewMonth]} {viewYear}
+                                    </span>
+
+
+                                    <button
+                                        type="button"
+                                        className="calendar-nav-button"
+                                        onClick={goToNextMonth}
+                                    >
+                                        ›
+                                    </button>
+
+
+                                </section>
+
+
+                                <section className="calendar-weekdays">
+
+                                    {WEEKDAYS.map((weekday, index) => (
+
+                                        <span
+                                            key={index}
+                                            className="calendar-weekday"
+                                        >
+                                            {weekday}
+                                        </span>
+
+                                    ))}
+
+                                </section>
+
+
+                                <section className="calendar-days">
+
+                                    {calendarCells.map((day, index) => {
+
+                                        const isSelected =
+                                            selectedDate &&
+                                            day === selectedDate.getDate() &&
+                                            viewMonth === selectedDate.getMonth() &&
+                                            viewYear === selectedDate.getFullYear();
+
+
+                                        return (
+
+                                            <button
+                                                key={index}
+                                                type="button"
+                                                className={
+                                                    "calendar-day"
+                                                    + (day === null ? " calendar-day-empty" : "")
+                                                    + (isSelected ? " calendar-day-selected" : "")
+                                                }
+                                                disabled={day === null}
+                                                onClick={() =>
+                                                    handleSelectDay(day)
+                                                }
+                                            >
+                                                {day}
+                                            </button>
+
+                                        );
+
+                                    })}
+
+                                </section>
+
+
+                            </section>
+
+                        )}
+
+
+                    </section>
 
 
 
