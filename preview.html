@@ -1680,7 +1680,6 @@ function createProject() {
         }
 
 
-
         // ==================== BUILD TASK CARD ====================
 
 
@@ -1745,6 +1744,18 @@ function createProject() {
                 "";
 
         }
+
+
+        // clear selected deadline
+        calendarSelectedDate = null;
+
+        document
+            .getElementById("deadlineLabel")
+            .textContent = "Deadline";
+
+        document
+            .getElementById("deadlineCalendar")
+            .style.display = "none";
 
 
 

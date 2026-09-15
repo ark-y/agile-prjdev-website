@@ -138,17 +138,21 @@ function CreateTaskForm({
         }
 
 
-        onSaveTask({
+        if (onSaveTask) {
 
-            name: taskName.trim(),
+            onSaveTask({
 
-            weight: taskWeight,
+                name: taskName.trim(),
 
-            priority: taskPriority,
+                weight: taskWeight,
 
-            deadline: selectedDate
+                priority: taskPriority,
 
-        });
+                deadline: selectedDate
+
+            });
+
+        }
 
     }
 
