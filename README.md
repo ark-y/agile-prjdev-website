@@ -4,13 +4,13 @@ FIT2101 S2 2026 group repository.
 
 ## Team
 
-'''
+```
 Alex Nguyen: Product Owner
 Azza Alkaabi: Developer
 Parampal Singh: Developer
 Parvathi Deepu: Developer
 Tessica Gomez: Scrum Master
-'''
+```
 
 ## Getting Started
 
@@ -21,8 +21,7 @@ Tessica Gomez: Scrum Master
 
 ## Repository Structure
 
-Update this section as your project grows.
-'''
+```
 CL_Thursday5pm_Team7
     ├── backend
     │   └── schema.sql
@@ -72,7 +71,7 @@ CL_Thursday5pm_Team7
         │   └── taskServices.js
         └── styles
             └── global.css
-'''
+```
 ## Notes
 
 Keep your project work, documentation, setup instructions, and relevant artefacts in this repository.
