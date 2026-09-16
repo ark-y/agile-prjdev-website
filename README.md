@@ -21,7 +21,7 @@ Tessica Gomez: Scrum Master
 ## Repository Structure
 
 Update this section as your project grows.
-CL_Thursday5pm_Team7
+'''CL_Thursday5pm_Team7
     ├── backend
     │   └── schema.sql
     ├── preview.html
@@ -69,7 +69,7 @@ CL_Thursday5pm_Team7
         │   ├── supabase.js
         │   └── taskServices.js
         └── styles
-            └── global.css
+            └── global.css'''
 
 ## Notes
 
