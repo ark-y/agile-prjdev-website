@@ -92,7 +92,7 @@
     gap: 12px;
 }
 
-/* assignee and task status togetehr*/
+/* assignee and task status together*/
 .task-details {
     display: flex;
     align-items: center;

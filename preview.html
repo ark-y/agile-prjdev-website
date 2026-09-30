@@ -805,22 +805,26 @@
                                 </option>
         
         
-                                <option value="pending">
-                                    Pending 
+                                <option value="todo">
+                                    To Do 
                                 </option>
         
         
-                                <option value="inProgress">
-                                    In Progrss
+                                <option value="inReview">
+                                    In Review
                                 </option>
         
         
-                                <option value="readyForReview">
-                                    Ready For Review
+                                <option value="ongoing">
+                                    Ongoing
                                 </option>
         
-                                <option value="done">
-                                    Done
+                                <option value="complete">
+                                    Complete
+                                </option>
+
+                                <option value="overdue">
+                                    Overdue
                                 </option>
         
                             </select>
@@ -1594,6 +1598,13 @@ function createProject() {
         const taskWeight =
             taskWeightInput.value;
 
+        //status
+        const taskStatusInput = document.getElementById(
+            "taskStatusInput"
+        );
+
+        const taskStatus = 
+            taskStatusInput.value;
 
 
         // task needs a name
@@ -1616,7 +1627,6 @@ function createProject() {
             "task-card";
 
 
-
         // grey status circle
         const statusCircle =
             document.createElement("span");
@@ -1624,6 +1634,23 @@ function createProject() {
 
         statusCircle.className =
             "task-status-circle";
+
+        if(taskStatus !== "todo")
+        {
+            if (taskStatus === "inReview") {
+               statusCircle.style.backgroundColor = "#5200A3";
+            }
+            else if (taskStatus === "ongoing") {
+                statusCircle.style.backgroundColor = "#FBB13C";
+            }
+            else if (taskStatus === "complete") {
+                statusCircle.style.backgroundColor = "#00B800";
+            }
+            else if (taskStatus === "overdue") {
+                statusCircle.style.backgroundColor = "#D62839";
+            }
+        }
+        
 
 
 
