@@ -798,6 +798,7 @@
                             <select
                                     class="task-status-select"
                                     id="taskStatusInput"
+                                    onchange="updateStatusColour(this)"
                             >
         
                                 <option value="">
@@ -1556,6 +1557,29 @@ function createProject() {
 
     }
 
+    const statusColours = {
+            todo:     "#18273A",  
+            inReview: "#5200A3",
+            ongoing:  "#FBB13C",
+            complete: "#00B800",
+            overdue:  "#D62839"
+    };
+
+    function updateStatusColour(select) {
+
+        const colour = statusColours[select.value];
+
+        // nothing picked (the "Task Status" placeholder) -> back to default
+        select.style.backgroundColor = colour || "#18273A";
+
+        // dark text on the yellow so it stays readable
+        select.style.color =
+            select.value === "ongoing" ? "#18273A" : "#D9D9D9";
+
+    }
+
+
+
 
 
     // ==================== SAVE TASK ====================
@@ -1627,13 +1651,16 @@ function createProject() {
             "task-card";
 
 
-        // grey status circle
+        // ==================== STATUS UPDATE ====================
+        
+         // grey status circle
         const statusCircle =
             document.createElement("span");
 
 
         statusCircle.className =
             "task-status-circle";
+
 
         if(taskStatus !== "todo")
         {
@@ -1651,8 +1678,6 @@ function createProject() {
             }
         }
         
-
-
 
         // task name
         const taskNameText =
@@ -1747,7 +1772,20 @@ function createProject() {
             );
 
         }
+        
 
+        function updateStatusColour(select) {
+
+            const colour = statusColours[select.value];
+
+            // nothing picked (the "Task Status" placeholder) -> back to default
+            select.style.backgroundColor = colour || "#18273A";
+
+            // dark text on the yellow so it stays readable
+            select.style.color =
+                select.value === "ongoing" ? "#18273A" : "#D9D9D9";
+
+        }
 
         // ==================== BUILD TASK CARD ====================
 
@@ -1792,6 +1830,10 @@ function createProject() {
 
         taskWeightInput.value =
             "";
+
+        taskStatusInput.value = 
+            "";
+        updateStatusColour(taskStatusInput);
 
 
         document
