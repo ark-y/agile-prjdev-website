@@ -823,10 +823,6 @@
                                 <option value="complete">
                                     Complete
                                 </option>
-
-                                <option value="overdue">
-                                    Overdue
-                                </option>
         
                             </select>
         
@@ -1569,13 +1565,34 @@ function createProject() {
 
         const colour = statusColours[select.value];
 
-        // nothing picked (the "Task Status" placeholder) -> back to default
         select.style.backgroundColor = colour || "#18273A";
 
         // dark text on the yellow so it stays readable
         select.style.color =
             select.value === "ongoing" ? "#18273A" : "#D9D9D9";
 
+    }
+
+    //To check if the task is past its due date and set to overdue
+    function checkTaskStatus(taskStatus, deadline) {
+        if(deadline === ""){
+            return taskStatus;
+        }
+
+        if(taskStatus === "complete"){
+            return taskStatus;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        deadline.setHours(0, 0, 0, 0);
+
+        if(deadline < today) {
+            taskStatus = "overdue";
+        }
+
+        return taskStatus;
     }
 
 
@@ -1628,7 +1645,7 @@ function createProject() {
         );
 
         const taskStatus = 
-            taskStatusInput.value;
+            checkTaskStatus(taskStatusInput.value, calendarSelectedDate);
 
 
         // task needs a name
