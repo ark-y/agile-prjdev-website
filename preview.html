@@ -1792,20 +1792,6 @@ function createProject() {
 
         }
         
-
-        function updateStatusColour(select) {
-
-            const colour = statusColours[select.value];
-
-            // nothing picked (the "Task Status" placeholder) -> back to default
-            select.style.backgroundColor = colour || "#18273A";
-
-            // dark text on the yellow so it stays readable
-            select.style.color =
-                select.value === "ongoing" ? "#18273A" : "#D9D9D9";
-
-        }
-
         // ==================== BUILD TASK CARD ====================
 
 
