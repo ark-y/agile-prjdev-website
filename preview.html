@@ -1575,7 +1575,7 @@ function createProject() {
 
     //To check if the task is past its due date and set to overdue
     function checkTaskStatus(taskStatus, deadline) {
-        if(deadline === ""){
+        if(!deadline){
             return taskStatus;
         }
 
