@@ -318,25 +318,14 @@
 }
 
 
-/* total weight of the tasks in a sprint */
-.sprint-weight {
-    margin-top: 12px;
+/* total weight of the tasks in a sprint, top left opposite the delete button.
+   same circle as the task weight but flipped for the dark box */
+.sprint-weight-marker {
+    position: absolute;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    top: 13px;
+    left: 16px;
 
-    gap: 8px;
-
-    color: #D9D9D9;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-}
-
-
-/* the number, same circle as the task weight but flipped for the dark box */
-.sprint-weight-number {
     min-width: 27px;
     height: 27px;
 
@@ -353,6 +342,7 @@
     align-items: center;
     justify-content: center;
 
+    font-family: "Fustat", sans-serif;
     font-size: 13px;
     font-weight: 700;
 }

@@ -329,6 +329,16 @@
                 </button>
 
 
+                <!-- total weight of the tasks in this sprint, worked out by js -->
+                <span
+                        class="sprint-weight-marker"
+                        title="Sprint weight"
+                        aria-label="Sprint weight"
+                >
+                    0
+                </span>
+
+
                 <!-- sprint name -->
                 <input
                         class="sprint-name-input"
@@ -391,20 +401,6 @@
 
                     </section>
 
-
-                </section>
-
-
-                <!-- total weight of the tasks in this sprint, worked out by js -->
-                <section class="sprint-weight">
-
-                    <span>
-                        Weight
-                    </span>
-
-                    <span class="sprint-weight-number">
-                        0
-                    </span>
 
                 </section>
 
@@ -1577,43 +1573,27 @@ function createProject() {
 
 
 
-        // sprint weight, the number gets worked out by updateSprintWeights
-        const sprintWeight =
-            document.createElement("section");
-
-
-        sprintWeight.className =
-            "sprint-weight";
-
-
-        const weightLabel =
+        // sprint weight marker, the number gets worked out by updateSprintWeights
+        const weightMarker =
             document.createElement("span");
 
 
-        weightLabel.textContent =
-            "Weight";
+        weightMarker.className =
+            "sprint-weight-marker";
 
 
-        const weightNumber =
-            document.createElement("span");
+        weightMarker.title =
+            "Sprint weight";
 
 
-        weightNumber.className =
-            "sprint-weight-number";
+        weightMarker.setAttribute(
+            "aria-label",
+            "Sprint weight"
+        );
 
 
-        weightNumber.textContent =
+        weightMarker.textContent =
             "0";
-
-
-        sprintWeight.appendChild(
-            weightLabel
-        );
-
-
-        sprintWeight.appendChild(
-            weightNumber
-        );
 
 
 
@@ -1634,17 +1614,17 @@ function createProject() {
 
 
         newSprint.appendChild(
+            weightMarker
+        );
+
+
+        newSprint.appendChild(
             sprintName
         );
 
 
         newSprint.appendChild(
             sprintDates
-        );
-
-
-        newSprint.appendChild(
-            sprintWeight
         );
 
 
@@ -1669,12 +1649,12 @@ function createProject() {
     // adds up the weight of every task card inside one sprint
     function updateSprintWeight(sprintBox) {
 
-        const weightNumber =
-            sprintBox.querySelector(".sprint-weight-number");
+        const weightMarker =
+            sprintBox.querySelector(".sprint-weight-marker");
 
 
         // the backlog doesn't have a weight
-        if (!weightNumber) {
+        if (!weightMarker) {
 
             return;
 
@@ -1693,9 +1673,9 @@ function createProject() {
 
 
         // only write it if it changed, writing triggers the observer below again
-        if (weightNumber.textContent !== String(totalWeight)) {
+        if (weightMarker.textContent !== String(totalWeight)) {
 
-            weightNumber.textContent = totalWeight;
+            weightMarker.textContent = totalWeight;
 
         }
 
