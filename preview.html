@@ -592,6 +592,7 @@
                 <button
                         type="button"
                         class="add-tag-button"
+                        onclick="toggleTagPopup()"
                 >
                     + tag
                 </button>
@@ -611,6 +612,65 @@
                 >
                     Long Tag 2
                 </button>
+
+
+                <!-- create tag popup -->
+                <section
+                        class="tag-popup"
+                        id="tagPopup"
+                        style="display: none;"
+                >
+
+                    <label
+                            class="tag-popup-label"
+                            for="tagNameInput"
+                    >
+                        Tag name
+                    </label>
+
+                    <input
+                            class="tag-name-input"
+                            id="tagNameInput"
+                            type="text"
+                            maxlength="20"
+                            placeholder="e.g. Frontend"
+                            onkeydown="handleTagNameKey(event)"
+                    >
+
+
+                    <span class="tag-popup-label">
+                        Colour
+                    </span>
+
+                    <!-- colour swatches, filled in by js -->
+                    <section
+                            class="tag-colour-grid"
+                            id="tagColourGrid"
+                    >
+                    </section>
+
+
+                    <section class="tag-popup-buttons">
+
+                        <button
+                                type="button"
+                                class="tag-popup-cancel"
+                                onclick="closeTagPopup()"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                                type="button"
+                                class="tag-popup-add"
+                                onclick="addTag()"
+                        >
+                            Add tag
+                        </button>
+
+                    </section>
+
+                </section>
 
 
             </section>
@@ -1906,6 +1966,10 @@ function createProject() {
             .style.display = "none";
 
 
+        // clear the tags created for this task
+        resetTags();
+
+
 
         // return to project overview
         closeTaskForm();
@@ -1913,6 +1977,183 @@ function createProject() {
     }
 
 
+
+
+    // ==================== CUSTOM TAGS ====================
+
+    // the colours a tag can be given
+    const tagColours = [
+        { name: "Green",  hex: "#3F9B76" },
+        { name: "Teal",   hex: "#1F7F85" },
+        { name: "Blue",   hex: "#3C6FC4" },
+        { name: "Indigo", hex: "#5B4BB5" },
+        { name: "Purple", hex: "#963A91" },
+        { name: "Pink",   hex: "#C2467F" },
+        { name: "Red",    hex: "#C94A4A" },
+        { name: "Orange", hex: "#B8581A" },
+        { name: "Gold",   hex: "#94700A" },
+        { name: "Slate",  hex: "#5C6B7E" }
+    ];
+
+    // colour picked in the popup, first one by default
+    let selectedTagColour = tagColours[0].hex;
+
+
+    // building the colour swatches, only needs doing once
+    function renderTagColours() {
+
+        const grid = document.getElementById("tagColourGrid");
+
+        tagColours.forEach(function (colour) {
+
+            const swatch = document.createElement("button");
+
+            swatch.type = "button";
+            swatch.className = "tag-colour-swatch";
+            swatch.style.backgroundColor = colour.hex;
+            swatch.dataset.colour = colour.hex;
+            swatch.title = colour.name;
+            swatch.setAttribute("aria-label", colour.name);
+
+            swatch.onclick = function () {
+                selectTagColour(colour.hex);
+            };
+
+            grid.appendChild(swatch);
+
+        });
+
+        selectTagColour(selectedTagColour);
+
+    }
+
+
+    // highlighting the picked swatch
+    function selectTagColour(hex) {
+
+        selectedTagColour = hex;
+
+        document
+            .querySelectorAll(".tag-colour-swatch")
+            .forEach(function (swatch) {
+
+                const isSelected = swatch.dataset.colour === hex;
+
+                swatch.classList.toggle("tag-colour-swatch-selected", isSelected);
+                swatch.setAttribute("aria-pressed", isSelected);
+
+            });
+
+    }
+
+
+    // showing/hiding the create tag popup
+    function toggleTagPopup() {
+
+        const popup = document.getElementById("tagPopup");
+
+        if (popup.style.display === "block") {
+            closeTagPopup();
+        } else {
+            popup.style.display = "block";
+            document.getElementById("tagNameInput").focus();
+        }
+
+    }
+
+
+    // hiding the popup and getting it ready for the next tag
+    function closeTagPopup() {
+
+        document
+            .getElementById("tagPopup")
+            .style.display = "none";
+
+        document
+            .getElementById("tagNameInput")
+            .value = "";
+
+        selectTagColour(tagColours[0].hex);
+
+    }
+
+
+    // enter adds the tag, escape closes the popup
+    function handleTagNameKey(event) {
+
+        if (event.key === "Enter") {
+            addTag();
+        }
+
+        if (event.key === "Escape") {
+            closeTagPopup();
+        }
+
+    }
+
+
+    // putting the new tag in the tag row
+    function addTag() {
+
+        const nameInput = document.getElementById("tagNameInput");
+
+        const tagName = nameInput.value.trim();
+
+        // tag needs a name
+        if (tagName === "") {
+
+            nameInput.focus();
+
+            return;
+
+        }
+
+
+        const newTag = document.createElement("button");
+
+        newTag.type = "button";
+        newTag.className = "tag-button custom-tag";
+        newTag.textContent = tagName;
+        newTag.style.backgroundColor = selectedTagColour;
+
+
+        // goes after the existing tags, before the popup
+        document
+            .getElementById("tagPopup")
+            .before(newTag);
+
+        closeTagPopup();
+
+    }
+
+
+    // removing the tags that were created in the form
+    function resetTags() {
+
+        document
+            .querySelectorAll(".custom-tag")
+            .forEach(function (tag) {
+                tag.remove();
+            });
+
+        closeTagPopup();
+
+    }
+
+
+    // clicking anywhere outside the tag area closes the popup
+    document.addEventListener("click", function (event) {
+
+        const tagArea = document.querySelector(".task-tags");
+
+        if (!tagArea.contains(event.target)) {
+            closeTagPopup();
+        }
+
+    });
+
+
+    renderTagColours();
 
 
     // ==================== DEADLINE CALENDAR ====================
