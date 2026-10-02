@@ -857,14 +857,15 @@
                         </option>
 
 
+                        <option value="ongoing">
+                            Ongoing
+                        </option>
+
+
                         <option value="inReview">
                             In Review
                         </option>
 
-
-                        <option value="ongoing">
-                            Ongoing
-                        </option>
 
                         <option value="complete">
                             Complete
@@ -958,8 +959,8 @@
     // how much each status contributes to overall progress
     const STATUS_PROGRESS = {
         todo:     0,
-        inReview: 25,
         ongoing:  50,
+        inReview: 75,
         complete: 100,
         overdue:  0
     };

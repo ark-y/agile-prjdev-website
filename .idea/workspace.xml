@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7b925647-17bc-498b-ab1f-5ad9dbdb168d" name="Changes" comment="Roll back main to original state">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="7b925647-17bc-498b-ab1f-5ad9dbdb168d" name="Changes" comment="Sprint Progress Bar">
       <change beforePath="$PROJECT_DIR$/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/preview.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1789255871366</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Sprint Progress Bar">
+      <option name="closed" value="true" />
+      <created>1790957121073</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1790957121073</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -127,6 +134,7 @@
     <MESSAGE value="Add project creation, list, and overview flow&#10;&#10;- CreateProjectForm: popup form to enter a new project name&#10;- DevLanding: dashboard that lists projects and opens the create popup&#10;- ProjectCard: clickable card that navigates to a project's overview&#10;- ProjectOverview: page showing backlog, sprint, and progress for a project&#10;- Includes CSS for the project creation popup" />
     <MESSAGE value="Reset project" />
     <MESSAGE value="Roll back main to original state" />
-    <option name="LAST_COMMIT_MESSAGE" value="Roll back main to original state" />
+    <MESSAGE value="Sprint Progress Bar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sprint Progress Bar" />
   </component>
 </project>
