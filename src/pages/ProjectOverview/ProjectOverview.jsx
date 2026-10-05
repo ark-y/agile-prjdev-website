@@ -1,660 +1,343 @@
 import { useState } from "react";
-
 import "./ProjectOverview.css";
 
+function formatDate(date) {
+    if (!date) {
+        return "--/--";
+    }
+
+    const [year, month, day] = date.slice(0, 10).split("-");
+    return `${day}/${month}`;
+}
+
+function getPrioritySymbol(priority) {
+    if (priority === "high") {
+        return "⌃";
+    }
+    if (priority === "medium") {
+        return "-";
+    }
+    if (priority === "low") {
+        return "⌄";
+    }
+    return "";
+}
 
 function ProjectOverview({
-    tasks,
-    onAddTask
+    project,
+    tasks = [],
+    sprints = [],
+    statuses = [],
+    members = [],
+    memberCandidates = [],
+    roleName,
+    onAddTask,
+    onEditTask,
+    onDeleteTask,
+    onAddSprint,
+    onUpdateSprint,
+    onDeleteSprint,
+    onChangeTaskStatus,
+    onAddMember,
+    onRemoveMember,
+    onBack,
+    onRenameProject,
+    onDeleteProject
 }) {
+    const [editingSprintId, setEditingSprintId] = useState(null);
+    const [sprintNameDrafts, setSprintNameDrafts] = useState({});
+    const [selectedCandidateId, setSelectedCandidateId] = useState("");
+    const isAdmin = roleName === "Admin";
+    const isDeveloper = roleName === "Developer";
 
-    const [nextSprintNumber, setNextSprintNumber] =
-        useState(2);
+    function renderTask(task) {
+        const statusName = task.task_status?.status_name || "No status";
 
+        return (
+            <section className="task-card" key={task.task_id}>
+                <span
+                    className="task-status-circle"
+                    title={statusName}
+                    aria-label={statusName}
+                    style={{
+                        backgroundColor: task.task_status?.status_color || undefined
+                    }}
+                />
 
-    const [sprints, setSprints] =
-        useState([
+                {isAdmin ? (
+                    <button
+                        type="button"
+                        className="task-card-name"
+                        onClick={() => onEditTask(task)}
+                    >
+                        {task.task_name}
+                    </button>
+                ) : (
+                    <span className="task-card-name">{task.task_name}</span>
+                )}
 
-            {
-                id: 1,
-                name: "SPRINT 1",
-                startDate: "2026-09-11",
-                endDate: "2026-09-25",
-                editingDates: false
-            }
-
-        ]);
-
-
-    // formatting sprint dates
-    function formatDate(date) {
-
-        if (!date) {
-
-            return "--/--";
-
-        }
-
-
-        const [
-            year,
-            month,
-            day
-        ] = date.split("-");
-
-
-        return `${day}/${month}`;
-
-    }
-
-
-    // converting priority into symbol
-    function getPrioritySymbol(priority) {
-
-        if (priority === "high") {
-
-            return "⌃";
-
-        }
-
-
-        if (priority === "medium") {
-
-            return "-";
-
-        }
-
-
-        if (priority === "low") {
-
-            return "⌄";
-
-        }
-
-
-        return "";
-
-    }
-
-
-    // update sprint name
-    function updateSprintName(
-        sprintId,
-        newName
-    ) {
-
-        setSprints((currentSprints) =>
-
-            currentSprints.map((sprint) => {
-
-                if (sprint.id === sprintId) {
-
-                    return {
-                        ...sprint,
-                        name: newName
-                    };
-
-                }
-
-
-                return sprint;
-
-            })
-
+                <section className="task-card-info">
+                    {task.task_priority && (
+                        <span className="task-priority">
+                            {getPrioritySymbol(task.task_priority)}
+                        </span>
+                    )}
+                    {task.task_weight !== null && (
+                        <span className="task-card-weight">
+                            {task.task_weight}
+                        </span>
+                    )}
+                    {isDeveloper ? (
+                        <select
+                            aria-label={`Change status for ${task.task_name}`}
+                            value={task.task_status_id || ""}
+                            onChange={(event) => onChangeTaskStatus(
+                                task.task_id,
+                                event.target.value
+                            )}
+                        >
+                            <option value="">No status</option>
+                            {statuses.map((status) => (
+                                <option key={status.status_id} value={status.status_id}>
+                                    {status.status_name}
+                                </option>
+                            ))}
+                        </select>
+                    ) : isAdmin ? (
+                        <button
+                            type="button"
+                            className="task-delete-button"
+                            aria-label={`Delete ${task.task_name}`}
+                            onClick={() => onDeleteTask(task)}
+                        >
+                            ×
+                        </button>
+                    ) : null}
+                </section>
+            </section>
         );
-
     }
-
-
-    // date editor
-    function setSprintDateEditing(
-        sprintId,
-        editing
-    ) {
-
-        setSprints((currentSprints) =>
-
-            currentSprints.map((sprint) => {
-
-                if (sprint.id === sprintId) {
-
-                    return {
-                        ...sprint,
-                        editingDates: editing
-                    };
-
-                }
-
-
-                return sprint;
-
-            })
-
-        );
-
-    }
-
-
-    // start date
-    function updateStartDate(
-        sprintId,
-        newStartDate
-    ) {
-
-        setSprints((currentSprints) =>
-
-            currentSprints.map((sprint) => {
-
-                if (sprint.id !== sprintId) {
-
-                    return sprint;
-
-                }
-
-
-                let newEndDate =
-                    sprint.endDate;
-
-
-                if (
-                    newEndDate &&
-                    newEndDate < newStartDate
-                ) {
-
-                    newEndDate = "";
-
-                }
-
-
-                return {
-
-                    ...sprint,
-
-                    startDate: newStartDate,
-
-                    endDate: newEndDate
-
-                };
-
-            })
-
-        );
-
-    }
-
-
-    // end date
-    function updateEndDate(
-        sprintId,
-        newEndDate
-    ) {
-
-        setSprints((currentSprints) =>
-
-            currentSprints.map((sprint) => {
-
-                if (sprint.id === sprintId) {
-
-                    return {
-
-                        ...sprint,
-
-                        endDate: newEndDate
-
-                    };
-
-                }
-
-
-                return sprint;
-
-            })
-
-        );
-
-    }
-
-
-    // add sprint
-    function addSprint() {
-
-        const newSprint = {
-
-            id: Date.now(),
-
-            name:
-                "SPRINT "
-                + nextSprintNumber,
-
-            startDate: "",
-
-            endDate: "",
-
-            editingDates: false
-
-        };
-
-
-        setSprints((currentSprints) => [
-
-            ...currentSprints,
-
-            newSprint
-
-        ]);
-
-
-        setNextSprintNumber(
-            (currentNumber) =>
-                currentNumber + 1
-        );
-
-    }
-
-
-    // delete sprint
-    function deleteSprint(
-        sprintId,
-        sprintName
-    ) {
-
-        const confirmed =
-            window.confirm(
-                "Are you sure you want to delete "
-                + sprintName
-                + "?"
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-
-        setSprints((currentSprints) =>
-
-            currentSprints.filter(
-                (sprint) =>
-                    sprint.id !== sprintId
-            )
-
-        );
-
-    }
-
 
     return (
-
         <main className="project-page">
-
-
             <header className="project-header">
-
-                <h1>
-                    PROJECT 1
-                </h1>
-
-
+                <h1>{project?.project_name || "Project"}</h1>
                 <section className="project-header-icons">
-
-                    <button className="message-button">
+                    <button type="button" className="message-button" aria-label="Notifications">
                         📥
                     </button>
-
-
-                    <button className="settings-button">
+                    {isAdmin && <button
+                        type="button"
+                        className="settings-button"
+                        aria-label="Rename project"
+                        onClick={onRenameProject}
+                    >
                         ⚙
-                    </button>
-
+                    </button>}
                 </section>
-
             </header>
 
-
-
             <section className="project-body">
-
-
                 <section className="sprint-area">
-
-
-                    {/* backlog */}
                     <section className="sprint-box">
-
-
-                        <h2>
-                            BACKLOG
-                        </h2>
-
-
+                        <h2>BACKLOG</h2>
                         <section className="task-area">
-
-
-                            {tasks.map((task) => (
-
-                                <section
-                                    className="task-card"
-                                    key={task.id}
-                                >
-
-
-                                    <span
-                                        className="task-status-circle"
-                                    ></span>
-
-
-                                    <span className="task-card-name">
-
-                                        {task.name}
-
-                                    </span>
-
-
-
-                                    <section className="task-card-info">
-
-
-                                        {task.priority && (
-
-                                            <span className="task-priority">
-
-                                                {getPrioritySymbol(
-                                                    task.priority
-                                                )}
-
-                                            </span>
-
-                                        )}
-
-
-                                        {task.weight && (
-
-                                            <span className="task-card-weight">
-
-                                                {task.weight}
-
-                                            </span>
-
-                                        )}
-
-
-                                    </section>
-
-
-                                </section>
-
-                            ))}
-
-
+                            <p>Tasks belong to a sprint.</p>
                         </section>
-
-
                     </section>
 
+                    {sprints.map((sprint) => {
+                        const name = sprintNameDrafts[sprint.sprint_id] ?? sprint.sprint_name;
 
+                        return (
+                            <section className="sprint-box" key={sprint.sprint_id}>
+                                {isAdmin && <button
+                                    type="button"
+                                    className="delete-sprint-button"
+                                    aria-label={`Delete ${name}`}
+                                    onClick={() => onDeleteSprint(sprint)}
+                                >
+                                    ×
+                                </button>}
 
-                    {/* sprints */}
-                    {sprints.map((sprint) => (
-
-                        <section
-                            className="sprint-box"
-                            key={sprint.id}
-                        >
-
-
-                            <button
-                                type="button"
-                                className="delete-sprint-button"
-                                aria-label="Delete sprint"
-                                onClick={() =>
-                                    deleteSprint(
-                                        sprint.id,
-                                        sprint.name
-                                    )
-                                }
-                            >
-                                ×
-                            </button>
-
-
-
-                            <input
-                                className="sprint-name-input"
-                                type="text"
-                                value={sprint.name}
-                                onChange={(event) =>
-                                    updateSprintName(
-                                        sprint.id,
-                                        event.target.value
-                                    )
-                                }
-                            />
-
-
-
-                            <section className="sprint-dates">
-
-
-                                {!sprint.editingDates ? (
-
-                                    <button
-                                        type="button"
-                                        className="sprint-date-display"
-                                        onClick={() =>
-                                            setSprintDateEditing(
-                                                sprint.id,
-                                                true
-                                            )
+                                {isAdmin ? <input
+                                    className="sprint-name-input"
+                                    type="text"
+                                    value={name}
+                                    onChange={(event) => setSprintNameDrafts((drafts) => ({
+                                        ...drafts,
+                                        [sprint.sprint_id]: event.target.value
+                                    }))}
+                                    onBlur={() => {
+                                        const draftName = sprintNameDrafts[sprint.sprint_id];
+                                        if (draftName !== undefined && draftName !== sprint.sprint_name) {
+                                            onUpdateSprint(sprint.sprint_id, { name: draftName });
                                         }
-                                    >
+                                        setSprintNameDrafts((drafts) => {
+                                            const nextDrafts = { ...drafts };
+                                            delete nextDrafts[sprint.sprint_id];
+                                            return nextDrafts;
+                                        });
+                                    }}
+                                    aria-label="Sprint name"
+                                /> : <h2>{sprint.sprint_name}</h2>}
 
-                                        {formatDate(
-                                            sprint.startDate
-                                        )}
-
-                                        {" - "}
-
-                                        {formatDate(
-                                            sprint.endDate
-                                        )}
-
-                                    </button>
-
-                                ) : (
-
-                                    <section className="sprint-date-editor">
-
-
-                                        <input
-                                            type="date"
-                                            value={sprint.startDate}
-                                            onChange={(event) =>
-                                                updateStartDate(
-                                                    sprint.id,
-                                                    event.target.value
-                                                )
-                                            }
-                                        />
-
-
-                                        <span>
-                                            -
-                                        </span>
-
-
-                                        <input
-                                            type="date"
-                                            value={sprint.endDate}
-                                            min={sprint.startDate}
-                                            onChange={(event) =>
-                                                updateEndDate(
-                                                    sprint.id,
-                                                    event.target.value
-                                                )
-                                            }
-                                        />
-
-
+                                <section className="sprint-dates">
+                                    {!isAdmin || editingSprintId !== sprint.sprint_id ? (
                                         <button
                                             type="button"
-                                            className="date-done-button"
-                                            onClick={() =>
-                                                setSprintDateEditing(
-                                                    sprint.id,
-                                                    false
-                                                )
-                                            }
+                                            className="sprint-date-display"
+                                            onClick={() => isAdmin && setEditingSprintId(sprint.sprint_id)}
                                         >
-                                            ✓
+                                            {formatDate(sprint.sprint_start_date)}
+                                            {" - "}
+                                            {formatDate(sprint.sprint_end_date)}
                                         </button>
+                                    ) : (
+                                        <section className="sprint-date-editor">
+                                            <input
+                                                type="date"
+                                                value={sprint.sprint_start_date?.slice(0, 10) || ""}
+                                                onChange={(event) => {
+                                                    const startDate = event.target.value || null;
+                                                    const endDate = sprint.sprint_end_date?.slice(0, 10);
+                                                    onUpdateSprint(sprint.sprint_id, {
+                                                        startDate,
+                                                        ...(startDate && endDate && endDate < startDate
+                                                            ? { endDate: null }
+                                                            : {})
+                                                    });
+                                                }}
+                                            />
+                                            <span>-</span>
+                                            <input
+                                                type="date"
+                                                value={sprint.sprint_end_date?.slice(0, 10) || ""}
+                                                min={sprint.sprint_start_date?.slice(0, 10) || undefined}
+                                                onChange={(event) => onUpdateSprint(sprint.sprint_id, {
+                                                    endDate: event.target.value || null
+                                                })}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="date-done-button"
+                                                onClick={() => setEditingSprintId(null)}
+                                            >
+                                                ✓
+                                            </button>
+                                        </section>
+                                    )}
+                                </section>
 
-
-                                    </section>
-
-                                )}
-
-
+                                <section className="task-area">
+                                    {tasks
+                                        .filter((task) => task.sprint_id === sprint.sprint_id)
+                                        .map(renderTask)}
+                                </section>
                             </section>
-
-
-
-                            <section className="task-area">
-
-                            </section>
-
-
-                        </section>
-
-                    ))}
-
-
+                        );
+                    })}
                 </section>
 
-
-
-                <section className="sidebar-fade">
-
-                </section>
-
-
+                <section className="sidebar-fade" />
 
                 <aside className="project-sidebar">
-
-
                     <section className="progress-box">
-
-
-                        <h2>
-                            PROGRESS
-                        </h2>
-
-
+                        <h2>PROGRESS</h2>
                         <section className="progress-row">
-
-
                             <section className="progress-bar">
-
-                                <span className="progress-fill">
-
-                                </span>
-
+                                <span className="progress-fill" />
                             </section>
-
-
-                            <span className="progress-number">
-                                46%
-                            </span>
-
-
+                            <span className="progress-number">46%</span>
                         </section>
-
-
                         <section className="progress-info">
-
                             <p>Team list</p>
-
                             <p>Project timeline</p>
-
                             <p>Project due date</p>
-
                             <p>Client</p>
-
                         </section>
-
-
                     </section>
 
-
-
-                    <section className="sidebar-buttons">
-
-
-                        <button
-                            className="sidebar-button"
-                            onClick={onAddTask}
-                        >
-
-                            <span>
-                                ADD
-                            </span>
-
-                            <span className="sidebar-plus">
-                                +
-                            </span>
-
-                            <span>
-                                TASK
-                            </span>
-
+                    {isAdmin && <section className="sidebar-buttons">
+                        <button type="button" className="sidebar-button" onClick={onAddTask}>
+                            <span>ADD</span>
+                            <span className="sidebar-plus">+</span>
+                            <span>TASK</span>
                         </button>
-
-
-
-                        <button
-                            className="sidebar-button"
-                            onClick={addSprint}
-                        >
-
-                            <span>
-                                ADD
-                            </span>
-
-                            <span className="sidebar-plus">
-                                +
-                            </span>
-
-                            <span>
-                                SPRINT
-                            </span>
-
+                        <button type="button" className="sidebar-button" onClick={onAddSprint}>
+                            <span>ADD</span>
+                            <span className="sidebar-plus">+</span>
+                            <span>SPRINT</span>
                         </button>
+                        <button
+                            type="button"
+                            className="sidebar-button delete-project-button"
+                            onClick={onDeleteProject}
+                        >
+                            DELETE PROJECT
+                        </button>
+                    </section>}
 
-
-                    </section>
-
-
+                    {isAdmin && (
+                        <section className="project-members">
+                            <h2>PROJECT MEMBERS</h2>
+                            {members.map((member) => (
+                                <p key={member.user_id}>
+                                    {member.user_pref_name
+                                        || `${member.user_first_name} ${member.user_last_name}`}
+                                    {member.user_id !== project.project_created_by && (
+                                        <button
+                                            type="button"
+                                            onClick={() => onRemoveMember(member)}
+                                            aria-label={`Remove ${member.user_first_name} from project`}
+                                        >
+                                            ×
+                                        </button>
+                                    )}
+                                </p>
+                            ))}
+                            {memberCandidates.length > 0 && (
+                                <section>
+                                    <select
+                                        aria-label="Choose a developer or client to add"
+                                        value={selectedCandidateId}
+                                        onChange={(event) => setSelectedCandidateId(event.target.value)}
+                                    >
+                                        <option value="">Add a member...</option>
+                                        {memberCandidates.map((member) => (
+                                            <option key={member.user_id} value={member.user_id}>
+                                                {member.user_pref_name
+                                                    || `${member.user_first_name} ${member.user_last_name}`}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        type="button"
+                                        disabled={!selectedCandidateId}
+                                        onClick={async () => {
+                                            if (await onAddMember(selectedCandidateId)) {
+                                                setSelectedCandidateId("");
+                                            }
+                                        }}
+                                    >
+                                        Add member
+                                    </button>
+                                </section>
+                            )}
+                        </section>
+                    )}
                 </aside>
-
-
             </section>
-
-
 
             <button
                 type="button"
                 className="back-projects-button"
+                onClick={onBack}
             >
                 ← Back to Projects
             </button>
-
-
         </main>
-
     );
-
 }
-
 
 export default ProjectOverview;
