@@ -1,11 +1,11 @@
 import "./ProjectCard.css";
 
-function ProjectCard({ projectName }) {
+function ProjectCard({ projectName, onOpen }) {
 
     return (
 
         // card for each project
-        <button className="project-card">
+        <button type="button" className="project-card" onClick={onOpen}>
 
             {/* showing the projects name */}
             <span className="project-name">
