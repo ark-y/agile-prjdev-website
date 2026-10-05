@@ -196,7 +196,6 @@
     </section>
 
 
-
     <!-- create project popup -->
     <section
             class="popup-background"
@@ -250,7 +249,6 @@
 </main>
 
 
-
 <!-- ==================== PROJECT OVERVIEW ==================== -->
 
 <main
@@ -282,7 +280,6 @@
     </header>
 
 
-
     <section class="project-body">
 
 
@@ -310,7 +307,6 @@
                 </section>
 
             </section>
-
 
 
             <!-- ==================== SPRINT 1 ==================== -->
@@ -407,12 +403,10 @@
         </section>
 
 
-
         <!-- fade -->
         <section class="sidebar-fade">
 
         </section>
-
 
 
         <!-- right side -->
@@ -431,15 +425,15 @@
 
                     <section class="progress-bar">
 
-                        <span class="progress-fill">
+                        <span class="progress-fill" id="projectProgressFill">
 
                         </span>
 
                     </section>
 
 
-                    <span class="progress-number">
-                        46%
+                    <span class="progress-number" id="projectProgressNumber">
+                        0%
                     </span>
 
                 </section>
@@ -468,7 +462,6 @@
             </section>
 
 
-
             <!-- sidebar buttons -->
             <section class="sidebar-buttons">
 
@@ -494,7 +487,6 @@
                     </span>
 
                 </button>
-
 
 
                 <!-- add sprint -->
@@ -529,7 +521,6 @@
     </section>
 
 
-
     <!-- back -->
     <button
             type="button"
@@ -541,7 +532,6 @@
 
 
 </main>
-
 
 
 <!-- ==================== TASK FORM ==================== -->
@@ -575,7 +565,6 @@
 
 
     </header>
-
 
 
     <section class="task-form-body">
@@ -676,7 +665,6 @@
             </section>
 
 
-
             <!-- priority and weight -->
             <section class="task-options">
 
@@ -722,7 +710,6 @@
                 </section>
 
 
-
                 <!-- ==================== WEIGHT ==================== -->
 
                 <section class="weight-wrapper">
@@ -764,7 +751,6 @@
 
 
         </section>
-
 
 
         <!-- second row -->
@@ -851,71 +837,71 @@
             </section>
 
             <!--update task status-->
-            <section class = "task-details">
-                    <section class="task-status-wrapper">
-        
-        
-                            <select
-                                    class="task-status-select"
-                                    id="taskStatusInput"
-                                    onchange="updateStatusColour(this)"
-                            >
-        
-                                <option value="">
-                                    Task Status
-                                </option>
-        
-        
-                                <option value="todo">
-                                    To Do 
-                                </option>
-        
-        
-                                <option value="inReview">
-                                    In Review
-                                </option>
-        
-        
-                                <option value="ongoing">
-                                    Ongoing
-                                </option>
-        
-                                <option value="complete">
-                                    Complete
-                                </option>
-        
-                            </select>
-        
-        
-                            <span class="select-arrow">
+            <section class="task-details">
+                <section class="task-status-wrapper">
+
+
+                    <select
+                            class="task-status-select"
+                            id="taskStatusInput"
+                            onchange="updateStatusColour(this)"
+                    >
+
+                        <option value="">
+                            Task Status
+                        </option>
+
+
+                        <option value="todo">
+                            To Do
+                        </option>
+
+
+                        <option value="ongoing">
+                            Ongoing
+                        </option>
+
+
+                        <option value="inReview">
+                            In Review
+                        </option>
+
+
+                        <option value="complete">
+                            Complete
+                        </option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
                                 ▼
                             </span>
-        
-        
-                        </section>
-        
-                    <!-- assignee -->
-                    <button
-                            type="button"
-                            class="fake-dropdown assignee-dropdown"
-                    >
-        
+
+
+                </section>
+
+                <!-- assignee -->
+                <button
+                        type="button"
+                        class="fake-dropdown assignee-dropdown"
+                >
+
                         <span>
                             Assignee
                         </span>
-        
-        
-                        <span class="dropdown-arrow">
+
+
+                    <span class="dropdown-arrow">
                             ▼
                         </span>
-        
-        
-                    </button>
-        
-        
-                </section>
-            </section>
 
+
+                </button>
+
+
+            </section>
+        </section>
 
 
         <!-- description -->
@@ -924,7 +910,6 @@
                 id="taskDescriptionInput"
                 placeholder="Description"
         ></textarea>
-
 
 
         <!-- buttons -->
@@ -939,7 +924,6 @@
             >
                 Cancel
             </button>
-
 
 
             <!-- save -->
@@ -961,7 +945,6 @@
 </main>
 
 
-
 <!-- ==================== TEMPORARY JS ==================== -->
 
 <script>
@@ -970,7 +953,68 @@
     // keeping track of sprint numbers
     let sprintCount = 1;
 
+    // ==================== PROJECT PROGRESS ====================
 
+
+    // how much each status contributes to overall progress
+    const STATUS_PROGRESS = {
+        todo:     0,
+        ongoing:  50,
+        inReview: 75,
+        complete: 100,
+        overdue:  0
+    };
+
+
+    function updateProjectProgress() {
+
+        // every task in every sprint + backlog
+        const allTasks =
+            document.querySelectorAll(".task-card");
+
+        const fill =
+            document.getElementById("projectProgressFill");
+
+        const number =
+            document.getElementById("projectProgressNumber");
+
+        if (!fill || !number) return;
+
+
+        // no tasks → 0%
+        if (allTasks.length === 0) {
+
+            fill.style.width = "0%";
+            number.textContent = "0%";
+
+            return;
+        }
+
+
+        let total = 0;
+
+
+        allTasks.forEach(function (card) {
+
+            const status =
+                card.dataset.status || "todo";
+
+            total +=
+                STATUS_PROGRESS[status] !== undefined
+                    ? STATUS_PROGRESS[status]
+                    : 0;
+
+        });
+
+
+        const percent =
+            Math.round(total / allTasks.length);
+
+
+        fill.style.width = percent + "%";
+        number.textContent = percent + "%";
+
+    }
 
     // ==================== PROJECT POPUP ====================
 
@@ -1164,7 +1208,7 @@ function createProject() {
 
         const endDateInput =
             sprintBox.querySelector(".sprint-end-date");
-        
+
         if(!endDateInput){
             return;
         }
@@ -1646,7 +1690,7 @@ function createProject() {
     }
 
     const statusColours = {
-            todo:     "#18273A",  
+            todo:     "#18273A",
             inReview: "#5200A3",
             ongoing:  "#FBB13C",
             complete: "#00B800",
@@ -1736,7 +1780,7 @@ function createProject() {
             "taskStatusInput"
         );
 
-        const taskStatus = 
+        const taskStatus =
             checkTaskStatus(taskStatusInput.value, calendarSelectedDate);
 
 
@@ -1756,12 +1800,12 @@ function createProject() {
             document.createElement("section");
 
 
-        taskCard.className =
-            "task-card";
+        taskCard.className = "task-card";
+        taskCard.dataset.status = taskStatus || "todo";
 
 
         // ==================== STATUS UPDATE ====================
-        
+
          // grey status circle
         const statusCircle =
             document.createElement("span");
@@ -1788,7 +1832,7 @@ function createProject() {
                 statusCircle.style.backgroundColor = "#D62839";
             }
         }
-        
+
 
         // task name
         const taskNameText =
@@ -1883,7 +1927,7 @@ function createProject() {
             );
 
         }
-        
+
         // ==================== BUILD TASK CARD ====================
 
 
@@ -1928,7 +1972,7 @@ function createProject() {
         taskWeightInput.value =
             "";
 
-        taskStatusInput.value = 
+        taskStatusInput.value =
             "";
         updateStatusColour(taskStatusInput);
 
@@ -1965,6 +2009,8 @@ function createProject() {
             .getElementById("deadlineCalendar")
             .style.display = "none";
 
+        // refresh the project progress bar
+        updateProjectProgress();
 
         // clear the tags created for this task
         resetTags();
@@ -2336,7 +2382,6 @@ function createProject() {
             document
                 .getElementById("clientLanding")
                 .style.display = "flex";
-
         }
 
 </script>
@@ -2369,6 +2414,9 @@ function createProject() {
         checkSprintDeadline(sprintBox);
 
     });
+
+    // refresh progress bar on page load
+    updateProjectProgress();
 
 </script>
 
