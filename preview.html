@@ -940,6 +940,7 @@
             <button
                     type="button"
                     class="task-save-button"
+                    id="taskSaveButton"
                     onclick="saveTask()"
             >
                 Save Task
@@ -962,6 +963,9 @@
 
     // keeping track of sprint numbers
     let sprintCount = 1;
+
+    // task currently being edited; null means a new task
+    let editingTaskCard = null;
 
     // ==================== PROJECT PROGRESS ====================
 
@@ -1828,32 +1832,78 @@ function createProject() {
 
     function openTaskForm() {
 
-        document
-            .getElementById("projectOverview")
-            .style.display = "none";
+        editingTaskCard = null;
+        clearTaskForm();
 
-
-        document
-            .getElementById("taskForm")
-            .style.display = "block";
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
 
     }
-
 
 
     function closeTaskForm() {
 
-        document
-            .getElementById("taskForm")
-            .style.display = "none";
-
-
-        document
-            .getElementById("projectOverview")
-            .style.display = "block";
+        document.getElementById("taskForm").style.display = "none";
+        document.getElementById("projectOverview").style.display = "block";
 
     }
 
+
+    function openTaskDetails(taskCard) {
+
+        editingTaskCard = taskCard;
+
+        document.getElementById("taskNameInput").value = taskCard.dataset.name || "";
+        document.getElementById("taskDescriptionInput").value = taskCard.dataset.description || "";
+        document.getElementById("taskPriorityInput").value = taskCard.dataset.priority || "";
+        document.getElementById("taskWeightInput").value = taskCard.dataset.weight || "";
+        document.getElementById("taskWeightNumber").textContent = taskCard.dataset.weight || "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = taskCard.dataset.status === "overdue" ? "todo" : (taskCard.dataset.status || "todo");
+        updateStatusColour(statusInput);
+
+        const taskDeadline = taskCard.dataset.deadline || "";
+        if (taskDeadline) {
+            const parts = taskDeadline.split("-");
+            calendarSelectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            calendarViewYear = calendarSelectedDate.getFullYear();
+            calendarViewMonth = calendarSelectedDate.getMonth();
+            document.getElementById("deadlineLabel").textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " " +
+                calendarSelectedDate.getDate() + ", " +
+                calendarSelectedDate.getFullYear();
+        } else {
+            calendarSelectedDate = null;
+            document.getElementById("deadlineLabel").textContent = "Deadline";
+        }
+
+        document.getElementById("taskSaveButton").textContent = "Save Changes";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
+
+    }
+
+
+    function clearTaskForm() {
+
+        document.getElementById("taskNameInput").value = "";
+        document.getElementById("taskDescriptionInput").value = "";
+        document.getElementById("taskPriorityInput").value = "";
+        document.getElementById("taskWeightInput").value = "";
+        document.getElementById("taskWeightNumber").textContent = "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = "";
+        updateStatusColour(statusInput);
+
+        calendarSelectedDate = null;
+        document.getElementById("deadlineLabel").textContent = "Deadline";
+        document.getElementById("deadlineCalendar").style.display = "none";
+        resetTags();
+
+    }
 
 
     function updateTaskWeight(weight) {
@@ -1913,294 +1963,110 @@ function createProject() {
     // ==================== SAVE TASK ====================
 
 
-    function saveTask() {
-
-
-        // task name
-        const taskNameInput =
-            document.getElementById(
-                "taskNameInput"
-            );
-
-
-        const taskName =
-            taskNameInput.value.trim();
-
-
-
-        // priority
-        const taskPriorityInput =
-            document.getElementById(
-                "taskPriorityInput"
-            );
-
-
-        const taskPriority =
-            taskPriorityInput.value;
-
-
-
-        // weight
-        const taskWeightInput =
-            document.getElementById(
-                "taskWeightInput"
-            );
-
-
-        const taskWeight =
-            taskWeightInput.value;
-
-        //status
-        const taskStatusInput = document.getElementById(
-            "taskStatusInput"
-        );
-
-        const taskStatus =
-            checkTaskStatus(taskStatusInput.value, calendarSelectedDate);
-
-
-        // task needs a name
-        if (taskName === "") {
-
-            return;
-
-        }
-
-
-
-        // ==================== CREATE TASK CARD ====================
-
-
-        const taskCard =
-            document.createElement("section");
-
-
-        taskCard.className = "task-card";
-        taskCard.dataset.status = taskStatus || "todo";
-        taskCard.draggable = true;
-        taskCard.ondragstart = startTaskDrag;
-        taskCard.ondragend = endTaskDrag;
-
-
-        // ==================== STATUS UPDATE ====================
-
-         // grey status circle
-        const statusCircle =
-            document.createElement("span");
-
-
-        statusCircle.className =
-            "task-status-circle";
-
-
-        if(taskStatus !== "todo")
-        {
-            if (taskStatus === "inReview") {
-               statusCircle.style.backgroundColor = "#5200A3";
-            }
-            else if (taskStatus === "ongoing") {
-                statusCircle.style.backgroundColor = "#FBB13C";
-            }
-            else if (taskStatus === "complete") {
-                statusCircle.style.backgroundColor = "#00B800";
-                taskCard.style.backgroundColor = "#E0E0E0"
-                taskCard.style.opacity = 0.5;
-            }
-            else if (taskStatus === "overdue") {
-                statusCircle.style.backgroundColor = "#D62839";
-            }
-        }
-
-
-        // task name
-        const taskNameText =
-            document.createElement("span");
-
-
-        taskNameText.className =
-            "task-card-name";
-
-
-        taskNameText.textContent =
-            taskName;
-
-
-
-        // right side information
-        const taskInfo =
-            document.createElement("section");
-
-
-        taskInfo.className =
-            "task-card-info";
-
-
-
-        // ==================== PRIORITY ====================
-
-
-        if (taskPriority !== "") {
-
-
-            const priorityText =
-                document.createElement("span");
-
-
-            priorityText.className =
-                "task-priority";
-
-
-            if (taskPriority === "high") {
-
-                priorityText.textContent =
-                    "⌃";
-
-            }
-
-
-            if (taskPriority === "medium") {
-
-                priorityText.textContent =
-                    "-";
-
-            }
-
-
-            if (taskPriority === "low") {
-
-                priorityText.textContent =
-                    "⌄";
-
-            }
-
-
-            taskInfo.appendChild(
-                priorityText
-            );
-
-        }
-
-
-
-        // ==================== WEIGHT ====================
-
-
-        if (taskWeight !== "") {
-
-
-            const weightText =
-                document.createElement("span");
-
-
-            weightText.className =
-                "task-card-weight";
-
-
-            weightText.textContent =
-                taskWeight;
-
-
-            taskInfo.appendChild(
-                weightText
-            );
-
-        }
-
-        // ==================== BUILD TASK CARD ====================
-
-
-        taskCard.appendChild(
-            statusCircle
-        );
-
-
-        taskCard.appendChild(
-            taskNameText
-        );
-
-
-        taskCard.appendChild(
-            taskInfo
-        );
-
-
-
-        // add task to backlog
-        document
-            .getElementById(
-                "backlogTaskArea"
-            )
-            .appendChild(
-                taskCard
-            );
-
-
-
-        // ==================== CLEAR FORM ====================
-
-
-        taskNameInput.value =
-            "";
-
-
-        taskPriorityInput.value =
-            "";
-
-
-        taskWeightInput.value =
-            "";
-
-        taskStatusInput.value =
-            "";
-        updateStatusColour(taskStatusInput);
-
-
-        document
-            .getElementById(
-                "taskWeightNumber"
-            )
-            .textContent = "";
-
-
-        const description =
-            document.getElementById(
-                "taskDescriptionInput"
-            );
-
-
-        if (description) {
-
-            description.value =
-                "";
-
-        }
-
-
-        // clear selected deadline
-        calendarSelectedDate = null;
-
-        document
-            .getElementById("deadlineLabel")
-            .textContent = "Deadline";
-
-        document
-            .getElementById("deadlineCalendar")
-            .style.display = "none";
-
-        // refresh the project progress bar
-        updateProjectProgress();
-
-        // clear the tags created for this task
-        resetTags();
-
-
-
-        // return to project overview
-        closeTaskForm();
-
+    function updateTaskCardStatus(taskCard, statusCircle, taskStatus) {
+        taskCard.style.backgroundColor = "#D9D9D9";
+        taskCard.style.opacity = "1";
+        statusCircle.style.backgroundColor = "#8A8A8A";
+
+        if (taskStatus === "inReview") statusCircle.style.backgroundColor = "#5200A3";
+        else if (taskStatus === "ongoing") statusCircle.style.backgroundColor = "#FBB13C";
+        else if (taskStatus === "complete") {
+            statusCircle.style.backgroundColor = "#00B800";
+            taskCard.style.backgroundColor = "#E0E0E0";
+            taskCard.style.opacity = "0.5";
+        } else if (taskStatus === "overdue") statusCircle.style.backgroundColor = "#D62839";
     }
 
+    function addTaskPriority(taskInfo, taskPriority) {
+        if (!taskPriority) return;
+        const priorityText = document.createElement("span");
+        priorityText.className = "task-priority";
+        priorityText.textContent = taskPriority === "high" ? "⌃" : taskPriority === "medium" ? "-" : "⌄";
+        taskInfo.appendChild(priorityText);
+    }
 
+    function addTaskWeight(taskInfo, taskWeight) {
+        if (!taskWeight) return;
+        const weightText = document.createElement("span");
+        weightText.className = "task-card-weight";
+        weightText.textContent = taskWeight;
+        taskInfo.appendChild(weightText);
+    }
+
+    function saveTask() {
+        const taskName = document.getElementById("taskNameInput").value.trim();
+        const taskDescription = document.getElementById("taskDescriptionInput").value.trim();
+        const taskPriority = document.getElementById("taskPriorityInput").value;
+        const taskWeight = document.getElementById("taskWeightInput").value;
+        const taskStatusInput = document.getElementById("taskStatusInput");
+        let taskStatus = taskStatusInput.value || "todo";
+        taskStatus = checkTaskStatus(taskStatus, calendarSelectedDate);
+
+        if (!taskName) { alert("Please enter a task name."); return; }
+
+        let taskDeadline = "";
+        if (calendarSelectedDate) {
+            const year = calendarSelectedDate.getFullYear();
+            const month = String(calendarSelectedDate.getMonth() + 1).padStart(2, "0");
+            const day = String(calendarSelectedDate.getDate()).padStart(2, "0");
+            taskDeadline = year + "-" + month + "-" + day;
+        }
+
+        if (editingTaskCard) {
+            editingTaskCard.dataset.name = taskName;
+            editingTaskCard.dataset.description = taskDescription;
+            editingTaskCard.dataset.priority = taskPriority;
+            editingTaskCard.dataset.weight = taskWeight;
+            editingTaskCard.dataset.status = taskStatus;
+            editingTaskCard.dataset.deadline = taskDeadline;
+
+            editingTaskCard.querySelector(".task-card-name").textContent = taskName;
+            updateTaskCardStatus(editingTaskCard, editingTaskCard.querySelector(".task-status-circle"), taskStatus);
+            const taskInfo = editingTaskCard.querySelector(".task-card-info");
+            taskInfo.innerHTML = "";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+            editingTaskCard = null;
+        } else {
+            const taskCard = document.createElement("section");
+            taskCard.className = "task-card";
+            taskCard.dataset.name = taskName;
+            taskCard.dataset.description = taskDescription;
+            taskCard.dataset.priority = taskPriority;
+            taskCard.dataset.weight = taskWeight;
+            taskCard.dataset.status = taskStatus;
+            taskCard.dataset.deadline = taskDeadline;
+            taskCard.draggable = true;
+            taskCard.ondragstart = startTaskDrag;
+            taskCard.ondragend = endTaskDrag;
+            taskCard.onclick = function () {
+                if (draggedTask === null) openTaskDetails(this);
+            };
+
+            const statusCircle = document.createElement("span");
+            statusCircle.className = "task-status-circle";
+            updateTaskCardStatus(taskCard, statusCircle, taskStatus);
+
+            const taskNameText = document.createElement("span");
+            taskNameText.className = "task-card-name";
+            taskNameText.textContent = taskName;
+
+            const taskInfo = document.createElement("section");
+            taskInfo.className = "task-card-info";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+
+            taskCard.appendChild(statusCircle);
+            taskCard.appendChild(taskNameText);
+            taskCard.appendChild(taskInfo);
+            document.getElementById("backlogTaskArea").appendChild(taskCard);
+        }
+
+        clearTaskForm();
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        updateProjectProgress();
+        closeTaskForm();
+    }
 
 
     // ==================== CUSTOM TAGS ====================
