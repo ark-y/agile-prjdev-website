@@ -10,13 +10,12 @@ CREATE TABLE public.user (
   user_phone character varying NOT NULL UNIQUE,
   user_created_at timestamp without time zone NOT NULL DEFAULT now(),
   role_id integer NOT NULL,
-  user_password text NOT NULL,
   CONSTRAINT user_pkey PRIMARY KEY (user_id),
   CONSTRAINT user_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.role(role_id)
 );
 
 CREATE TABLE public.task_member (
-  task_id numeric NOT NULL DEFAULT '100'::numeric,
+  task_id integer NOT NULL,
   user_id uuid NOT NULL DEFAULT gen_random_uuid(),
   task_mem_assigned_at timestamp without time zone NOT NULL DEFAULT now(),
   CONSTRAINT task_member_pkey PRIMARY KEY (task_id, user_id),
@@ -24,7 +23,7 @@ CREATE TABLE public.task_member (
 );
 
 CREATE TABLE public.task_tag (
-  task_id numeric NOT NULL,
+  task_id integer NOT NULL,
   tag_id numeric NOT NULL,
   CONSTRAINT task_tag_pkey PRIMARY KEY (task_id, tag_id)
 );
@@ -34,8 +33,8 @@ CREATE TABLE public.backlog (
   task_id integer NOT NULL,
   project_id uuid NOT NULL,
   CONSTRAINT backlog_pkey PRIMARY KEY (backlog_id, project_id),
-  CONSTRAINT backlog_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id),
-  CONSTRAINT backlog_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id)
+  CONSTRAINT backlog_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE,
+  CONSTRAINT backlog_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.project (
@@ -53,7 +52,7 @@ CREATE TABLE public.project_member (
   user_id uuid NOT NULL DEFAULT gen_random_uuid(),
   project_member_joined_at timestamp without time zone NOT NULL DEFAULT now(),
   CONSTRAINT project_member_pkey PRIMARY KEY (project_id, user_id),
-  CONSTRAINT project_member_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id),
+  CONSTRAINT project_member_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id) ON DELETE CASCADE,
   CONSTRAINT project_member_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user(user_id)
 );
 
@@ -67,7 +66,7 @@ CREATE TABLE public.notification (
   task_id integer,
   CONSTRAINT notification_pkey PRIMARY KEY (notif_id),
   CONSTRAINT notification_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user(user_id),
-  CONSTRAINT notification_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id)
+  CONSTRAINT notification_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.sprint (
@@ -95,7 +94,8 @@ CREATE TABLE public.tag (
   tag_name text NOT NULL DEFAULT 'new tag '::text,
   tag_colour text,
   tag_desc text NOT NULL,
-  CONSTRAINT tag_pkey PRIMARY KEY (tag_id, project_id)
+  CONSTRAINT tag_pkey PRIMARY KEY (tag_id, project_id),
+  CONSTRAINT tag_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.task (
@@ -107,6 +107,7 @@ CREATE TABLE public.task (
   task_priority text NOT NULL,
   task_weight numeric NOT NULL,
   task_deadline timestamp without time zone,
+  task_status_id integer,
   task_created_by uuid NOT NULL,
   task_created_at timestamp without time zone NOT NULL DEFAULT now(),
   subtask_id integer UNIQUE,
@@ -114,7 +115,7 @@ CREATE TABLE public.task (
   CONSTRAINT task_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id),
   CONSTRAINT task_sprint_id_fkey FOREIGN KEY (sprint_id) REFERENCES public.sprint(sprint_id),
   CONSTRAINT task_task_created_by_fkey FOREIGN KEY (task_created_by) REFERENCES public.user(user_id),
-  CONSTRAINT task_subtask_id_fkey FOREIGN KEY (subtask_id) REFERENCES public.task(task_id)
+  CONSTRAINT task_subtask_id_fkey FOREIGN KEY (subtask_id) REFERENCES public.task(task_id) ON DELETE SET NULL
 );
 
 CREATE TABLE public.role (
@@ -130,7 +131,7 @@ CREATE TABLE public.comment (
   task_comm_message text NOT NULL,
   task_comm_created_at timestamp without time zone NOT NULL DEFAULT now(),
   CONSTRAINT comment_pkey PRIMARY KEY (task_id, user_id),
-  CONSTRAINT task_comment_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id),
+  CONSTRAINT task_comment_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE,
   CONSTRAINT task_comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user(user_id)
 );
 
@@ -138,6 +139,18 @@ CREATE TABLE public.project_status (
   project_id uuid NOT NULL,
   status_id integer NOT NULL,
   CONSTRAINT project_status_pkey PRIMARY KEY (project_id, status_id),
-  CONSTRAINT project_status_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id),
+  CONSTRAINT project_status_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id) ON DELETE CASCADE,
   CONSTRAINT project_status_status_id_fkey FOREIGN KEY (status_id) REFERENCES public.status(status_id)
   );
+
+ALTER TABLE public.task
+ADD CONSTRAINT task_task_status_id_fkey
+FOREIGN KEY (task_status_id) REFERENCES public.status(status_id);
+
+ALTER TABLE public.task_member
+ADD CONSTRAINT task_member_task_id_fkey
+FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE;
+
+ALTER TABLE public.task_tag
+ADD CONSTRAINT task_tag_task_id_fkey
+FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE;
