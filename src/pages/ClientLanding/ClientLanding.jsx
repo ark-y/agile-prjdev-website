@@ -1,76 +1,90 @@
-import { useEffect, useRef } from "react";
 import "./ClientLanding.css";
 
-function ClientLanding(){
-    const donutRef = useRef(null);
+function ClientLanding({
+    project,
+    projects = [],
+    tasks = [],
+    sprints = [],
+    onProjectChange,
+    onSignOut
+}) {
+    const completedCount = tasks.filter((task) =>
+        ["done", "complete", "completed"].includes(
+            task.task_status?.status_name?.toLowerCase()
+        )
+    ).length;
+    const progress = tasks.length
+        ? Math.round((completedCount / tasks.length) * 100)
+        : 0;
 
-    useEffect(() => {
-        //The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js/""
-        const script = document.createElement("script");
-        script.src = "https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js";
-        script.async = true;
-
-        script.onload = () => {
-        const donut = new window.ProgressBar.Circle(donutRef.current, {
-            color: "#6FD361",
-            trailColor: "#18273A",
-            strokeWidth: 15,
-            trailWidth: 15,
-            fill: null,
-            duration: 1200,
-            easing: "easeOut",
-            svgStyle: {
-            display: "block",
-            width: "100%",
-            height: "100%",
-            },
-        });
-        donut.animate(0.67); // 67%
-        };
-
-        document.body.appendChild(script);
-
-        return () => {
-        document.body.removeChild(script);
-        };
-    }, []);
-
-    return(
+    return (
         <main className="client-page">
-            {/*Header*/}
-            <header class="client-dashboard-header">
-                <h1>PROJECT 1</h1>
-                <span class="percentage" id="header-percentage">67%</span>
+            <header className="client-dashboard-header">
+                <h1>{project?.project_name || "Client dashboard"}</h1>
+                {projects.length > 1 && (
+                    <select
+                        aria-label="Choose project"
+                        value={project?.project_id || ""}
+                        onChange={(event) => onProjectChange(
+                            projects.find((item) => item.project_id === event.target.value)
+                        )}
+                    >
+                        {projects.map((item) => (
+                            <option key={item.project_id} value={item.project_id}>
+                                {item.project_name}
+                            </option>
+                        ))}
+                    </select>
+                )}
+                <span className="percentage">{progress}%</span>
+                <button type="button" onClick={onSignOut}>Sign out</button>
             </header>
-            {/*Contents of dashboard*/}
-            <section class="dashboard-content">
 
-                {/*Progress donut*/}
-                <section class="progress-section" aria-label="Overall progress">
-                    <figure class="progress-donut-container">
-                        <span class="progress-donut" id="progress-donut"></span>
-                    </figure>
+            {!project ? (
+                <p className="client-empty-state">
+                    {projects.length ? "Loading your project..." : "No projects have been shared with you yet."}
+                </p>
+            ) : (
+                <section className="dashboard-content">
+                    <section className="progress-section" aria-label="Overall progress">
+                        <figure
+                            className="progress-donut-container"
+                            aria-label={`${progress}% complete`}
+                        >
+                            <span className="progress-donut">{progress}%</span>
+                        </figure>
+                    </section>
+
+                    <section className="right-panel">
+                        <article className="current-tasks">
+                            <h2>Project tasks</h2>
+                            {tasks.length ? (
+                                <ul className="current-tasks-list">
+                                    {tasks.map((task) => (
+                                        <li className="task-item" key={task.task_id}>
+                                            <span>{task.task_name}</span>
+                                            <span>
+                                                {task.task_status?.status_name || "Not started"}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No tasks have been added yet.</p>
+                            )}
+                        </article>
+
+                        {sprints.map((sprint) => (
+                            <article className="client-sprint-box" key={sprint.sprint_id}>
+                                <h3>{sprint.sprint_name}</h3>
+                                <span>
+                                    {tasks.filter((task) => task.sprint_id === sprint.sprint_id).length} tasks
+                                </span>
+                            </article>
+                        ))}
+                    </section>
                 </section>
-
-                {/*current tasks panel*/}
-                <section class="right-panel">
-                    <article class="current-tasks">
-                        <h2>Current Tasks</h2>
-                        <ul class="current-tasks-list">
-                            <li class="task-item">Task 1</li>
-                            <li class="task-item">Task 2</li>
-                            <li class="task-item">Long task 3</li>
-                            <li class="task-item">Tasks all around</li>
-                        </ul>
-                    </article>
-
-                    {/*Sprint Box*/}
-                    <article class="sprint-box">
-                        <h3>Sprint 4</h3>
-                        <span class="percentage">67%</span>
-                    </article>
-                </section>
-            </section>
+            )}
         </main>
     );
 }
