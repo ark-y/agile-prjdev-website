@@ -1,5 +1,14 @@
 # CL_Thursday5pm_Team7
 
+## Supabase setup
+
+1. Copy `.env.example` to `.env.local` and set the Supabase project URL and publishable key.
+2. Run the SQL files in `database/migrations/` in filename order in the Supabase SQL Editor. The role policies expect `role_name_enum` values `Admin`, `Developer`, and `Client`.
+3. Create each account in Supabase Auth and create a matching `public.user` row whose `user_id` is the Auth user UUID.
+4. Add developers and clients to projects from the project overview as an Admin.
+
+The React entry point is in place, but Vite and its development/build scripts are intentionally not configured yet.
+
 FIT2101 S2 2026 group repository.
 
 ## Team
