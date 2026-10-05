@@ -13,21 +13,43 @@ const MONTH_NAMES = [
 
 function CreateTaskForm({
     onSaveTask,
-    onCancel
+    onCancel,
+    initialTask = null,
+    sprints = [],
+    statuses = [],
+    members = []
 }) {
 
     // task name
     const [taskName, setTaskName] =
-        useState("");
+        useState(initialTask?.task_name || "");
 
 
     // task weight
     const [taskWeight, setTaskWeight] =
-        useState("");
+        useState(initialTask?.task_weight?.toString() || "");
 
 
     // task priority
     const [taskPriority, setTaskPriority] =
+        useState(initialTask?.task_priority || "");
+
+    const [taskDescription, setTaskDescription] =
+        useState(initialTask?.task_desc || "");
+
+    const [sprintId, setSprintId] =
+        useState(initialTask?.sprint_id?.toString() || "");
+
+    const [statusId, setStatusId] =
+        useState(initialTask?.task_status_id?.toString() || "");
+
+    const [assigneeIds, setAssigneeIds] =
+        useState(initialTask?.assigneeIds || []);
+
+    const [isSaving, setIsSaving] =
+        useState(false);
+
+    const [formError, setFormError] =
         useState("");
 
 
@@ -38,7 +60,9 @@ function CreateTaskForm({
 
     // the date the user has picked, if any
     const [selectedDate, setSelectedDate] =
-        useState(null);
+        useState(initialTask?.task_deadline
+            ? new Date(`${initialTask.task_deadline.slice(0, 10)}T00:00:00`)
+            : null);
 
 
     // month/year currently shown in the calendar
@@ -128,32 +152,38 @@ function CreateTaskForm({
 
 
     // saving task
-    function handleSaveTask() {
-
-        // task needs a name
-        if (taskName.trim() === "") {
-
+    async function handleSaveTask() {
+        if (!taskName.trim() || !sprintId || !taskWeight || !taskPriority) {
+            setFormError("Enter a name and choose a sprint, priority, and weight.");
             return;
-
         }
 
+        setIsSaving(true);
+        setFormError("");
 
-        if (onSaveTask) {
-
-            onSaveTask({
-
+        try {
+            await onSaveTask?.({
+                taskId: initialTask?.task_id,
                 name: taskName.trim(),
-
+                description: taskDescription,
                 weight: taskWeight,
-
                 priority: taskPriority,
-
                 deadline: selectedDate
-
+                    ? [
+                        selectedDate.getFullYear(),
+                        String(selectedDate.getMonth() + 1).padStart(2, "0"),
+                        String(selectedDate.getDate()).padStart(2, "0")
+                    ].join("-")
+                    : null,
+                sprintId: Number(sprintId),
+                statusId: statusId ? Number(statusId) : null,
+                assigneeIds
             });
-
+        } catch (error) {
+            setFormError(error.message || "Could not save the task.");
+        } finally {
+            setIsSaving(false);
         }
-
     }
 
 
@@ -318,6 +348,37 @@ function CreateTaskForm({
 
                 </section>
 
+                <section className="task-form-row">
+                    <label>
+                        Sprint
+                        <select
+                            value={sprintId}
+                            onChange={(event) => setSprintId(event.target.value)}
+                        >
+                            <option value="">Choose a sprint</option>
+                            {sprints.map((sprint) => (
+                                <option key={sprint.sprint_id} value={sprint.sprint_id}>
+                                    {sprint.sprint_name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <label>
+                        Status
+                        <select
+                            value={statusId}
+                            onChange={(event) => setStatusId(event.target.value)}
+                        >
+                            <option value="">No status</option>
+                            {statuses.map((status) => (
+                                <option key={status.status_id} value={status.status_id}>
+                                    {status.status_name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </section>
 
 
                 {/* second row */}
@@ -444,20 +505,26 @@ function CreateTaskForm({
 
 
                     {/* assignee */}
-                    <button
-                        type="button"
-                        className="fake-dropdown assignee-dropdown"
-                    >
-
-                        <span>
-                            Assignee
-                        </span>
-
-                        <span className="dropdown-arrow">
-                            ▼
-                        </span>
-
-                    </button>
+                    <label className="assignee-dropdown">
+                        Assignees
+                        <select
+                            multiple
+                            value={assigneeIds}
+                            onChange={(event) =>
+                                setAssigneeIds(
+                                    Array.from(event.target.selectedOptions, (option) => option.value)
+                                )
+                            }
+                            aria-label="Task assignees"
+                            size={Math.min(Math.max(members.length, 2), 5)}
+                        >
+                            {members.map((member) => (
+                                <option key={member.user_id} value={member.user_id}>
+                                    {member.user_pref_name || `${member.user_first_name} ${member.user_last_name}`}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
 
 
                 </section>
@@ -468,11 +535,19 @@ function CreateTaskForm({
                 <textarea
                     className="task-description"
                     placeholder="Description"
+                    value={taskDescription}
+                    onChange={(event) => setTaskDescription(event.target.value)}
                 ></textarea>
 
 
 
                 {/* buttons */}
+                {formError && (
+                    <p className="task-form-error" role="alert">
+                        {formError}
+                    </p>
+                )}
+
                 <section className="task-form-buttons">
 
 
@@ -480,6 +555,7 @@ function CreateTaskForm({
                         type="button"
                         className="task-cancel-button"
                         onClick={onCancel}
+                        disabled={isSaving}
                     >
                         Cancel
                     </button>
@@ -489,8 +565,9 @@ function CreateTaskForm({
                         type="button"
                         className="task-save-button"
                         onClick={handleSaveTask}
+                        disabled={isSaving}
                     >
-                        Save Task
+                        {isSaving ? "Saving..." : "Save Task"}
                     </button>
 
 

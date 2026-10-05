@@ -267,6 +267,34 @@
     width: 190px;
 }
 
+.assignee-dropdown select,
+.task-form-row label select {
+    display: block;
+    width: 100%;
+    min-height: 42px;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border: 1px solid #18273a;
+    border-radius: 8px;
+    background: #d9d9d9;
+    color: #18273a;
+    font: inherit;
+}
+
+.task-form-error,
+.app-error {
+    color: #8c2020;
+    font-weight: 700;
+}
+
+.app-error {
+    position: relative;
+    z-index: 30;
+    margin: 0;
+    padding: 12px 20px;
+    background: #fff0f0;
+}
+
 .task-description {
     width: 100%;
     height: 390px;
