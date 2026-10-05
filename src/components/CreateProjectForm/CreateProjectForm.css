@@ -102,3 +102,7 @@
     background-color: #18273A;
     color: #D9D9D9;
 }
+.popup-background-open {
+    display: flex;
+    z-index: 20;
+}
