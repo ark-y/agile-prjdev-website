@@ -303,6 +303,10 @@
                 <section
                         class="task-area"
                         id="backlogTaskArea"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
                 >
                 </section>
 
@@ -391,8 +395,14 @@
                 </section>
 
 
-                <!-- tasks later -->
-                <section class="task-area">
+                <!-- tasks -->
+                <section
+                        class="task-area"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
+                >
 
                 </section>
 
@@ -1616,6 +1626,22 @@ function createProject() {
             "task-area";
 
 
+        taskArea.ondragover =
+            allowTaskDrop;
+
+
+        taskArea.ondragenter =
+            taskDragEnter;
+
+
+        taskArea.ondragleave =
+            taskDragLeave;
+
+
+        taskArea.ondrop =
+            dropTask;
+
+
 
         // build sprint
         newSprint.appendChild(
@@ -1646,6 +1672,155 @@ function createProject() {
 
     }
 
+
+
+    // ==================== TASK DRAG AND DROP ====================
+
+
+    // keeps track of the task currently being dragged
+    let draggedTask = null;
+
+
+    // when the user starts dragging a task
+    function startTaskDrag(event) {
+
+        draggedTask =
+            event.currentTarget;
+
+
+        draggedTask.classList.add(
+            "task-card-dragging"
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+
+
+    // allows the task area to receive a drop
+    function allowTaskDrop(event) {
+
+        event.preventDefault();
+
+
+        event.dataTransfer.dropEffect =
+            "move";
+
+    }
+
+
+    // highlights the sprint/backlog when a task is dragged over it
+    function taskDragEnter(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.add(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // removes the highlight when leaving
+    function taskDragLeave(event) {
+
+        const taskArea =
+            event.currentTarget;
+
+
+        if (
+            event.relatedTarget &&
+            taskArea.contains(
+                event.relatedTarget
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // moves the task when it is dropped
+    function dropTask(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+
+        if (!draggedTask) {
+
+            return;
+
+        }
+
+
+        taskArea.appendChild(
+            draggedTask
+        );
+
+
+        draggedTask.classList.remove(
+            "task-card-dragging"
+        );
+
+
+        draggedTask = null;
+
+        updateProjectProgress();
+
+    }
+
+
+    // cleanup when dragging finishes
+    function endTaskDrag() {
+
+        if (draggedTask) {
+
+            draggedTask.classList.remove(
+                "task-card-dragging"
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                ".task-area-drag-over"
+            )
+            .forEach(function (area) {
+
+                area.classList.remove(
+                    "task-area-drag-over"
+                );
+
+            });
+
+
+        draggedTask = null;
+
+    }
 
 
     // ==================== TASK FORM ====================
@@ -1802,6 +1977,9 @@ function createProject() {
 
         taskCard.className = "task-card";
         taskCard.dataset.status = taskStatus || "todo";
+        taskCard.draggable = true;
+        taskCard.ondragstart = startTaskDrag;
+        taskCard.ondragend = endTaskDrag;
 
 
         // ==================== STATUS UPDATE ====================

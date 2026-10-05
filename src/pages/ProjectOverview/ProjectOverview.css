@@ -4,9 +4,7 @@
 /* whole page */
 .project-page {
     min-height: 100vh;
-
     background-color: #D9D9D9;
-
     font-family: "Fustat", sans-serif;
 }
 
@@ -14,7 +12,6 @@
 /* header */
 .project-header {
     height: 150px;
-
     background-color: #18273A;
 
     display: flex;
@@ -22,7 +19,6 @@
     justify-content: space-between;
 
     padding: 0 55px;
-
     box-sizing: border-box;
 }
 
@@ -43,7 +39,6 @@
 .project-header-icons {
     display: flex;
     align-items: center;
-
     gap: 30px;
 }
 
@@ -52,7 +47,6 @@
 .project-header-icons button {
     border: none;
     background: none;
-
     cursor: pointer;
 }
 
@@ -60,9 +54,7 @@
 /* message */
 .message-button {
     color: #D9D9D9;
-
     font-size: 38px;
-
     opacity: 0.5;
 }
 
@@ -70,7 +62,6 @@
 /* settings */
 .settings-button {
     color: #D9D9D9;
-
     font-size: 52px;
 }
 
@@ -202,7 +193,6 @@
 /* editing sprint name */
 .sprint-name-input:focus {
     background-color: rgba(217, 217, 217, 0.08);
-
     border-radius: 12px;
 }
 
@@ -239,7 +229,6 @@
 /* delete hover */
 .delete-sprint-button:hover {
     background-color: rgba(217, 217, 217, 0.12);
-
     opacity: 1;
 }
 
@@ -321,6 +310,19 @@
 /* tasks area */
 .task-area {
     margin-top: 25px;
+
+    /*
+     * Important for drag and drop:
+     * an empty sprint still needs an area
+     * that the user can drop a task into.
+     */
+    min-height: 330px;
+
+    border-radius: 15px;
+
+    transition:
+        background-color 0.15s ease,
+        outline 0.15s ease;
 }
 
 
@@ -344,6 +346,45 @@
     gap: 10px;
 
     margin-bottom: 10px;
+
+    /*
+     * Shows the user that the task can
+     * be clicked and dragged.
+     */
+    cursor: grab;
+
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+}
+
+
+/* mouse is holding a task */
+.task-card:active {
+    cursor: grabbing;
+}
+
+
+/* task currently being dragged */
+.task-card-dragging {
+    opacity: 0.45;
+
+    transform: scale(0.98);
+}
+
+
+/*
+ * Applied to a task area while a task
+ * is hovering over that sprint/backlog.
+ */
+.task-area-drag-over {
+    background-color: rgba(217, 217, 217, 0.08);
+
+    outline:
+        2px dashed
+        rgba(217, 217, 217, 0.6);
+
+    outline-offset: 4px;
 }
 
 
