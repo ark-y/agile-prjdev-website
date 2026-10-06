@@ -379,7 +379,7 @@ ALTER TABLE public.tag ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.task_tag ENABLE ROW LEVEL SECURITY;
 
 REVOKE ALL ON public."user" FROM PUBLIC, anon, authenticated;
-ALTER TABLE public."user" DROP COLUMN user_password;
+ALTER TABLE public."user" DROP COLUMN IF EXISTS user_password;
 GRANT SELECT (
     user_id, user_first_name, user_last_name,
     user_pref_name, user_email, role_id

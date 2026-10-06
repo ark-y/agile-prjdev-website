@@ -1,5 +1,8 @@
 ALTER TABLE public.task
-ADD COLUMN task_status_id integer;
+ADD COLUMN IF NOT EXISTS task_status_id integer;
+
+ALTER TABLE public.task
+DROP CONSTRAINT IF EXISTS task_task_status_id_fkey;
 
 ALTER TABLE public.task
 ADD CONSTRAINT task_task_status_id_fkey
@@ -12,6 +15,9 @@ ALTER COLUMN task_id DROP DEFAULT;
 ALTER TABLE public.task_member
 ALTER COLUMN task_id TYPE integer
 USING task_id::integer;
+
+ALTER TABLE public.task_member
+DROP CONSTRAINT IF EXISTS task_member_task_id_fkey;
 
 ALTER TABLE public.task_member
 ADD CONSTRAINT task_member_task_id_fkey
@@ -95,11 +101,17 @@ ALTER COLUMN task_id TYPE integer
 USING task_id::integer;
 
 ALTER TABLE public.task_tag
+DROP CONSTRAINT IF EXISTS task_tag_task_id_fkey;
+
+ALTER TABLE public.task_tag
 ADD CONSTRAINT task_tag_task_id_fkey
 FOREIGN KEY (task_id)
 REFERENCES public.task(task_id)
 ON DELETE CASCADE
 NOT VALID;
+
+ALTER TABLE public.tag
+DROP CONSTRAINT IF EXISTS tag_project_id_fkey;
 
 ALTER TABLE public.tag
 ADD CONSTRAINT tag_project_id_fkey
