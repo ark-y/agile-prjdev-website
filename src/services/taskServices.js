@@ -175,6 +175,15 @@ export async function addTaskComment(taskId, message) {
     return data;
 }
 
+export async function deleteTaskComment(commentId) {
+    const { error } = await supabase
+        .from("comment")
+        .delete()
+        .eq("comment_id", commentId);
+
+    throwIfError(error);
+}
+
 export async function fetchProjectMembers(projectId) {
     const { data, error } = await supabase
         .from("project_member")

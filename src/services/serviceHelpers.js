@@ -57,9 +57,16 @@ export async function fetchCurrentProfile() {
         throw error;
     }
 
+    const roleName = data.role?.role_name;
+    if (!["Admin", "Developer", "Client"].includes(roleName)) {
+        throw new Error(
+            "Your public.user profile is missing a valid Admin, Developer, or Client role."
+        );
+    }
+
     return {
         ...data,
-        role_name: data.role?.role_name
+        role_name: roleName
     };
 }
 
