@@ -329,6 +329,16 @@
                 </button>
 
 
+                <!-- total weight of the tasks in this sprint, worked out by js -->
+                <span
+                        class="sprint-weight-marker"
+                        title="Sprint weight"
+                        aria-label="Sprint weight"
+                >
+                    0
+                </span>
+
+
                 <!-- sprint name -->
                 <input
                         class="sprint-name-input"
@@ -1621,6 +1631,30 @@ function createProject() {
 
 
 
+        // sprint weight marker, the number gets worked out by updateSprintWeights
+        const weightMarker =
+            document.createElement("span");
+
+
+        weightMarker.className =
+            "sprint-weight-marker";
+
+
+        weightMarker.title =
+            "Sprint weight";
+
+
+        weightMarker.setAttribute(
+            "aria-label",
+            "Sprint weight"
+        );
+
+
+        weightMarker.textContent =
+            "0";
+
+
+
         // task area
         const taskArea =
             document.createElement("section");
@@ -1654,6 +1688,11 @@ function createProject() {
 
 
         newSprint.appendChild(
+            weightMarker
+        );
+
+
+        newSprint.appendChild(
             sprintName
         );
 
@@ -1675,6 +1714,67 @@ function createProject() {
             .appendChild(newSprint);
 
     }
+
+
+
+    // ==================== SPRINT WEIGHT ====================
+
+
+    // adds up the weight of every task card inside one sprint
+    function updateSprintWeight(sprintBox) {
+
+        const weightMarker =
+            sprintBox.querySelector(".sprint-weight-marker");
+
+
+        // the backlog doesn't have a weight
+        if (!weightMarker) {
+
+            return;
+
+        }
+
+
+        let totalWeight = 0;
+
+        sprintBox
+            .querySelectorAll(".task-card-weight")
+            .forEach(function (taskWeight) {
+
+                totalWeight += Number(taskWeight.textContent);
+
+            });
+
+
+        // only write it if it changed, writing triggers the observer below again
+        if (weightMarker.textContent !== String(totalWeight)) {
+
+            weightMarker.textContent = totalWeight;
+
+        }
+
+    }
+
+
+    function updateAllSprintWeights() {
+
+        document
+            .querySelectorAll(".sprint-box")
+            .forEach(updateSprintWeight);
+
+    }
+
+
+    // Recalculate whenever anything is added, removed or moved in the sprint area.
+    // That way it stays right however tasks end up in a sprint (drag and drop included)
+    // without the code that moves them needing to call anything.
+    new MutationObserver(updateAllSprintWeights)
+        .observe(
+            document.getElementById("sprintArea"),
+            { childList: true, subtree: true }
+        );
+
+    updateAllSprintWeights();
 
 
 
