@@ -117,16 +117,13 @@ export async function modifySprint(sprintId, changes) {
 }
 
 export async function deleteSprint(sprintId) {
-    const { data, error } = await supabase
-        .from("sprint")
-        .delete()
-        .eq("sprint_id", sprintId)
-        .select("sprint_id")
-        .single();
+    const { data, error } = await supabase.rpc("delete_sprint_to_backlog", {
+        p_sprint_id: sprintId
+    });
 
     if (error) {
         throw error;
     }
 
-    return data.sprint_id;
+    return data;
 }

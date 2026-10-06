@@ -7,6 +7,16 @@ function throwIfError(error) {
     }
 }
 
+export async function updateAssignedTaskStatus(taskId, statusId) {
+    const { data, error } = await supabase.rpc("update_assigned_task_status", {
+        p_task_id: taskId,
+        p_status_id: statusId
+    });
+
+    throwIfError(error);
+    return data;
+}
+
 export async function fetchAllTasks({ projectId, sprintId } = {}) {
     let query = supabase
         .from("task")
@@ -60,6 +70,111 @@ export async function fetchTaskStatuses(projectId) {
     return data;
 }
 
+export async function fetchProjectTags(projectId) {
+    const { data, error } = await supabase
+        .from("tag")
+        .select("tag_id, project_id, tag_name, tag_colour, tag_desc")
+        .eq("project_id", projectId)
+        .order("tag_name");
+
+    throwIfError(error);
+    return data;
+}
+
+export async function fetchTaskTagIds(taskIds = []) {
+    if (!taskIds.length) {
+        return {};
+    }
+
+    const { data, error } = await supabase
+        .from("task_tag")
+        .select("task_id, tag_id")
+        .in("task_id", taskIds);
+
+    throwIfError(error);
+    return data.reduce((tagsByTask, row) => {
+        const taskId = String(row.task_id);
+        tagsByTask[taskId] ??= [];
+        tagsByTask[taskId].push(String(row.tag_id));
+        return tagsByTask;
+    }, {});
+}
+
+export async function addProjectTag({ projectId, name, colour = "#3F9B76", description = "" }) {
+    if (!name?.trim()) {
+        throw new Error("A tag name is required.");
+    }
+
+    const { data, error } = await supabase
+        .from("tag")
+        .insert({
+            project_id: projectId,
+            tag_name: name.trim(),
+            tag_colour: colour,
+            tag_desc: description.trim() || name.trim()
+        })
+        .select()
+        .single();
+
+    throwIfError(error);
+    return data;
+}
+
+export async function deleteProjectTag(projectId, tagId) {
+    const { data, error } = await supabase.rpc("delete_project_tag", {
+        p_project_id: projectId,
+        p_tag_id: Number(tagId)
+    });
+
+    throwIfError(error);
+    return data;
+}
+
+export async function setTaskTags(taskId, tagIds = []) {
+    const { error } = await supabase.rpc("set_task_tags", {
+        p_task_id: taskId,
+        p_tag_ids: [...new Set(tagIds.map(Number).filter(Number.isInteger))]
+    });
+
+    throwIfError(error);
+}
+
+export async function fetchTaskComments(taskId) {
+    const { data, error } = await supabase
+        .from("comment")
+        .select("comment_id, task_id, user_id, task_comm_message, task_comm_created_at, user:user!task_comment_user_id_fkey(user_first_name, user_last_name, user_pref_name)")
+        .eq("task_id", taskId)
+        .order("task_comm_created_at");
+
+    throwIfError(error);
+    return data;
+}
+
+export async function addTaskComment(taskId, message) {
+    if (!message?.trim()) {
+        throw new Error("A comment cannot be empty.");
+    }
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    throwIfError(authError);
+    if (!user) {
+        throw new Error("Sign in before commenting.");
+    }
+
+    const { data, error } = await supabase
+        .from("comment")
+        .insert({
+            task_id: taskId,
+            user_id: user.id,
+            task_comm_message: message.trim()
+        })
+        .select("comment_id, task_id, user_id, task_comm_message, task_comm_created_at, user:user!task_comment_user_id_fkey(user_first_name, user_last_name, user_pref_name)")
+        .single();
+
+    throwIfError(error);
+    return data;
+}
+
 export async function fetchProjectMembers(projectId) {
     const { data, error } = await supabase
         .from("project_member")
@@ -95,8 +210,8 @@ export async function addTask({
         throw new Error("A task name is required.");
     }
 
-    if (!projectId || !sprintId) {
-        throw new Error("A project and sprint are required to create a task.");
+    if (!projectId) {
+        throw new Error("A project is required to create a task.");
     }
 
     if (!["high", "medium", "low"].includes(priority)) {
@@ -150,16 +265,6 @@ export async function addTask({
 export async function modifyTask(taskId, changes) {
     if (!taskId) {
         throw new Error("A task ID is required to update a task.");
-    }
-
-    async function updateAssignedTaskStatus(taskId, statusId) {
-        const { data, error } = await supabase.rpc("update_assigned_task_status", {
-            p_task_id: taskId,
-            p_status_id: statusId
-        });
-
-        throwIfError(error);
-        return data;
     }
 
     if (Object.hasOwn(changes, "name") && !changes.name?.trim()) {
