@@ -409,7 +409,7 @@ function App() {
                 {error && <p className="app-error" role="alert">{error}</p>}
                 <p role="status">
                     {error
-                        ? "Your account needs a matching public.user profile and role before you can use the app."
+                        ? "Could not load your account profile or project data. Check the error above and confirm the Supabase migrations and profile are set up."
                         : "Loading your profile..."}
                 </p>
                 {error && (
