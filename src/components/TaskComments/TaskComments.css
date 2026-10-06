@@ -40,6 +40,20 @@
     overflow-wrap: anywhere;
 }
 
+.task-comments-content li button {
+    margin-left: 10px;
+    border: 0;
+    background: transparent;
+    color: #9f2828;
+    font: inherit;
+    cursor: pointer;
+}
+
+.task-comments-content li button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
 .task-comments-content time {
     color: #5c6670;
     font-size: 12px;

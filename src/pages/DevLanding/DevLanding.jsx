@@ -6,6 +6,8 @@ function DevLanding({
     canCreateProject = false,
     onOpenProject,
     onAddProject,
+    onDeleteProject,
+    onOpenSettings,
     onSignOut
 }) {
 
@@ -23,6 +25,13 @@ function DevLanding({
                     <button type="button" className="icon-button" onClick={onSignOut}>
                         Sign out
                     </button>
+                    <button
+                        type="button"
+                        className="icon-button"
+                        onClick={onOpenSettings}
+                    >
+                        Settings
+                    </button>
 
                 </section>
 
@@ -34,11 +43,21 @@ function DevLanding({
 
                 {/* button for making a new project */}
                 {projects.map((project) => (
-                    <ProjectCard
-                        key={project.project_id}
-                        projectName={project.project_name}
-                        onOpen={() => onOpenProject(project)}
-                    />
+                    <section className="project-tile" key={project.project_id}>
+                        <ProjectCard
+                            projectName={project.project_name}
+                            onOpen={() => onOpenProject(project)}
+                        />
+                        {canCreateProject && (
+                            <button
+                                type="button"
+                                className="delete-project-tile"
+                                onClick={() => onDeleteProject(project)}
+                            >
+                                Delete
+                            </button>
+                        )}
+                    </section>
                 ))}
 
                 {canCreateProject && (

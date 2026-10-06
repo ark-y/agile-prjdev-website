@@ -31,9 +31,8 @@ function ProjectOverview({
     statuses = [],
     projectTags = [],
     tagsByTask = {},
-    members = [],
-    memberCandidates = [],
     roleName,
+    currentUserId,
     onAddTask,
     onEditTask,
     onDeleteTask,
@@ -43,15 +42,11 @@ function ProjectOverview({
     onChangeTaskStatus,
     onAddTag,
     onDeleteTag,
-    onAddMember,
-    onRemoveMember,
     onBack,
-    onRenameProject,
-    onDeleteProject
+    onOpenSettings
 }) {
     const [editingSprintId, setEditingSprintId] = useState(null);
     const [sprintNameDrafts, setSprintNameDrafts] = useState({});
-    const [selectedCandidateId, setSelectedCandidateId] = useState("");
     const [newTagName, setNewTagName] = useState("");
     const [tagError, setTagError] = useState("");
     const isAdmin = roleName === "Admin";
@@ -137,7 +132,11 @@ function ProjectOverview({
                         </button>
                     ) : null}
                 </section>
-                <TaskComments taskId={task.task_id} />
+                <TaskComments
+                    taskId={task.task_id}
+                    currentUserId={currentUserId}
+                    roleName={roleName}
+                />
             </section>
         );
     }
@@ -147,14 +146,14 @@ function ProjectOverview({
             <header className="project-header">
                 <h1>{project?.project_name || "Project"}</h1>
                 <section className="project-header-icons">
-                    {isAdmin && <button
+                    <button
                         type="button"
                         className="settings-button"
-                        aria-label="Rename project"
-                        onClick={onRenameProject}
+                        aria-label="Open settings"
+                        onClick={onOpenSettings}
                     >
                         ⚙
-                    </button>}
+                    </button>
                 </section>
             </header>
 
@@ -290,63 +289,7 @@ function ProjectOverview({
                             <span className="sidebar-plus">+</span>
                             <span>SPRINT</span>
                         </button>
-                        <button
-                            type="button"
-                            className="sidebar-button delete-project-button"
-                            onClick={onDeleteProject}
-                        >
-                            DELETE PROJECT
-                        </button>
                     </section>}
-
-                    {isAdmin && (
-                        <section className="project-members">
-                            <h2>PROJECT MEMBERS</h2>
-                            {members.map((member) => (
-                                <p key={member.user_id}>
-                                    {member.user_pref_name
-                                        || `${member.user_first_name} ${member.user_last_name}`}
-                                    {member.user_id !== project.project_created_by && (
-                                        <button
-                                            type="button"
-                                            onClick={() => onRemoveMember(member)}
-                                            aria-label={`Remove ${member.user_first_name} from project`}
-                                        >
-                                            ×
-                                        </button>
-                                    )}
-                                </p>
-                            ))}
-                            {memberCandidates.length > 0 && (
-                                <section>
-                                    <select
-                                        aria-label="Choose a developer or client to add"
-                                        value={selectedCandidateId}
-                                        onChange={(event) => setSelectedCandidateId(event.target.value)}
-                                    >
-                                        <option value="">Add a member...</option>
-                                        {memberCandidates.map((member) => (
-                                            <option key={member.user_id} value={member.user_id}>
-                                                {member.user_pref_name
-                                                    || `${member.user_first_name} ${member.user_last_name}`}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        type="button"
-                                        disabled={!selectedCandidateId}
-                                        onClick={async () => {
-                                            if (await onAddMember(selectedCandidateId)) {
-                                                setSelectedCandidateId("");
-                                            }
-                                        }}
-                                    >
-                                        Add member
-                                    </button>
-                                </section>
-                            )}
-                        </section>
-                    )}
 
                     {isAdmin && (
                         <section className="project-tags">

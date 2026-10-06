@@ -3,6 +3,7 @@ import { supabase } from "./supabaseClient";
 import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm";
 import CreateTaskForm from "./components/CreateTaskForm/CreateTaskForm";
 import NotificationCenter from "./components/NotificationCenter/NotificationCenter";
+import ProjectSettings from "./components/ProjectSettings/ProjectSettings";
 import DevLanding from "./pages/DevLanding/DevLanding";
 import ClientLanding from "./pages/ClientLanding/ClientLanding";
 import Login from "./pages/Login/Login";
@@ -49,6 +50,7 @@ function App() {
     const [taskToEdit, setTaskToEdit] = useState(null);
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [showProjectForm, setShowProjectForm] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -101,19 +103,29 @@ function App() {
         setProject(null);
         setShowTaskForm(false);
         setShowProjectForm(false);
+        setShowSettings(false);
         setIsLoading(true);
         setError("");
 
-        Promise.all([fetchCurrentProfile(), fetchAllProjects()])
-            .then(([loadedProfile, loadedProjects]) => {
-                if (isActive) {
-                    setProfile(loadedProfile);
-                    setProjects(loadedProjects);
+        Promise.allSettled([fetchCurrentProfile(), fetchAllProjects()])
+            .then(([profileResult, projectsResult]) => {
+                if (!isActive) {
+                    return;
                 }
-            })
-            .catch((loadError) => {
-                if (isActive) {
-                    setError(loadError.message || "Could not load projects.");
+
+                if (profileResult.status === "fulfilled") {
+                    setProfile(profileResult.value);
+                } else {
+                    setError(profileResult.reason.message || "Could not load your account profile.");
+                }
+
+                if (projectsResult.status === "fulfilled") {
+                    setProjects(projectsResult.value);
+                } else {
+                    setError((currentError) => [
+                        currentError,
+                        projectsResult.reason.message || "Could not load projects."
+                    ].filter(Boolean).join(" "));
                 }
             })
             .finally(() => {
@@ -344,9 +356,9 @@ function App() {
         }
     }
 
-    async function handleRenameProject() {
-        const name = window.prompt("Project name", project.project_name);
-        if (name === null || !name.trim()) {
+    async function handleRenameProject(name) {
+        if (!name?.trim()) {
+            setError("A project name is required.");
             return;
         }
 
@@ -358,20 +370,23 @@ function App() {
             ));
         } catch (updateError) {
             setError(updateError.message || "Could not rename the project.");
+            throw updateError;
         }
     }
 
-    async function handleDeleteProject() {
-        if (!window.confirm(`Delete "${project.project_name}"?`)) {
+    async function handleDeleteProject(projectToDelete) {
+        if (!window.confirm(`Delete "${projectToDelete.project_name}"?`)) {
             return;
         }
 
         try {
-            await deleteProject(project.project_id);
+            await deleteProject(projectToDelete.project_id);
             setProjects((currentProjects) => currentProjects.filter(
-                (item) => item.project_id !== project.project_id
+                (item) => item.project_id !== projectToDelete.project_id
             ));
-            setProject(null);
+            if (project?.project_id === projectToDelete.project_id) {
+                setProject(null);
+            }
         } catch (deleteError) {
             setError(deleteError.message || "Could not delete the project.");
         }
@@ -384,6 +399,7 @@ function App() {
                 throw signOutError;
             }
             setProject(null);
+            setShowSettings(false);
             setError("");
         } catch (signOutError) {
             setError(signOutError.message || "Could not sign out.");
@@ -409,7 +425,7 @@ function App() {
                 {error && <p className="app-error" role="alert">{error}</p>}
                 <p role="status">
                     {error
-                        ? "Could not load your account profile or project data. Check the error above and confirm the Supabase migrations and profile are set up."
+                        ? "Could not load your account profile. Check the error above and confirm your Supabase profile has a valid role."
                         : "Loading your profile..."}
                 </p>
                 {error && (
@@ -433,6 +449,9 @@ function App() {
                     projects={projects}
                     tasks={tasks}
                     sprints={sprints}
+                    currentUserId={session.user.id}
+                    roleName={profile.role_name}
+                    onOpenSettings={() => setShowSettings(true)}
                     onProjectChange={(selectedProject) => {
                         if (selectedProject) {
                             handleOpenProject(selectedProject);
@@ -467,9 +486,8 @@ function App() {
                         statuses={statuses}
                         projectTags={projectTags}
                         tagsByTask={tagsByTask}
-                        members={members}
-                        memberCandidates={memberCandidates}
                         roleName={profile.role_name}
+                        currentUserId={session.user.id}
                         onAddTask={() => {
                             setTaskToEdit(null);
                             setShowTaskForm(true);
@@ -482,11 +500,8 @@ function App() {
                         onChangeTaskStatus={handleChangeTaskStatus}
                         onAddTag={handleAddTag}
                         onDeleteTag={handleDeleteTag}
-                        onAddMember={handleAddMember}
-                        onRemoveMember={handleRemoveMember}
                         onBack={() => setProject(null)}
-                        onRenameProject={profile.role_name === "Admin" ? handleRenameProject : undefined}
-                        onDeleteProject={profile.role_name === "Admin" ? handleDeleteProject : undefined}
+                        onOpenSettings={() => setShowSettings(true)}
                     />
                 )
             ) : (
@@ -498,6 +513,8 @@ function App() {
                         onAddProject={profile.role_name === "Admin"
                             ? () => setShowProjectForm(true)
                             : undefined}
+                        onDeleteProject={handleDeleteProject}
+                        onOpenSettings={() => setShowSettings(true)}
                         onSignOut={handleSignOut}
                     />
                     {showProjectForm && profile.role_name === "Admin" && (
@@ -507,6 +524,19 @@ function App() {
                         />
                     )}
                 </>
+            )}
+            {showSettings && (
+                <ProjectSettings
+                    project={project}
+                    roleName={profile.role_name}
+                    members={members}
+                    memberCandidates={memberCandidates}
+                    onClose={() => setShowSettings(false)}
+                    onAddMember={handleAddMember}
+                    onRemoveMember={handleRemoveMember}
+                    onRenameProject={handleRenameProject}
+                    onMemberCreated={() => loadProject(project.project_id)}
+                />
             )}
         </>
     );

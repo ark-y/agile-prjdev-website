@@ -6,7 +6,10 @@ function ClientLanding({
     projects = [],
     tasks = [],
     sprints = [],
+    currentUserId,
+    roleName,
     onProjectChange,
+    onOpenSettings,
     onSignOut
 }) {
     const completedCount = tasks.filter((task) =>
@@ -38,6 +41,7 @@ function ClientLanding({
                     </select>
                 )}
                 <span className="percentage">{progress}%</span>
+                <button type="button" onClick={onOpenSettings}>Settings</button>
                 <button type="button" onClick={onSignOut}>Sign out</button>
             </header>
 
@@ -67,7 +71,11 @@ function ClientLanding({
                                             <span>
                                                 {task.task_status?.status_name || "Not started"}
                                             </span>
-                                            <TaskComments taskId={task.task_id} />
+                                            <TaskComments
+                                                taskId={task.task_id}
+                                                currentUserId={currentUserId}
+                                                roleName={roleName}
+                                            />
                                         </li>
                                     ))}
                                 </ul>
