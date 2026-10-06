@@ -410,6 +410,10 @@
     -webkit-appearance: none;
 }
 
+.assignee-dropdown {
+    width: 190px;
+}
+
 .assignee-dropdown select,
 .task-form-row label select {
     display: block;
@@ -422,6 +426,32 @@
     background: #d9d9d9;
     color: #18273a;
     font: inherit;
+}
+
+.assignee-wrapper {
+    position: relative;
+    width: 190px;
+}
+
+.assignee-select {
+    width: 100%;
+    height: 55px;
+    border: none;
+    outline: none;
+    border-radius: 28px;
+    background-color: #18273A;
+    color: #D9D9D9;
+    padding: 0 50px 0 25px;
+    font-family: "Fustat", sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.assignee-select option {
+    background-color: #18273A;
+    color: #D9D9D9;
 }
 
 .task-form-error,

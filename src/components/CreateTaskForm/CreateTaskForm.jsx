@@ -454,39 +454,6 @@ function CreateTaskForm({
 
                 </section>
 
-                <section className="task-form-row">
-                    <label>
-                        Sprint
-                        <select
-                            value={sprintId}
-                            onChange={(event) => setSprintId(event.target.value)}
-                        >
-                            <option value="">Backlog (no sprint)</option>
-                            {sprints.map((sprint) => (
-                                <option key={sprint.sprint_id} value={sprint.sprint_id}>
-                                    {sprint.sprint_name}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-
-                    <label>
-                        Status
-                        <select
-                            value={statusId}
-                            onChange={(event) => setStatusId(event.target.value)}
-                        >
-                            <option value="">No status</option>
-                            {statuses.map((status) => (
-                                <option key={status.status_id} value={status.status_id}>
-                                    {status.status_name}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                </section>
-
-
                 {/* second row */}
                 <section className="task-form-row">
 
@@ -616,34 +583,72 @@ function CreateTaskForm({
 
                         )}
 
+                        </section>
 
-                    </section>
+                        <section class="task-details">
+                            {/* task status */}
+                            <section className="task-status-wrapper">
+                                <select
+                                    className="task-status-select"
+                                    value={statusId}
+                                    onChange={(event) => setStatusId(event.target.value)}
+                                >
+                                    <option value="">Task Status</option>
 
+                                    {statuses.map((status) => (
+                                        <option
+                                            key={status.status_id}
+                                            value={status.status_id}
+                                        >
+                                            {status.status_name}
+                                        </option>
+                                    ))}
+                                </select>
 
+                                <span className="select-arrow">
+                                    ▼
+                                </span>
+                            </section>
 
-                    {/* assignee */}
-                    <label className="assignee-dropdown">
-                        Assignees
-                        <select
-                            multiple
-                            value={assigneeIds}
-                            onChange={(event) =>
-                                setAssigneeIds(
-                                    Array.from(event.target.selectedOptions, (option) => option.value)
-                                )
-                            }
-                            aria-label="Task assignees"
-                            size={Math.min(Math.max(members.length, 2), 5)}
-                        >
-                            {members.map((member) => (
-                                <option key={member.user_id} value={member.user_id}>
-                                    {member.user_pref_name || `${member.user_first_name} ${member.user_last_name}`}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
+                            {/* assignee */}
+                            <section className="assignee-wrapper">
+                                <select
+                                    className="assignee-select"
+                                    multiple
+                                    value={assigneeIds}
+                                    onChange={(event) =>
+                                        setAssigneeIds(
+                                            Array.from(
+                                                event.target.selectedOptions,
+                                                (option) => option.value
+                                            )
+                                        )
+                                    }
+                                    aria-label="Task assignees"
+                                    size={1}
+                                >
+                                    <option value="" disabled>
+                                        Assignee
+                                    </option>
 
+                                    {members.map((member) => (
+                                        <option
+                                            key={member.user_id}
+                                            value={member.user_id}
+                                        >
+                                            {member.user_pref_name ||
+                                                `${member.user_first_name} ${member.user_last_name}`}
+                                        </option>
+                                    ))}
+                                </select>
 
+                                <span className="select-arrow">
+                                    ▼
+                                </span>
+                            </section>
+
+                        </section>
+                    
                 </section>
 
 
