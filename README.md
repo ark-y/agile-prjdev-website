@@ -2,12 +2,25 @@
 
 ## Supabase setup
 
-1. Copy `.env.example` to `.env.local` and set the Supabase project URL and publishable key.
-2. Run the SQL files in `database/migrations/` in filename order in the Supabase SQL Editor. The role policies expect `role_name_enum` values `Admin`, `Developer`, and `Client`.
-3. Create each account in Supabase Auth and create a matching `public.user` row whose `user_id` is the Auth user UUID.
-4. Add developers and clients to projects from the project overview as an Admin.
+1. Copy `.env.example` to `.env.local` and set the Supabase project URL and publishable key. These are browser-safe values; never use a service-role key in the app.
+2. Install dependencies and start the Vite app with `npm install` and `npm run dev`.
+3. Ensure the Supabase project has the baseline tables, enum types, and constraints represented by `database/schema.sql`. That file documents the schema; it is not a standalone migration.
+4. On a fresh database with the baseline schema in place, run the files in `database/migrations/` once, in filename order. If the two `20261005` migrations have already been applied, run only `20261006_app_workflows.sql`. The access migration expects the role values `Admin`, `Developer`, and `Client`; the app migration discovers the values in `default_status_enum` and seeds matching status rows.
+5. Create test accounts in Supabase Authentication. The latest migration creates profiles for new accounts and backfills existing Auth users as Developers. Promote trusted test accounts to Admin in the SQL Editor when required:
 
-The React entry point is in place, but Vite and its development/build scripts are intentionally not configured yet.
+   ```sql
+   UPDATE public."user"
+   SET role_id = (SELECT role_id FROM public.role WHERE role_name::text = 'Admin' ORDER BY role_id LIMIT 1)
+   WHERE user_id = '<auth-user-uuid>';
+   ```
+
+Use `Client` instead of `Admin` in the role lookup to prepare a client test account.
+
+6. As an Admin, create projects and add developer/client accounts from the project overview. Developers only see projects they belong to and tasks assigned to them.
+
+For Netlify, set the same `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables in the site's environment settings. The deploy configuration runs `npm run build` and publishes `dist`.
+
+Notification, comment, tag, and backlog features require the migrations to be applied before they can be used.
 
 FIT2101 S2 2026 group repository.
 
