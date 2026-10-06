@@ -7,7 +7,7 @@ CREATE TABLE public.user (
   user_last_name text NOT NULL,
   user_pref_name text,
   user_email text NOT NULL UNIQUE,
-  user_phone character varying NOT NULL UNIQUE,
+  user_phone character varying UNIQUE,
   user_created_at timestamp without time zone NOT NULL DEFAULT now(),
   role_id integer NOT NULL,
   CONSTRAINT user_pkey PRIMARY KEY (user_id),
@@ -36,6 +36,9 @@ CREATE TABLE public.backlog (
   CONSTRAINT backlog_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE,
   CONSTRAINT backlog_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(project_id) ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX backlog_project_task_key
+ON public.backlog (project_id, task_id);
 
 CREATE TABLE public.project (
   project_id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -101,7 +104,7 @@ CREATE TABLE public.tag (
 CREATE TABLE public.task (
   task_id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
   project_id uuid NOT NULL,
-  sprint_id integer NOT NULL,
+  sprint_id integer,
   task_name text NOT NULL,
   task_desc text,
   task_priority text NOT NULL,
@@ -126,11 +129,12 @@ CREATE TABLE public.role (
 );
 
 CREATE TABLE public.comment (
-  task_id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
+  comment_id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
+  task_id integer NOT NULL,
   user_id uuid NOT NULL,
   task_comm_message text NOT NULL,
   task_comm_created_at timestamp without time zone NOT NULL DEFAULT now(),
-  CONSTRAINT comment_pkey PRIMARY KEY (task_id, user_id),
+  CONSTRAINT comment_pkey PRIMARY KEY (comment_id),
   CONSTRAINT task_comment_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.task(task_id) ON DELETE CASCADE,
   CONSTRAINT task_comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user(user_id)
 );
