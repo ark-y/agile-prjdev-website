@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import "./ClientLanding.css";
 import TaskComments from "../../components/TaskComments/TaskComments";
 
@@ -20,6 +21,39 @@ function ClientLanding({
     const progress = tasks.length
         ? Math.round((completedCount / tasks.length) * 100)
         : 0;
+
+    const donutRef = useRef(null);
+
+    useEffect(() => {
+        //The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js/""
+        const script = document.createElement("script");
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js";
+        script.async = true;
+
+        script.onload = () => {
+        const donut = new window.ProgressBar.Circle(donutRef.current, {
+            color: "#6FD361",
+            trailColor: "#18273A",
+            strokeWidth: 15,
+            trailWidth: 15,
+            fill: null,
+            duration: 1200,
+            easing: "easeOut",
+            svgStyle: {
+            display: "block",
+            width: "100%",
+            height: "100%",
+            },
+        });
+        donut.animate(progress/100); // 67%
+        };
+
+        document.body.appendChild(script);
+
+        return () => {
+        document.body.removeChild(script);
+        };
+    }, []);
 
     return (
         <main className="client-page">
@@ -57,7 +91,11 @@ function ClientLanding({
                             className="progress-donut-container"
                             aria-label={`${progress}% complete`}
                         >
-                            <span className="progress-donut">{progress}%</span>
+                            <div className="progress-donut" id="progress-donut" ref={donutRef}>
+                                <span className="progress-text">
+                                    {progress}%
+                                </span>
+                            </div>
                         </figure>
                     </section>
 
