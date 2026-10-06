@@ -40,9 +40,10 @@ function ClientLanding({
                         ))}
                     </select>
                 )}
-                <span className="percentage">{progress}%</span>
-                <button type="button" onClick={onOpenSettings}>Settings</button>
-                <button type="button" onClick={onSignOut}>Sign out</button>
+                <div className="header-buttons">
+                    <button type="button" onClick={onOpenSettings}>Settings</button>
+                    <button type="button" onClick={onSignOut}>Sign out</button>
+                </div>
             </header>
 
             {!project ? (
