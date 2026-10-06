@@ -13,21 +13,63 @@ const MONTH_NAMES = [
 
 function CreateTaskForm({
     onSaveTask,
-    onCancel
+    onCancel,
+    initialTask = null,
+    sprints = [],
+    statuses = [],
+    projectTags = [],
+    onAddTag,
+    members = []
 }) {
 
     // task name
     const [taskName, setTaskName] =
-        useState("");
+        useState(initialTask?.task_name || "");
 
 
     // task weight
     const [taskWeight, setTaskWeight] =
-        useState("");
+        useState(initialTask?.task_weight?.toString() || "");
 
 
     // task priority
     const [taskPriority, setTaskPriority] =
+        useState(initialTask?.task_priority || "");
+
+    const [taskDescription, setTaskDescription] =
+        useState(initialTask?.task_desc || "");
+
+    const [sprintId, setSprintId] =
+        useState(initialTask?.sprint_id?.toString() || "");
+
+    const [statusId, setStatusId] =
+        useState(initialTask?.task_status_id?.toString() || "");
+
+    const [assigneeIds, setAssigneeIds] =
+        useState(initialTask?.assigneeIds || []);
+
+    const [tagIds, setTagIds] =
+        useState(initialTask?.tagIds || []);
+
+    const [isTagPopupOpen, setIsTagPopupOpen] =
+        useState(false);
+
+    const [newTagName, setNewTagName] =
+        useState("");
+
+    const [newTagColour, setNewTagColour] =
+        useState("#3F9B76");
+
+    const [tagError, setTagError] =
+        useState("");
+
+    const [isAddingTag, setIsAddingTag] =
+        useState(false);
+
+    const [isSaving, setIsSaving] =
+        useState(false);
+
+    const [formError, setFormError] =
         useState("");
 
 
@@ -38,7 +80,9 @@ function CreateTaskForm({
 
     // the date the user has picked, if any
     const [selectedDate, setSelectedDate] =
-        useState(null);
+        useState(initialTask?.task_deadline
+            ? new Date(`${initialTask.task_deadline.slice(0, 10)}T00:00:00`)
+            : null);
 
 
     // month/year currently shown in the calendar
@@ -127,33 +171,68 @@ function CreateTaskForm({
     }
 
 
-    // saving task
-    function handleSaveTask() {
-
-        // task needs a name
-        if (taskName.trim() === "") {
-
+    async function handleAddTag() {
+        if (!newTagName.trim()) {
+            setTagError("Enter a name for the tag.");
             return;
-
         }
 
+        setTagError("");
+        setIsAddingTag(true);
+        try {
+            const tag = await onAddTag?.(newTagName, newTagColour);
+            if (!tag?.tag_id) {
+                throw new Error("Could not create the tag.");
+            }
 
-        if (onSaveTask) {
+            const tagId = String(tag.tag_id);
+            setTagIds((current) => current.includes(tagId)
+                ? current
+                : [...current, tagId]
+            );
+            setNewTagName("");
+            setIsTagPopupOpen(false);
+        } catch (error) {
+            setTagError(error.message || "Could not create the tag.");
+        } finally {
+            setIsAddingTag(false);
+        }
+    }
 
-            onSaveTask({
+    // saving task
+    async function handleSaveTask() {
+        if (!taskName.trim() || !taskWeight || !taskPriority) {
+            setFormError("Enter a name and choose a priority and weight.");
+            return;
+        }
 
+        setIsSaving(true);
+        setFormError("");
+
+        try {
+            await onSaveTask?.({
+                taskId: initialTask?.task_id,
                 name: taskName.trim(),
-
+                description: taskDescription,
                 weight: taskWeight,
-
                 priority: taskPriority,
-
                 deadline: selectedDate
-
+                    ? [
+                        selectedDate.getFullYear(),
+                        String(selectedDate.getMonth() + 1).padStart(2, "0"),
+                        String(selectedDate.getDate()).padStart(2, "0")
+                    ].join("-")
+                    : null,
+                sprintId: sprintId ? Number(sprintId) : null,
+                statusId: statusId ? Number(statusId) : null,
+                assigneeIds,
+                tagIds
             });
-
+        } catch (error) {
+            setFormError(error.message || "Could not save the task.");
+        } finally {
+            setIsSaving(false);
         }
-
     }
 
 
@@ -199,34 +278,91 @@ function CreateTaskForm({
                 <section className="task-form-row">
 
 
-                    {/* tags */}
                     <section className="task-tags">
-
-
                         <button
                             type="button"
                             className="add-tag-button"
+                            aria-expanded={isTagPopupOpen}
+                            onClick={() => {
+                                setTagError("");
+                                setIsTagPopupOpen((open) => !open);
+                            }}
                         >
                             + tag
                         </button>
-
-
-                        <button
-                            type="button"
-                            className="tag-button tag-green"
-                        >
-                            Tag 1
-                        </button>
-
-
-                        <button
-                            type="button"
-                            className="tag-button tag-purple"
-                        >
-                            Long Tag 2
-                        </button>
-
-
+                        {projectTags.length ? projectTags.map((tag) => {
+                            const tagId = String(tag.tag_id);
+                            const isSelected = tagIds.includes(tagId);
+                            return (
+                                <button
+                                    key={tagId}
+                                    type="button"
+                                    className="tag-button"
+                                    aria-pressed={isSelected}
+                                    title={tag.tag_desc}
+                                    style={{
+                                        backgroundColor: tag.tag_colour || "#3F9B76",
+                                        opacity: isSelected ? 1 : 0.55
+                                    }}
+                                    onClick={() => setTagIds((current) => isSelected
+                                        ? current.filter((id) => id !== tagId)
+                                        : [...current, tagId]
+                                    )}
+                                >
+                                    {tag.tag_name}
+                                </button>
+                            );
+                        }) : <span>No project tags</span>}
+                        {isTagPopupOpen && (
+                            <section className="tag-popup">
+                                <label className="tag-popup-label" htmlFor="new-task-tag-name">
+                                    Tag name
+                                </label>
+                                <input
+                                    id="new-task-tag-name"
+                                    className="tag-name-input"
+                                    value={newTagName}
+                                    onChange={(event) => setNewTagName(event.target.value)}
+                                    maxLength={40}
+                                    autoFocus
+                                />
+                                <span className="tag-popup-label">Choose a colour</span>
+                                <section className="tag-colour-grid">
+                                    {[
+                                        "#3F9B76", "#963A91", "#3976B8", "#D18B2C", "#B94A48",
+                                        "#5B8C5A", "#5967A8", "#B45F91", "#4A8F9C", "#777777"
+                                    ].map((colour) => (
+                                        <button
+                                            key={colour}
+                                            type="button"
+                                            className={`tag-colour-swatch${newTagColour === colour ? " tag-colour-swatch-selected" : ""}`}
+                                            style={{ backgroundColor: colour }}
+                                            aria-label={`Choose ${colour}`}
+                                            aria-pressed={newTagColour === colour}
+                                            onClick={() => setNewTagColour(colour)}
+                                        />
+                                    ))}
+                                </section>
+                                {tagError && <p className="task-form-error" role="alert">{tagError}</p>}
+                                <section className="tag-popup-buttons">
+                                    <button
+                                        type="button"
+                                        className="tag-popup-cancel"
+                                        onClick={() => setIsTagPopupOpen(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="tag-popup-add"
+                                        onClick={handleAddTag}
+                                        disabled={!newTagName.trim() || isAddingTag}
+                                    >
+                                        {isAddingTag ? "Adding..." : "Add tag"}
+                                    </button>
+                                </section>
+                            </section>
+                        )}
                     </section>
 
 
@@ -318,6 +454,37 @@ function CreateTaskForm({
 
                 </section>
 
+                <section className="task-form-row">
+                    <label>
+                        Sprint
+                        <select
+                            value={sprintId}
+                            onChange={(event) => setSprintId(event.target.value)}
+                        >
+                            <option value="">Backlog (no sprint)</option>
+                            {sprints.map((sprint) => (
+                                <option key={sprint.sprint_id} value={sprint.sprint_id}>
+                                    {sprint.sprint_name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <label>
+                        Status
+                        <select
+                            value={statusId}
+                            onChange={(event) => setStatusId(event.target.value)}
+                        >
+                            <option value="">No status</option>
+                            {statuses.map((status) => (
+                                <option key={status.status_id} value={status.status_id}>
+                                    {status.status_name}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                </section>
 
 
                 {/* second row */}
@@ -433,6 +600,17 @@ function CreateTaskForm({
 
                                 </section>
 
+                                <button
+                                    type="button"
+                                    className="calendar-clear-button"
+                                    onClick={() => {
+                                        setSelectedDate(null);
+                                        setIsCalendarOpen(false);
+                                    }}
+                                >
+                                    Clear deadline
+                                </button>
+
 
                             </section>
 
@@ -444,20 +622,26 @@ function CreateTaskForm({
 
 
                     {/* assignee */}
-                    <button
-                        type="button"
-                        className="fake-dropdown assignee-dropdown"
-                    >
-
-                        <span>
-                            Assignee
-                        </span>
-
-                        <span className="dropdown-arrow">
-                            ▼
-                        </span>
-
-                    </button>
+                    <label className="assignee-dropdown">
+                        Assignees
+                        <select
+                            multiple
+                            value={assigneeIds}
+                            onChange={(event) =>
+                                setAssigneeIds(
+                                    Array.from(event.target.selectedOptions, (option) => option.value)
+                                )
+                            }
+                            aria-label="Task assignees"
+                            size={Math.min(Math.max(members.length, 2), 5)}
+                        >
+                            {members.map((member) => (
+                                <option key={member.user_id} value={member.user_id}>
+                                    {member.user_pref_name || `${member.user_first_name} ${member.user_last_name}`}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
 
 
                 </section>
@@ -468,11 +652,19 @@ function CreateTaskForm({
                 <textarea
                     className="task-description"
                     placeholder="Description"
+                    value={taskDescription}
+                    onChange={(event) => setTaskDescription(event.target.value)}
                 ></textarea>
 
 
 
                 {/* buttons */}
+                {formError && (
+                    <p className="task-form-error" role="alert">
+                        {formError}
+                    </p>
+                )}
+
                 <section className="task-form-buttons">
 
 
@@ -480,6 +672,7 @@ function CreateTaskForm({
                         type="button"
                         className="task-cancel-button"
                         onClick={onCancel}
+                        disabled={isSaving}
                     >
                         Cancel
                     </button>
@@ -489,8 +682,9 @@ function CreateTaskForm({
                         type="button"
                         className="task-save-button"
                         onClick={handleSaveTask}
+                        disabled={isSaving}
                     >
-                        Save Task
+                        {isSaving ? "Saving..." : "Save Task"}
                     </button>
 
 

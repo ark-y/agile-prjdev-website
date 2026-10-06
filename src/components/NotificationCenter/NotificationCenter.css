@@ -1,0 +1,99 @@
+.notification-center {
+    position: fixed;
+    top: 16px;
+    right: 18px;
+    z-index: 30;
+    font-family: "Fustat", sans-serif;
+}
+
+.notification-toggle {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #d9d9d9;
+    border-radius: 50%;
+    background: #18273a;
+    color: #fff;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    padding: 2px 4px;
+    border-radius: 10px;
+    background: #d55346;
+    color: white;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.notification-panel {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: min(360px, calc(100vw - 28px));
+    max-height: min(70vh, 560px);
+    overflow: auto;
+    padding: 16px;
+    border: 1px solid #c9ced4;
+    border-radius: 6px;
+    background: #fff;
+    color: #18273a;
+    box-shadow: 0 8px 24px rgb(15 27 39 / 20%);
+}
+
+.notification-panel header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #d9dfe5;
+}
+
+.notification-panel h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+
+.notification-panel header button,
+.notification-panel li button {
+    border: 0;
+    background: transparent;
+    color: #245f89;
+    cursor: pointer;
+}
+
+.notification-panel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.notification-panel li {
+    padding: 12px 4px;
+    border-bottom: 1px solid #e5e8eb;
+}
+
+.notification-panel li p {
+    margin: 0 0 6px;
+}
+
+.notification-panel li time {
+    display: block;
+    color: #5c6670;
+    font-size: 12px;
+}
+
+.notification-panel li button {
+    margin-top: 6px;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.notification-panel .is-unread {
+    border-left: 3px solid #3f9b76;
+    padding-left: 9px;
+}

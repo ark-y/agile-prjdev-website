@@ -146,3 +146,41 @@ body {
     font-weight: 700;
     letter-spacing: 5px;
 }
+
+.client-dashboard-header select,
+.client-dashboard-header button {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.client-dashboard-header button {
+    cursor: pointer;
+}
+
+.client-empty-state {
+    margin: 40px;
+    font-size: 24px;
+}
+
+.progress-donut {
+    display: grid;
+    place-items: center;
+    border: 16px solid #6fd361;
+    border-radius: 50%;
+    color: #18273a;
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.current-tasks-list .task-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.client-sprint-box > span {
+    color: #18273a;
+    font-size: 20px;
+}

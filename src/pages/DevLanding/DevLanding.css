@@ -100,6 +100,28 @@ body {
     gap: 80px 45px;
 }
 
+.project-tile {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+}
+
+.delete-project-tile {
+    justify-self: center;
+    border: 1px solid #18273a;
+    border-radius: 8px;
+    padding: 8px 18px;
+    background: transparent;
+    color: #18273a;
+    font: inherit;
+    cursor: pointer;
+}
+
+.delete-project-tile:hover {
+    background: #18273a;
+    color: #d9d9d9;
+}
+
 
 /* button for making a new project */
 .add-project {
@@ -123,6 +145,16 @@ body {
     opacity: 0.9;
 }
 
+.icon-button {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #d9d9d9;
+    color: #18273a;
+    cursor: pointer;
+    font: inherit;
+}
+
 /* popup box */
 .create-project-popup {
     width: 420px;
@@ -139,4 +171,3 @@ body {
 
     font-family: "Fustat", sans-serif;
 }
-
