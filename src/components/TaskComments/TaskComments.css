@@ -1,0 +1,64 @@
+.task-comments {
+    flex-basis: 100%;
+    min-width: 0;
+    color: #18273a;
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
+.task-comments-toggle {
+    border: 0;
+    padding: 4px 0;
+    background: transparent;
+    color: #245f89;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.task-comments-content {
+    margin-top: 8px;
+    padding: 10px;
+    border-left: 2px solid #9ba8b5;
+}
+
+.task-comments-content ul {
+    max-height: 180px;
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.task-comments-content li {
+    padding: 8px 0;
+    border-bottom: 1px solid #d9dfe5;
+}
+
+.task-comments-content li p {
+    margin: 3px 0;
+    overflow-wrap: anywhere;
+}
+
+.task-comments-content time {
+    color: #5c6670;
+    font-size: 12px;
+}
+
+.task-comments-content form {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.task-comments-content label {
+    display: grid;
+    flex: 1;
+    gap: 4px;
+}
+
+.task-comments-content textarea {
+    min-height: 58px;
+    resize: vertical;
+}

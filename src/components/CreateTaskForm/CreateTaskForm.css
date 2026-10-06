@@ -238,6 +238,17 @@
     gap: 4px;
 }
 
+.calendar-clear-button {
+    margin-top: 10px;
+    border: 0;
+    padding: 5px 0;
+    background: transparent;
+    color: #D9D9D9;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .calendar-day {
     aspect-ratio: 1 / 1;
     border: none;

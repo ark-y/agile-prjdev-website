@@ -1,4 +1,5 @@
 import "./ClientLanding.css";
+import TaskComments from "../../components/TaskComments/TaskComments";
 
 function ClientLanding({
     project,
@@ -66,6 +67,7 @@ function ClientLanding({
                                             <span>
                                                 {task.task_status?.status_name || "Not started"}
                                             </span>
+                                            <TaskComments taskId={task.task_id} />
                                         </li>
                                     ))}
                                 </ul>

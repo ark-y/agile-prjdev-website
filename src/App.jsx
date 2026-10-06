@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm";
 import CreateTaskForm from "./components/CreateTaskForm/CreateTaskForm";
+import NotificationCenter from "./components/NotificationCenter/NotificationCenter";
 import DevLanding from "./pages/DevLanding/DevLanding";
 import ClientLanding from "./pages/ClientLanding/ClientLanding";
 import Login from "./pages/Login/Login";
@@ -15,14 +16,19 @@ import {
     removeProjectMember
 } from "./services/serviceHelpers";
 import {
+    addProjectTag,
     addTask,
     deleteTask,
+    deleteProjectTag,
     fetchAllTasks,
     fetchProjectMembers,
+    fetchProjectTags,
     fetchTaskAssignees,
     fetchTaskStatuses,
+    fetchTaskTagIds,
     modifyTask,
     setTaskAssignees,
+    setTaskTags,
     updateAssignedTaskStatus
 } from "./services/taskServices";
 import "./styles/global.css";
@@ -36,6 +42,8 @@ function App() {
     const [sprints, setSprints] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [statuses, setStatuses] = useState([]);
+    const [projectTags, setProjectTags] = useState([]);
+    const [tagsByTask, setTagsByTask] = useState({});
     const [members, setMembers] = useState([]);
     const [memberCandidates, setMemberCandidates] = useState([]);
     const [taskToEdit, setTaskToEdit] = useState(null);
@@ -80,6 +88,11 @@ function App() {
             setProfile(null);
             setProjects([]);
             setProject(null);
+            setSprints([]);
+            setTasks([]);
+            setStatuses([]);
+            setProjectTags([]);
+            setTagsByTask({});
             return;
         }
 
@@ -115,7 +128,7 @@ function App() {
     }, [session?.user?.id]);
 
     const loadProject = useCallback(async (projectId) => {
-        const [loadedProject, loadedSprints, loadedTasks, loadedStatuses, loadedMembers] =
+        const [loadedProject, loadedSprints, loadedTasks, loadedStatuses, loadedMembers, loadedTags] =
             await Promise.all([
                 fetchProject(projectId),
                 fetchAllSprints(projectId),
@@ -123,8 +136,13 @@ function App() {
                 fetchTaskStatuses(projectId),
                 profile?.role_name === "Admin"
                     ? fetchProjectMembers(projectId)
-                    : Promise.resolve([])
+                    : Promise.resolve([]),
+                fetchProjectTags(projectId)
             ]);
+
+        const loadedTagsByTask = await fetchTaskTagIds(
+            loadedTasks.map((task) => task.task_id)
+        );
 
         const loadedCandidates = profile?.role_name === "Admin"
             ? await fetchProjectMemberCandidates(projectId)
@@ -133,6 +151,8 @@ function App() {
         setSprints(loadedSprints);
         setTasks(loadedTasks);
         setStatuses(loadedStatuses);
+        setProjectTags(loadedTags);
+        setTagsByTask(loadedTagsByTask);
         setMembers(loadedMembers);
         setMemberCandidates(loadedCandidates);
         setTaskToEdit(null);
@@ -213,9 +233,7 @@ function App() {
 
         try {
             await deleteSprint(sprint.sprint_id);
-            setSprints((currentSprints) => currentSprints.filter(
-                (item) => item.sprint_id !== sprint.sprint_id
-            ));
+            await loadProject(project.project_id);
         } catch (deleteError) {
             setError(deleteError.message || "Could not delete the sprint.");
         }
@@ -225,7 +243,11 @@ function App() {
         setError("");
         try {
             const assigneeIds = await fetchTaskAssignees(task.task_id);
-            setTaskToEdit({ ...task, assigneeIds });
+            setTaskToEdit({
+                ...task,
+                assigneeIds,
+                tagIds: tagsByTask[String(task.task_id)] || []
+            });
             setShowTaskForm(true);
         } catch (loadError) {
             setError(loadError.message || "Could not load task assignees.");
@@ -233,20 +255,37 @@ function App() {
     }
 
     async function handleSaveTask(values) {
-        const { taskId, assigneeIds, ...taskChanges } = values;
+        const { taskId, assigneeIds, tagIds, ...taskChanges } = values;
+        let savedTask;
 
         if (taskId) {
-            await modifyTask(taskId, taskChanges);
+            savedTask = await modifyTask(taskId, taskChanges);
             await setTaskAssignees(taskId, assigneeIds);
         } else {
-            await addTask({
+            savedTask = await addTask({
                 ...taskChanges,
                 projectId: project.project_id,
                 assigneeIds
             });
         }
 
+        await setTaskTags(savedTask.task_id, tagIds);
         await loadProject(project.project_id);
+    }
+
+    async function handleAddTag(name) {
+        const tag = await addProjectTag({ projectId: project.project_id, name });
+        setProjectTags((currentTags) => [...currentTags, tag]);
+        return true;
+    }
+
+    async function handleDeleteTag(tagId) {
+        try {
+            await deleteProjectTag(project.project_id, tagId);
+            await loadProject(project.project_id);
+        } catch (deleteError) {
+            setError(deleteError.message || "Could not delete the tag.");
+        }
     }
 
     async function handleChangeTaskStatus(taskId, statusId) {
@@ -384,6 +423,7 @@ function App() {
 
     return (
         <>
+            <NotificationCenter />
             {error && <p className="app-error" role="alert">{error}</p>}
             {isLoading && <p className="app-loading" role="status">Loading...</p>}
 
@@ -408,6 +448,7 @@ function App() {
                         initialTask={taskToEdit}
                         sprints={sprints}
                         statuses={statuses}
+                        projectTags={projectTags}
                         members={members.filter(
                             (member) => member.role?.role_name === "Developer"
                         )}
@@ -424,6 +465,8 @@ function App() {
                         tasks={tasks}
                         sprints={sprints}
                         statuses={statuses}
+                        projectTags={projectTags}
+                        tagsByTask={tagsByTask}
                         members={members}
                         memberCandidates={memberCandidates}
                         roleName={profile.role_name}
@@ -437,6 +480,8 @@ function App() {
                         onUpdateSprint={handleUpdateSprint}
                         onDeleteSprint={handleDeleteSprint}
                         onChangeTaskStatus={handleChangeTaskStatus}
+                        onAddTag={handleAddTag}
+                        onDeleteTag={handleDeleteTag}
                         onAddMember={handleAddMember}
                         onRemoveMember={handleRemoveMember}
                         onBack={() => setProject(null)}

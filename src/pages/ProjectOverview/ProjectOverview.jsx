@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TaskComments from "../../components/TaskComments/TaskComments";
 import "./ProjectOverview.css";
 
 function formatDate(date) {
@@ -28,6 +29,8 @@ function ProjectOverview({
     tasks = [],
     sprints = [],
     statuses = [],
+    projectTags = [],
+    tagsByTask = {},
     members = [],
     memberCandidates = [],
     roleName,
@@ -38,6 +41,8 @@ function ProjectOverview({
     onUpdateSprint,
     onDeleteSprint,
     onChangeTaskStatus,
+    onAddTag,
+    onDeleteTag,
     onAddMember,
     onRemoveMember,
     onBack,
@@ -47,6 +52,8 @@ function ProjectOverview({
     const [editingSprintId, setEditingSprintId] = useState(null);
     const [sprintNameDrafts, setSprintNameDrafts] = useState({});
     const [selectedCandidateId, setSelectedCandidateId] = useState("");
+    const [newTagName, setNewTagName] = useState("");
+    const [tagError, setTagError] = useState("");
     const isAdmin = roleName === "Admin";
     const isDeveloper = roleName === "Developer";
 
@@ -74,6 +81,22 @@ function ProjectOverview({
                     </button>
                 ) : (
                     <span className="task-card-name">{task.task_name}</span>
+                )}
+
+                {(tagsByTask[String(task.task_id)] || []).length > 0 && (
+                    <section className="task-card-tags" aria-label="Task tags">
+                        {(tagsByTask[String(task.task_id)] || []).map((tagId) => {
+                            const tag = projectTags.find((item) => String(item.tag_id) === tagId);
+                            return tag ? (
+                                <span
+                                    key={tagId}
+                                    style={{ backgroundColor: tag.tag_colour || "#3F9B76" }}
+                                >
+                                    {tag.tag_name}
+                                </span>
+                            ) : null;
+                        })}
+                    </section>
                 )}
 
                 <section className="task-card-info">
@@ -114,6 +137,7 @@ function ProjectOverview({
                         </button>
                     ) : null}
                 </section>
+                <TaskComments taskId={task.task_id} />
             </section>
         );
     }
@@ -123,9 +147,6 @@ function ProjectOverview({
             <header className="project-header">
                 <h1>{project?.project_name || "Project"}</h1>
                 <section className="project-header-icons">
-                    <button type="button" className="message-button" aria-label="Notifications">
-                        📥
-                    </button>
                     {isAdmin && <button
                         type="button"
                         className="settings-button"
@@ -142,7 +163,7 @@ function ProjectOverview({
                     <section className="sprint-box">
                         <h2>BACKLOG</h2>
                         <section className="task-area">
-                            <p>Tasks belong to a sprint.</p>
+                            {tasks.filter((task) => task.sprint_id === null).map(renderTask)}
                         </section>
                     </section>
 
@@ -324,6 +345,49 @@ function ProjectOverview({
                                     </button>
                                 </section>
                             )}
+                        </section>
+                    )}
+
+                    {isAdmin && (
+                        <section className="project-tags">
+                            <h2>PROJECT TAGS</h2>
+                            {projectTags.map((tag) => (
+                                <p key={tag.tag_id}>
+                                    <span style={{ borderColor: tag.tag_colour || "#3F9B76" }}>
+                                        {tag.tag_name}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        aria-label={`Delete ${tag.tag_name} tag`}
+                                        onClick={() => onDeleteTag(tag.tag_id)}
+                                    >
+                                        ×
+                                    </button>
+                                </p>
+                            ))}
+                            <form onSubmit={async (event) => {
+                                event.preventDefault();
+                                setTagError("");
+                                try {
+                                    await onAddTag(newTagName);
+                                    setNewTagName("");
+                                } catch (error) {
+                                    setTagError(error.message || "Could not add the tag.");
+                                }
+                            }}>
+                                <label>
+                                    New tag
+                                    <input
+                                        value={newTagName}
+                                        onChange={(event) => setNewTagName(event.target.value)}
+                                        maxLength={40}
+                                    />
+                                </label>
+                                <button type="submit" disabled={!newTagName.trim()}>
+                                    Add tag
+                                </button>
+                            </form>
+                            {tagError && <p role="alert">{tagError}</p>}
                         </section>
                     )}
                 </aside>

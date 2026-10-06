@@ -17,6 +17,7 @@ function CreateTaskForm({
     initialTask = null,
     sprints = [],
     statuses = [],
+    projectTags = [],
     members = []
 }) {
 
@@ -45,6 +46,9 @@ function CreateTaskForm({
 
     const [assigneeIds, setAssigneeIds] =
         useState(initialTask?.assigneeIds || []);
+
+    const [tagIds, setTagIds] =
+        useState(initialTask?.tagIds || []);
 
     const [isSaving, setIsSaving] =
         useState(false);
@@ -153,8 +157,8 @@ function CreateTaskForm({
 
     // saving task
     async function handleSaveTask() {
-        if (!taskName.trim() || !sprintId || !taskWeight || !taskPriority) {
-            setFormError("Enter a name and choose a sprint, priority, and weight.");
+        if (!taskName.trim() || !taskWeight || !taskPriority) {
+            setFormError("Enter a name and choose a priority and weight.");
             return;
         }
 
@@ -175,9 +179,10 @@ function CreateTaskForm({
                         String(selectedDate.getDate()).padStart(2, "0")
                     ].join("-")
                     : null,
-                sprintId: Number(sprintId),
+                sprintId: sprintId ? Number(sprintId) : null,
                 statusId: statusId ? Number(statusId) : null,
-                assigneeIds
+                assigneeIds,
+                tagIds
             });
         } catch (error) {
             setFormError(error.message || "Could not save the task.");
@@ -229,34 +234,30 @@ function CreateTaskForm({
                 <section className="task-form-row">
 
 
-                    {/* tags */}
                     <section className="task-tags">
-
-
-                        <button
-                            type="button"
-                            className="add-tag-button"
-                        >
-                            + tag
-                        </button>
-
-
-                        <button
-                            type="button"
-                            className="tag-button tag-green"
-                        >
-                            Tag 1
-                        </button>
-
-
-                        <button
-                            type="button"
-                            className="tag-button tag-purple"
-                        >
-                            Long Tag 2
-                        </button>
-
-
+                        {projectTags.length ? projectTags.map((tag) => {
+                            const tagId = String(tag.tag_id);
+                            const isSelected = tagIds.includes(tagId);
+                            return (
+                                <button
+                                    key={tagId}
+                                    type="button"
+                                    className="tag-button"
+                                    aria-pressed={isSelected}
+                                    title={tag.tag_desc}
+                                    style={{
+                                        backgroundColor: tag.tag_colour || "#3F9B76",
+                                        opacity: isSelected ? 1 : 0.55
+                                    }}
+                                    onClick={() => setTagIds((current) => isSelected
+                                        ? current.filter((id) => id !== tagId)
+                                        : [...current, tagId]
+                                    )}
+                                >
+                                    {tag.tag_name}
+                                </button>
+                            );
+                        }) : <span>No project tags</span>}
                     </section>
 
 
@@ -355,7 +356,7 @@ function CreateTaskForm({
                             value={sprintId}
                             onChange={(event) => setSprintId(event.target.value)}
                         >
-                            <option value="">Choose a sprint</option>
+                            <option value="">Backlog (no sprint)</option>
                             {sprints.map((sprint) => (
                                 <option key={sprint.sprint_id} value={sprint.sprint_id}>
                                     {sprint.sprint_name}
@@ -493,6 +494,17 @@ function CreateTaskForm({
                                     })}
 
                                 </section>
+
+                                <button
+                                    type="button"
+                                    className="calendar-clear-button"
+                                    onClick={() => {
+                                        setSelectedDate(null);
+                                        setIsCalendarOpen(false);
+                                    }}
+                                >
+                                    Clear deadline
+                                </button>
 
 
                             </section>

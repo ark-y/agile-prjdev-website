@@ -339,6 +339,7 @@
     box-sizing: border-box;
 
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 
     gap: 10px;
@@ -465,6 +466,62 @@
     max-width: 180px;
     padding: 6px;
     border-radius: 8px;
+}
+
+.task-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.task-card-tags span {
+    max-width: 90px;
+    overflow: hidden;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.project-tags {
+    padding: 0 20px 20px;
+    color: #d9d9d9;
+}
+
+.project-tags h2 {
+    margin-bottom: 12px;
+}
+
+.project-tags > p,
+.project-tags form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.project-tags > p span {
+    border-left: 4px solid;
+    padding-left: 7px;
+}
+
+.project-tags button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.project-tags form label {
+    display: grid;
+    gap: 4px;
+}
+
+.project-tags form input {
+    width: 120px;
+    min-width: 0;
 }
 
 
