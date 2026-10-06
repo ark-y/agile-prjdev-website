@@ -196,7 +196,6 @@
     </section>
 
 
-
     <!-- create project popup -->
     <section
             class="popup-background"
@@ -250,7 +249,6 @@
 </main>
 
 
-
 <!-- ==================== PROJECT OVERVIEW ==================== -->
 
 <main
@@ -282,7 +280,6 @@
     </header>
 
 
-
     <section class="project-body">
 
 
@@ -306,11 +303,14 @@
                 <section
                         class="task-area"
                         id="backlogTaskArea"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
                 >
                 </section>
 
             </section>
-
 
 
             <!-- ==================== SPRINT 1 ==================== -->
@@ -405,8 +405,14 @@
                 </section>
 
 
-                <!-- tasks later -->
-                <section class="task-area">
+                <!-- tasks -->
+                <section
+                        class="task-area"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
+                >
 
                 </section>
 
@@ -417,12 +423,10 @@
         </section>
 
 
-
         <!-- fade -->
         <section class="sidebar-fade">
 
         </section>
-
 
 
         <!-- right side -->
@@ -441,15 +445,15 @@
 
                     <section class="progress-bar">
 
-                        <span class="progress-fill">
+                        <span class="progress-fill" id="projectProgressFill">
 
                         </span>
 
                     </section>
 
 
-                    <span class="progress-number">
-                        46%
+                    <span class="progress-number" id="projectProgressNumber">
+                        0%
                     </span>
 
                 </section>
@@ -478,7 +482,6 @@
             </section>
 
 
-
             <!-- sidebar buttons -->
             <section class="sidebar-buttons">
 
@@ -504,7 +507,6 @@
                     </span>
 
                 </button>
-
 
 
                 <!-- add sprint -->
@@ -539,7 +541,6 @@
     </section>
 
 
-
     <!-- back -->
     <button
             type="button"
@@ -551,7 +552,6 @@
 
 
 </main>
-
 
 
 <!-- ==================== TASK FORM ==================== -->
@@ -585,7 +585,6 @@
 
 
     </header>
-
 
 
     <section class="task-form-body">
@@ -686,7 +685,6 @@
             </section>
 
 
-
             <!-- priority and weight -->
             <section class="task-options">
 
@@ -732,7 +730,6 @@
                 </section>
 
 
-
                 <!-- ==================== WEIGHT ==================== -->
 
                 <section class="weight-wrapper">
@@ -774,7 +771,6 @@
 
 
         </section>
-
 
 
         <!-- second row -->
@@ -861,71 +857,71 @@
             </section>
 
             <!--update task status-->
-            <section class = "task-details">
-                    <section class="task-status-wrapper">
-        
-        
-                            <select
-                                    class="task-status-select"
-                                    id="taskStatusInput"
-                                    onchange="updateStatusColour(this)"
-                            >
-        
-                                <option value="">
-                                    Task Status
-                                </option>
-        
-        
-                                <option value="todo">
-                                    To Do 
-                                </option>
-        
-        
-                                <option value="inReview">
-                                    In Review
-                                </option>
-        
-        
-                                <option value="ongoing">
-                                    Ongoing
-                                </option>
-        
-                                <option value="complete">
-                                    Complete
-                                </option>
-        
-                            </select>
-        
-        
-                            <span class="select-arrow">
+            <section class="task-details">
+                <section class="task-status-wrapper">
+
+
+                    <select
+                            class="task-status-select"
+                            id="taskStatusInput"
+                            onchange="updateStatusColour(this)"
+                    >
+
+                        <option value="">
+                            Task Status
+                        </option>
+
+
+                        <option value="todo">
+                            To Do
+                        </option>
+
+
+                        <option value="ongoing">
+                            Ongoing
+                        </option>
+
+
+                        <option value="inReview">
+                            In Review
+                        </option>
+
+
+                        <option value="complete">
+                            Complete
+                        </option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
                                 ▼
                             </span>
-        
-        
-                        </section>
-        
-                    <!-- assignee -->
-                    <button
-                            type="button"
-                            class="fake-dropdown assignee-dropdown"
-                    >
-        
+
+
+                </section>
+
+                <!-- assignee -->
+                <button
+                        type="button"
+                        class="fake-dropdown assignee-dropdown"
+                >
+
                         <span>
                             Assignee
                         </span>
-        
-        
-                        <span class="dropdown-arrow">
+
+
+                    <span class="dropdown-arrow">
                             ▼
                         </span>
-        
-        
-                    </button>
-        
-        
-                </section>
-            </section>
 
+
+                </button>
+
+
+            </section>
+        </section>
 
 
         <!-- description -->
@@ -934,7 +930,6 @@
                 id="taskDescriptionInput"
                 placeholder="Description"
         ></textarea>
-
 
 
         <!-- buttons -->
@@ -951,11 +946,11 @@
             </button>
 
 
-
             <!-- save -->
             <button
                     type="button"
                     class="task-save-button"
+                    id="taskSaveButton"
                     onclick="saveTask()"
             >
                 Save Task
@@ -971,7 +966,6 @@
 </main>
 
 
-
 <!-- ==================== TEMPORARY JS ==================== -->
 
 <script>
@@ -980,7 +974,71 @@
     // keeping track of sprint numbers
     let sprintCount = 1;
 
+    // task currently being edited; null means a new task
+    let editingTaskCard = null;
 
+    // ==================== PROJECT PROGRESS ====================
+
+
+    // how much each status contributes to overall progress
+    const STATUS_PROGRESS = {
+        todo:     0,
+        ongoing:  50,
+        inReview: 75,
+        complete: 100,
+        overdue:  0
+    };
+
+
+    function updateProjectProgress() {
+
+        // every task in every sprint + backlog
+        const allTasks =
+            document.querySelectorAll(".task-card");
+
+        const fill =
+            document.getElementById("projectProgressFill");
+
+        const number =
+            document.getElementById("projectProgressNumber");
+
+        if (!fill || !number) return;
+
+
+        // no tasks → 0%
+        if (allTasks.length === 0) {
+
+            fill.style.width = "0%";
+            number.textContent = "0%";
+
+            return;
+        }
+
+
+        let total = 0;
+
+
+        allTasks.forEach(function (card) {
+
+            const status =
+                card.dataset.status || "todo";
+
+            total +=
+                STATUS_PROGRESS[status] !== undefined
+                    ? STATUS_PROGRESS[status]
+                    : 0;
+
+        });
+
+
+        const percent =
+            Math.round(total / allTasks.length);
+
+
+        fill.style.width = percent + "%";
+        number.textContent = percent + "%";
+
+    }
 
     // ==================== PROJECT POPUP ====================
 
@@ -1174,7 +1232,7 @@ function createProject() {
 
         const endDateInput =
             sprintBox.querySelector(".sprint-end-date");
-        
+
         if(!endDateInput){
             return;
         }
@@ -1606,6 +1664,22 @@ function createProject() {
             "task-area";
 
 
+        taskArea.ondragover =
+            allowTaskDrop;
+
+
+        taskArea.ondragenter =
+            taskDragEnter;
+
+
+        taskArea.ondragleave =
+            taskDragLeave;
+
+
+        taskArea.ondrop =
+            dropTask;
+
+
 
         // build sprint
         newSprint.appendChild(
@@ -1704,37 +1778,232 @@ function createProject() {
 
 
 
+    // ==================== TASK DRAG AND DROP ====================
+
+
+    // keeps track of the task currently being dragged
+    let draggedTask = null;
+
+
+    // when the user starts dragging a task
+    function startTaskDrag(event) {
+
+        draggedTask =
+            event.currentTarget;
+
+
+        draggedTask.classList.add(
+            "task-card-dragging"
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+
+
+    // allows the task area to receive a drop
+    function allowTaskDrop(event) {
+
+        event.preventDefault();
+
+
+        event.dataTransfer.dropEffect =
+            "move";
+
+    }
+
+
+    // highlights the sprint/backlog when a task is dragged over it
+    function taskDragEnter(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.add(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // removes the highlight when leaving
+    function taskDragLeave(event) {
+
+        const taskArea =
+            event.currentTarget;
+
+
+        if (
+            event.relatedTarget &&
+            taskArea.contains(
+                event.relatedTarget
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // moves the task when it is dropped
+    function dropTask(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+
+        if (!draggedTask) {
+
+            return;
+
+        }
+
+
+        taskArea.appendChild(
+            draggedTask
+        );
+
+
+        draggedTask.classList.remove(
+            "task-card-dragging"
+        );
+
+
+        draggedTask = null;
+
+        updateProjectProgress();
+
+    }
+
+
+    // cleanup when dragging finishes
+    function endTaskDrag() {
+
+        if (draggedTask) {
+
+            draggedTask.classList.remove(
+                "task-card-dragging"
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                ".task-area-drag-over"
+            )
+            .forEach(function (area) {
+
+                area.classList.remove(
+                    "task-area-drag-over"
+                );
+
+            });
+
+
+        draggedTask = null;
+
+    }
+
+
     // ==================== TASK FORM ====================
 
 
     function openTaskForm() {
 
-        document
-            .getElementById("projectOverview")
-            .style.display = "none";
+        editingTaskCard = null;
+        clearTaskForm();
 
-
-        document
-            .getElementById("taskForm")
-            .style.display = "block";
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
 
     }
-
 
 
     function closeTaskForm() {
 
-        document
-            .getElementById("taskForm")
-            .style.display = "none";
-
-
-        document
-            .getElementById("projectOverview")
-            .style.display = "block";
+        document.getElementById("taskForm").style.display = "none";
+        document.getElementById("projectOverview").style.display = "block";
 
     }
 
+
+    function openTaskDetails(taskCard) {
+
+        editingTaskCard = taskCard;
+
+        document.getElementById("taskNameInput").value = taskCard.dataset.name || "";
+        document.getElementById("taskDescriptionInput").value = taskCard.dataset.description || "";
+        document.getElementById("taskPriorityInput").value = taskCard.dataset.priority || "";
+        document.getElementById("taskWeightInput").value = taskCard.dataset.weight || "";
+        document.getElementById("taskWeightNumber").textContent = taskCard.dataset.weight || "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = taskCard.dataset.status === "overdue" ? "todo" : (taskCard.dataset.status || "todo");
+        updateStatusColour(statusInput);
+
+        const taskDeadline = taskCard.dataset.deadline || "";
+        if (taskDeadline) {
+            const parts = taskDeadline.split("-");
+            calendarSelectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            calendarViewYear = calendarSelectedDate.getFullYear();
+            calendarViewMonth = calendarSelectedDate.getMonth();
+            document.getElementById("deadlineLabel").textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " " +
+                calendarSelectedDate.getDate() + ", " +
+                calendarSelectedDate.getFullYear();
+        } else {
+            calendarSelectedDate = null;
+            document.getElementById("deadlineLabel").textContent = "Deadline";
+        }
+
+        document.getElementById("taskSaveButton").textContent = "Save Changes";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
+
+    }
+
+
+    function clearTaskForm() {
+
+        document.getElementById("taskNameInput").value = "";
+        document.getElementById("taskDescriptionInput").value = "";
+        document.getElementById("taskPriorityInput").value = "";
+        document.getElementById("taskWeightInput").value = "";
+        document.getElementById("taskWeightNumber").textContent = "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = "";
+        updateStatusColour(statusInput);
+
+        calendarSelectedDate = null;
+        document.getElementById("deadlineLabel").textContent = "Deadline";
+        document.getElementById("deadlineCalendar").style.display = "none";
+        resetTags();
+
+    }
 
 
     function updateTaskWeight(weight) {
@@ -1746,7 +2015,7 @@ function createProject() {
     }
 
     const statusColours = {
-            todo:     "#18273A",  
+            todo:     "#18273A",
             inReview: "#5200A3",
             ongoing:  "#FBB13C",
             complete: "#00B800",
@@ -1794,289 +2063,110 @@ function createProject() {
     // ==================== SAVE TASK ====================
 
 
-    function saveTask() {
-
-
-        // task name
-        const taskNameInput =
-            document.getElementById(
-                "taskNameInput"
-            );
-
-
-        const taskName =
-            taskNameInput.value.trim();
-
-
-
-        // priority
-        const taskPriorityInput =
-            document.getElementById(
-                "taskPriorityInput"
-            );
-
-
-        const taskPriority =
-            taskPriorityInput.value;
-
-
-
-        // weight
-        const taskWeightInput =
-            document.getElementById(
-                "taskWeightInput"
-            );
-
-
-        const taskWeight =
-            taskWeightInput.value;
-
-        //status
-        const taskStatusInput = document.getElementById(
-            "taskStatusInput"
-        );
-
-        const taskStatus = 
-            checkTaskStatus(taskStatusInput.value, calendarSelectedDate);
-
-
-        // task needs a name
-        if (taskName === "") {
-
-            return;
-
-        }
-
-
-
-        // ==================== CREATE TASK CARD ====================
-
-
-        const taskCard =
-            document.createElement("section");
-
-
-        taskCard.className =
-            "task-card";
-
-
-        // ==================== STATUS UPDATE ====================
-        
-         // grey status circle
-        const statusCircle =
-            document.createElement("span");
-
-
-        statusCircle.className =
-            "task-status-circle";
-
-
-        if(taskStatus !== "todo")
-        {
-            if (taskStatus === "inReview") {
-               statusCircle.style.backgroundColor = "#5200A3";
-            }
-            else if (taskStatus === "ongoing") {
-                statusCircle.style.backgroundColor = "#FBB13C";
-            }
-            else if (taskStatus === "complete") {
-                statusCircle.style.backgroundColor = "#00B800";
-                taskCard.style.backgroundColor = "#E0E0E0"
-                taskCard.style.opacity = 0.5;
-            }
-            else if (taskStatus === "overdue") {
-                statusCircle.style.backgroundColor = "#D62839";
-            }
-        }
-        
-
-        // task name
-        const taskNameText =
-            document.createElement("span");
-
-
-        taskNameText.className =
-            "task-card-name";
-
-
-        taskNameText.textContent =
-            taskName;
-
-
-
-        // right side information
-        const taskInfo =
-            document.createElement("section");
-
-
-        taskInfo.className =
-            "task-card-info";
-
-
-
-        // ==================== PRIORITY ====================
-
-
-        if (taskPriority !== "") {
-
-
-            const priorityText =
-                document.createElement("span");
-
-
-            priorityText.className =
-                "task-priority";
-
-
-            if (taskPriority === "high") {
-
-                priorityText.textContent =
-                    "⌃";
-
-            }
-
-
-            if (taskPriority === "medium") {
-
-                priorityText.textContent =
-                    "-";
-
-            }
-
-
-            if (taskPriority === "low") {
-
-                priorityText.textContent =
-                    "⌄";
-
-            }
-
-
-            taskInfo.appendChild(
-                priorityText
-            );
-
-        }
-
-
-
-        // ==================== WEIGHT ====================
-
-
-        if (taskWeight !== "") {
-
-
-            const weightText =
-                document.createElement("span");
-
-
-            weightText.className =
-                "task-card-weight";
-
-
-            weightText.textContent =
-                taskWeight;
-
-
-            taskInfo.appendChild(
-                weightText
-            );
-
-        }
-        
-        // ==================== BUILD TASK CARD ====================
-
-
-        taskCard.appendChild(
-            statusCircle
-        );
-
-
-        taskCard.appendChild(
-            taskNameText
-        );
-
-
-        taskCard.appendChild(
-            taskInfo
-        );
-
-
-
-        // add task to backlog
-        document
-            .getElementById(
-                "backlogTaskArea"
-            )
-            .appendChild(
-                taskCard
-            );
-
-
-
-        // ==================== CLEAR FORM ====================
-
-
-        taskNameInput.value =
-            "";
-
-
-        taskPriorityInput.value =
-            "";
-
-
-        taskWeightInput.value =
-            "";
-
-        taskStatusInput.value = 
-            "";
-        updateStatusColour(taskStatusInput);
-
-
-        document
-            .getElementById(
-                "taskWeightNumber"
-            )
-            .textContent = "";
-
-
-        const description =
-            document.getElementById(
-                "taskDescriptionInput"
-            );
-
-
-        if (description) {
-
-            description.value =
-                "";
-
-        }
-
-
-        // clear selected deadline
-        calendarSelectedDate = null;
-
-        document
-            .getElementById("deadlineLabel")
-            .textContent = "Deadline";
-
-        document
-            .getElementById("deadlineCalendar")
-            .style.display = "none";
-
-
-        // clear the tags created for this task
-        resetTags();
-
-
-
-        // return to project overview
-        closeTaskForm();
-
+    function updateTaskCardStatus(taskCard, statusCircle, taskStatus) {
+        taskCard.style.backgroundColor = "#D9D9D9";
+        taskCard.style.opacity = "1";
+        statusCircle.style.backgroundColor = "#8A8A8A";
+
+        if (taskStatus === "inReview") statusCircle.style.backgroundColor = "#5200A3";
+        else if (taskStatus === "ongoing") statusCircle.style.backgroundColor = "#FBB13C";
+        else if (taskStatus === "complete") {
+            statusCircle.style.backgroundColor = "#00B800";
+            taskCard.style.backgroundColor = "#E0E0E0";
+            taskCard.style.opacity = "0.5";
+        } else if (taskStatus === "overdue") statusCircle.style.backgroundColor = "#D62839";
     }
 
+    function addTaskPriority(taskInfo, taskPriority) {
+        if (!taskPriority) return;
+        const priorityText = document.createElement("span");
+        priorityText.className = "task-priority";
+        priorityText.textContent = taskPriority === "high" ? "⌃" : taskPriority === "medium" ? "-" : "⌄";
+        taskInfo.appendChild(priorityText);
+    }
 
+    function addTaskWeight(taskInfo, taskWeight) {
+        if (!taskWeight) return;
+        const weightText = document.createElement("span");
+        weightText.className = "task-card-weight";
+        weightText.textContent = taskWeight;
+        taskInfo.appendChild(weightText);
+    }
+
+    function saveTask() {
+        const taskName = document.getElementById("taskNameInput").value.trim();
+        const taskDescription = document.getElementById("taskDescriptionInput").value.trim();
+        const taskPriority = document.getElementById("taskPriorityInput").value;
+        const taskWeight = document.getElementById("taskWeightInput").value;
+        const taskStatusInput = document.getElementById("taskStatusInput");
+        let taskStatus = taskStatusInput.value || "todo";
+        taskStatus = checkTaskStatus(taskStatus, calendarSelectedDate);
+
+        if (!taskName) { alert("Please enter a task name."); return; }
+
+        let taskDeadline = "";
+        if (calendarSelectedDate) {
+            const year = calendarSelectedDate.getFullYear();
+            const month = String(calendarSelectedDate.getMonth() + 1).padStart(2, "0");
+            const day = String(calendarSelectedDate.getDate()).padStart(2, "0");
+            taskDeadline = year + "-" + month + "-" + day;
+        }
+
+        if (editingTaskCard) {
+            editingTaskCard.dataset.name = taskName;
+            editingTaskCard.dataset.description = taskDescription;
+            editingTaskCard.dataset.priority = taskPriority;
+            editingTaskCard.dataset.weight = taskWeight;
+            editingTaskCard.dataset.status = taskStatus;
+            editingTaskCard.dataset.deadline = taskDeadline;
+
+            editingTaskCard.querySelector(".task-card-name").textContent = taskName;
+            updateTaskCardStatus(editingTaskCard, editingTaskCard.querySelector(".task-status-circle"), taskStatus);
+            const taskInfo = editingTaskCard.querySelector(".task-card-info");
+            taskInfo.innerHTML = "";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+            editingTaskCard = null;
+        } else {
+            const taskCard = document.createElement("section");
+            taskCard.className = "task-card";
+            taskCard.dataset.name = taskName;
+            taskCard.dataset.description = taskDescription;
+            taskCard.dataset.priority = taskPriority;
+            taskCard.dataset.weight = taskWeight;
+            taskCard.dataset.status = taskStatus;
+            taskCard.dataset.deadline = taskDeadline;
+            taskCard.draggable = true;
+            taskCard.ondragstart = startTaskDrag;
+            taskCard.ondragend = endTaskDrag;
+            taskCard.onclick = function () {
+                if (draggedTask === null) openTaskDetails(this);
+            };
+
+            const statusCircle = document.createElement("span");
+            statusCircle.className = "task-status-circle";
+            updateTaskCardStatus(taskCard, statusCircle, taskStatus);
+
+            const taskNameText = document.createElement("span");
+            taskNameText.className = "task-card-name";
+            taskNameText.textContent = taskName;
+
+            const taskInfo = document.createElement("section");
+            taskInfo.className = "task-card-info";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+
+            taskCard.appendChild(statusCircle);
+            taskCard.appendChild(taskNameText);
+            taskCard.appendChild(taskInfo);
+            document.getElementById("backlogTaskArea").appendChild(taskCard);
+        }
+
+        clearTaskForm();
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        updateProjectProgress();
+        closeTaskForm();
+    }
 
 
     // ==================== CUSTOM TAGS ====================
@@ -2436,7 +2526,6 @@ function createProject() {
             document
                 .getElementById("clientLanding")
                 .style.display = "flex";
-
         }
 
 </script>
@@ -2469,6 +2558,9 @@ function createProject() {
         checkSprintDeadline(sprintBox);
 
     });
+
+    // refresh progress bar on page load
+    updateProjectProgress();
 
 </script>
 

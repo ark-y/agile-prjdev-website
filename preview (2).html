@@ -1,0 +1,2591 @@
+<!-- temp preview folder for project -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>UI Preview</title>
+
+
+    <!-- css for the dev dashboard -->
+    <link
+            rel="stylesheet"
+            href="src/pages/DevLanding/DevLanding.css"
+    >
+
+
+    <!-- css for the create project popup -->
+    <link
+            rel="stylesheet"
+            href="src/components/CreateProjectForm/CreateProjectForm.css"
+    >
+
+
+    <!-- css for the project cards -->
+    <link
+            rel="stylesheet"
+            href="src/components/ProjectCard/ProjectCard.css"
+    >
+
+
+    <!-- css for the project overview -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ProjectOverview/ProjectOverview.css"
+    >
+
+
+    <!-- css for the task form -->
+    <link
+            rel="stylesheet"
+            href="src/components/CreateTaskForm/CreateTaskForm.css"
+    >
+
+
+    <!-- css for the login page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/Login/Login.css"
+    >
+
+
+    <!-- css for the client landing page -->
+    <link
+            rel="stylesheet"
+            href="src/pages/ClientLanding/ClientLanding.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ==================== LOGIN PAGE ==================== -->
+
+<main
+        class="login-page"
+        id="loginPage"
+>
+
+    <h1>Login Page</h1>
+
+    <div class="button-group"> <!-- Test buttons for sprint one -->
+        <button
+                class="credential-button dev-button"
+                onclick="openDevPage()">
+            Dev page
+        </button>
+
+        <button
+                class="credential-button client-button"
+                onclick="openClientPage()">
+            Client page
+        </button>
+    </div>
+
+    <button class="login-button">
+        <h2>LOGIN</h2>
+    </button>
+
+</main>
+
+
+<!-- ==================== CLIENT LANDING ==================== -->
+
+<main
+        class="client-page"
+        id="clientLanding"
+        style="display: none;"
+>
+
+    <header class="client-dashboard-header">
+        <h1>PROJECT 1</h1>
+        <span class="percentage" id="header-percentage">67%</span>
+    </header>
+
+    <section class="dashboard-content">
+
+        <section class="progress-section" aria-label="Overall progress">
+            <figure class="progress-donut-container">
+                <span class="progress-donut" id="progress-donut"></span>
+            </figure>
+        </section>
+
+        <section class="right-panel">
+
+            <article class="current-tasks">
+                <h2>Current Tasks</h2>
+                <ul class="current-tasks-list">
+                    <li class="task-item">Task 1</li>
+                    <li class="task-item">Task 2</li>
+                    <li class="task-item">Long task 3</li>
+                    <li class="task-item">Tasks all around</li>
+                </ul>
+            </article>
+
+            <article class="client-sprint-box">
+                <h3>Sprint 4</h3>
+                <span class="percentage">67%</span>
+            </article>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<!-- ==================== DEV DASHBOARD ==================== -->
+
+<main
+        class="dev-page"
+        id="devDashboard"
+        style="display: none;"
+>
+
+    <header class="dashboard-header">
+
+        <h1>X'S DASHBOARD</h1>
+
+
+        <section class="dashboard-icons">
+
+            <button class="message-button">
+                📥
+            </button>
+
+
+            <button class="settings-button">
+                ⚙
+            </button>
+
+        </section>
+
+    </header>
+
+
+    <section class="projects-section" id="projectsSection">
+
+
+        <!-- add project -->
+        <button
+                class="add-project"
+                onclick="openProjectPopup()"
+        >
+            +
+        </button>
+
+
+        <!-- sample project -->
+        <button
+                class="project-card"
+                onclick="openSampleProject()"
+        >
+
+            <span class="project-name">
+                Sample Project
+            </span>
+
+        </button>
+
+
+    </section>
+
+
+    <!-- create project popup -->
+    <section
+            class="popup-background"
+            id="projectPopup"
+    >
+
+        <form class="create-project-popup">
+
+            <h2>
+                Create Project
+            </h2>
+
+
+            <label for="projectName">
+                Project Name
+            </label>
+
+
+            <input
+                    type="text"
+                    id="projectName"
+                    placeholder="Enter project name"
+            >
+
+
+            <section class="popup-buttons">
+
+                <button
+                        type="button"
+                        class="cancel-button"
+                        onclick="closeProjectPopup()"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                        type="button"
+                        class="create-button"
+                        onclick="createProject()"
+                >
+                    Create Project
+                </button>
+
+            </section>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<!-- ==================== PROJECT OVERVIEW ==================== -->
+
+<main
+        class="project-page"
+        id="projectOverview"
+        style="display: none;"
+>
+
+    <header class="project-header">
+
+        <h1>
+            SAMPLE PROJECT
+        </h1>
+
+
+        <section class="project-header-icons">
+
+            <button class="message-button">
+                📥
+            </button>
+
+
+            <button class="settings-button">
+                ⚙
+            </button>
+
+        </section>
+
+    </header>
+
+
+    <section class="project-body">
+
+
+        <!-- backlog and sprints -->
+        <section
+                class="sprint-area"
+                id="sprintArea"
+        >
+
+
+            <!-- ==================== BACKLOG ==================== -->
+
+            <section class="sprint-box">
+
+                <h2>
+                    BACKLOG
+                </h2>
+
+
+                <!-- tasks get added here -->
+                <section
+                        class="task-area"
+                        id="backlogTaskArea"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
+                >
+                </section>
+
+            </section>
+
+
+            <!-- ==================== SPRINT 1 ==================== -->
+
+            <section class="sprint-box">
+
+
+                <!-- delete sprint -->
+                <button
+                        type="button"
+                        class="delete-sprint-button"
+                        onclick="deleteSprint(this)"
+                        aria-label="Delete sprint"
+                >
+                    ×
+                </button>
+
+
+                <!-- sprint name -->
+                <input
+                        class="sprint-name-input"
+                        type="text"
+                        value="SPRINT 1"
+                >
+
+
+                <!-- sprint dates -->
+                <section class="sprint-dates">
+
+
+                    <!-- compact date -->
+                    <button
+                            type="button"
+                            class="sprint-date-display"
+                            onclick="openSprintDates(this)"
+                    >
+                        11/09 - 25/09
+                    </button>
+
+
+                    <!-- date editor -->
+                    <section
+                            class="sprint-date-editor"
+                            style="display: none;"
+                    >
+
+
+                        <input
+                                type="date"
+                                class="sprint-start-date"
+                                value="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <span>
+                            -
+                        </span>
+
+
+                        <input
+                                type="date"
+                                class="sprint-end-date"
+                                value="2026-09-25"
+                                min="2026-09-11"
+                                onchange="updateSprintDates(this)"
+                        >
+
+
+                        <button
+                                type="button"
+                                class="date-done-button"
+                                onclick="closeSprintDates(this)"
+                        >
+                            ✓
+                        </button>
+
+
+                    </section>
+
+
+                </section>
+
+
+                <!-- tasks -->
+                <section
+                        class="task-area"
+                        ondragover="allowTaskDrop(event)"
+                        ondragenter="taskDragEnter(event)"
+                        ondragleave="taskDragLeave(event)"
+                        ondrop="dropTask(event)"
+                >
+
+                </section>
+
+
+            </section>
+
+
+        </section>
+
+
+        <!-- fade -->
+        <section class="sidebar-fade">
+
+        </section>
+
+
+        <!-- right side -->
+        <aside class="project-sidebar">
+
+
+            <!-- progress -->
+            <section class="progress-box">
+
+                <h2>
+                    PROGRESS
+                </h2>
+
+
+                <section class="progress-row">
+
+                    <section class="progress-bar">
+
+                        <span class="progress-fill" id="projectProgressFill">
+
+                        </span>
+
+                    </section>
+
+
+                    <span class="progress-number" id="projectProgressNumber">
+                        0%
+                    </span>
+
+                </section>
+
+
+                <section class="progress-info">
+
+                    <p>
+                        Team list
+                    </p>
+
+                    <p>
+                        Project timeline
+                    </p>
+
+                    <p>
+                        Project due date
+                    </p>
+
+                    <p>
+                        Client
+                    </p>
+
+                </section>
+
+            </section>
+
+
+            <!-- sidebar buttons -->
+            <section class="sidebar-buttons">
+
+
+                <!-- add task -->
+                <button
+                        class="sidebar-button"
+                        onclick="openTaskForm()"
+                >
+
+                    <span>
+                        ADD
+                    </span>
+
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+
+                    <span>
+                        TASK
+                    </span>
+
+                </button>
+
+
+                <!-- add sprint -->
+                <button
+                        class="sidebar-button"
+                        onclick="addSprint()"
+                >
+
+                    <span>
+                        ADD
+                    </span>
+
+
+                    <span class="sidebar-plus">
+                        +
+                    </span>
+
+
+                    <span>
+                        SPRINT
+                    </span>
+
+                </button>
+
+
+            </section>
+
+
+        </aside>
+
+
+    </section>
+
+
+    <!-- back -->
+    <button
+            type="button"
+            class="back-projects-button"
+            onclick="backToProjects()"
+    >
+        ← Back to Projects
+    </button>
+
+
+</main>
+
+
+<!-- ==================== TASK FORM ==================== -->
+
+<main
+        class="task-form-page"
+        id="taskForm"
+        style="display: none;"
+>
+
+
+    <!-- header -->
+    <header class="task-form-header">
+
+
+        <!-- task name -->
+        <input
+                class="task-name-input"
+                id="taskNameInput"
+                type="text"
+                placeholder="Task name"
+        >
+
+
+        <!-- selected weight -->
+        <span
+                class="task-weight-number"
+                id="taskWeightNumber"
+        >
+        </span>
+
+
+    </header>
+
+
+    <section class="task-form-body">
+
+
+        <!-- first row -->
+        <section class="task-form-row">
+
+
+            <!-- tags -->
+            <section class="task-tags">
+
+
+                <button
+                        type="button"
+                        class="add-tag-button"
+                        onclick="toggleTagPopup()"
+                >
+                    + tag
+                </button>
+
+
+                <button
+                        type="button"
+                        class="tag-button tag-green"
+                >
+                    Tag 1
+                </button>
+
+
+                <button
+                        type="button"
+                        class="tag-button tag-purple"
+                >
+                    Long Tag 2
+                </button>
+
+
+                <!-- create tag popup -->
+                <section
+                        class="tag-popup"
+                        id="tagPopup"
+                        style="display: none;"
+                >
+
+                    <label
+                            class="tag-popup-label"
+                            for="tagNameInput"
+                    >
+                        Tag name
+                    </label>
+
+                    <input
+                            class="tag-name-input"
+                            id="tagNameInput"
+                            type="text"
+                            maxlength="20"
+                            placeholder="e.g. Frontend"
+                            onkeydown="handleTagNameKey(event)"
+                    >
+
+
+                    <span class="tag-popup-label">
+                        Colour
+                    </span>
+
+                    <!-- colour swatches, filled in by js -->
+                    <section
+                            class="tag-colour-grid"
+                            id="tagColourGrid"
+                    >
+                    </section>
+
+
+                    <section class="tag-popup-buttons">
+
+                        <button
+                                type="button"
+                                class="tag-popup-cancel"
+                                onclick="closeTagPopup()"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                                type="button"
+                                class="tag-popup-add"
+                                onclick="addTag()"
+                        >
+                            Add tag
+                        </button>
+
+                    </section>
+
+                </section>
+
+
+            </section>
+
+
+            <!-- priority and weight -->
+            <section class="task-options">
+
+
+                <!-- ==================== PRIORITY ==================== -->
+
+                <section class="priority-wrapper">
+
+
+                    <select
+                            class="priority-select"
+                            id="taskPriorityInput"
+                    >
+
+                        <option value="">
+                            Priority
+                        </option>
+
+
+                        <option value="high">
+                            ⌃ High
+                        </option>
+
+
+                        <option value="medium">
+                            - Medium
+                        </option>
+
+
+                        <option value="low">
+                            ⌄ Low
+                        </option>
+
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+                <!-- ==================== WEIGHT ==================== -->
+
+                <section class="weight-wrapper">
+
+
+                    <select
+                            class="weight-select"
+                            id="taskWeightInput"
+                            onchange="updateTaskWeight(this.value)"
+                    >
+
+                        <option value="">
+                            Weight
+                        </option>
+
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                        ▼
+                    </span>
+
+
+                </section>
+
+
+            </section>
+
+
+        </section>
+
+
+        <!-- second row -->
+        <section class="task-form-row">
+
+
+            <!-- deadline dropdown -->
+            <section class="deadline-wrapper">
+
+                <button
+                        type="button"
+                        class="fake-dropdown deadline-dropdown"
+                        id="deadlineButton"
+                        onclick="toggleDeadlineCalendar()"
+                >
+
+                    <span id="deadlineLabel">Deadline</span>
+
+                    <span class="dropdown-arrow">
+                        ▼
+                    </span>
+
+                </button>
+
+
+                <!-- the calendar popup itself -->
+                <section
+                        class="deadline-calendar"
+                        id="deadlineCalendar"
+                        style="display: none;"
+                >
+
+                    <!-- month/year header with arrows -->
+                    <section class="calendar-header">
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarPrevMonth()"
+                        >
+                            ‹
+                        </button>
+
+                        <span
+                                class="calendar-month-label"
+                                id="calendarMonthLabel"
+                        >
+                        </span>
+
+                        <button
+                                type="button"
+                                class="calendar-nav-button"
+                                onclick="calendarNextMonth()"
+                        >
+                            ›
+                        </button>
+
+                    </section>
+
+
+                    <!-- weekday letters -->
+                    <section class="calendar-weekdays">
+
+                        <span class="calendar-weekday">S</span>
+                        <span class="calendar-weekday">M</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">W</span>
+                        <span class="calendar-weekday">T</span>
+                        <span class="calendar-weekday">F</span>
+                        <span class="calendar-weekday">S</span>
+
+                    </section>
+
+
+                    <!-- the day grid, filled in by js -->
+                    <section
+                            class="calendar-days"
+                            id="calendarDays"
+                    >
+                    </section>
+
+                </section>
+
+            </section>
+
+            <!--update task status-->
+            <section class="task-details">
+                <section class="task-status-wrapper">
+
+
+                    <select
+                            class="task-status-select"
+                            id="taskStatusInput"
+                            onchange="updateStatusColour(this)"
+                    >
+
+                        <option value="">
+                            Task Status
+                        </option>
+
+
+                        <option value="todo">
+                            To Do
+                        </option>
+
+
+                        <option value="ongoing">
+                            Ongoing
+                        </option>
+
+
+                        <option value="inReview">
+                            In Review
+                        </option>
+
+
+                        <option value="complete">
+                            Complete
+                        </option>
+
+                    </select>
+
+
+                    <span class="select-arrow">
+                                ▼
+                            </span>
+
+
+                </section>
+
+                <!-- assignee -->
+                <button
+                        type="button"
+                        class="fake-dropdown assignee-dropdown"
+                >
+
+                        <span>
+                            Assignee
+                        </span>
+
+
+                    <span class="dropdown-arrow">
+                            ▼
+                        </span>
+
+
+                </button>
+
+
+            </section>
+        </section>
+
+
+        <!-- description -->
+        <textarea
+                class="task-description"
+                id="taskDescriptionInput"
+                placeholder="Description"
+        ></textarea>
+
+
+        <!-- task checklists -->
+        <section id="taskChecklists" style="margin-top: 24px;">
+            <section style="display:flex; align-items:center; justify-content:space-between; gap:15px; margin-bottom:15px;">
+                <h2 style="margin:0; color:#18273A;">Checklists</h2>
+                <button type="button" class="fake-dropdown" onclick="addChecklist()">+ Add checklist</button>
+            </section>
+            <section id="checklistContainer"></section>
+        </section>
+
+        <!-- buttons -->
+        <section class="task-form-buttons">
+
+
+            <!-- cancel -->
+            <button
+                    type="button"
+                    class="task-cancel-button"
+                    onclick="closeTaskForm()"
+            >
+                Cancel
+            </button>
+
+
+            <!-- save -->
+            <button
+                    type="button"
+                    class="task-save-button"
+                    id="taskSaveButton"
+                    onclick="saveTask()"
+            >
+                Save Task
+            </button>
+
+
+        </section>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- ==================== TEMPORARY JS ==================== -->
+
+<script>
+
+
+    // keeping track of sprint numbers
+    let sprintCount = 1;
+
+    // task currently being edited; null means a new task
+    let editingTaskCard = null;
+
+    // ==================== PROJECT PROGRESS ====================
+
+
+    // how much each status contributes to overall progress
+    const STATUS_PROGRESS = {
+        todo:     0,
+        ongoing:  50,
+        inReview: 75,
+        complete: 100,
+        overdue:  0
+    };
+
+
+    function updateProjectProgress() {
+
+        // every task in every sprint + backlog
+        const allTasks =
+            document.querySelectorAll(".task-card");
+
+        const fill =
+            document.getElementById("projectProgressFill");
+
+        const number =
+            document.getElementById("projectProgressNumber");
+
+        if (!fill || !number) return;
+
+
+        // no tasks → 0%
+        if (allTasks.length === 0) {
+
+            fill.style.width = "0%";
+            number.textContent = "0%";
+
+            return;
+        }
+
+
+        let total = 0;
+
+
+        allTasks.forEach(function (card) {
+
+            const status =
+                card.dataset.status || "todo";
+
+            total +=
+                STATUS_PROGRESS[status] !== undefined
+                    ? STATUS_PROGRESS[status]
+                    : 0;
+
+        });
+
+
+        const percent =
+            Math.round(total / allTasks.length);
+
+
+        fill.style.width = percent + "%";
+        number.textContent = percent + "%";
+
+    }
+
+    // ==================== PROJECT POPUP ====================
+
+
+    function openProjectPopup() {
+
+        document
+            .getElementById("projectPopup")
+            .style.display = "flex";
+
+    }
+
+
+    function closeProjectPopup() {
+
+        document
+            .getElementById("projectPopup")
+            .style.display = "none";
+
+    }
+
+
+
+    // ==================== CREATE PROJECT ====================
+
+
+function createProject() {
+
+   // getting what the user typed
+   const nameInput =
+       document.getElementById("projectName");
+
+
+   const projectName =
+       nameInput.value.trim();
+
+
+   // stopping if empty
+   if (projectName === "") {
+
+       alert("Please enter a project name.");
+
+       return;
+
+   }
+
+
+   // making a new project card
+   const newCard =
+       document.createElement("button");
+
+
+   newCard.className =
+       "project-card";
+
+
+   newCard.onclick =
+       openSampleProject;
+
+
+   // putting the project name inside
+   const nameSpan =
+       document.createElement("span");
+
+
+   nameSpan.className =
+       "project-name";
+
+
+   nameSpan.textContent =
+       projectName;
+
+
+   newCard.appendChild(nameSpan);
+
+
+   // adding it to the dashboard
+   document
+       .getElementById("projectsSection")
+       .appendChild(newCard);
+
+
+   // clearing the input and closing the popup
+   nameInput.value = "";
+
+   closeProjectPopup();
+
+}
+
+
+    // ==================== PROJECT NAVIGATION ====================
+
+
+    function openSampleProject() {
+
+        document
+            .getElementById("devDashboard")
+            .style.display = "none";
+
+
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "block";
+
+    }
+
+
+    function backToProjects() {
+
+        document
+            .getElementById("projectOverview")
+            .style.display = "none";
+
+
+        document
+            .getElementById("taskForm")
+            .style.display = "none";
+
+
+        document
+            .getElementById("devDashboard")
+            .style.display = "block";
+
+    }
+
+
+
+    // ==================== SPRINT DATES ====================
+
+
+    function formatSprintDate(date) {
+
+        if (!date) {
+
+            return "--/--";
+
+        }
+
+
+        const parts =
+            date.split("-");
+
+
+        const month =
+            parts[1];
+
+
+        const day =
+            parts[2];
+
+
+        return day + "/" + month;
+
+    }
+
+
+
+    function openSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const dateDisplay =
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
+
+
+        const dateEditor =
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
+
+
+        dateDisplay.style.display =
+            "none";
+
+
+        dateEditor.style.display =
+            "flex";
+
+    }
+
+    function checkSprintDeadline(sprintBox) {
+
+        const endDateInput =
+            sprintBox.querySelector(".sprint-end-date");
+
+        if(!endDateInput){
+            return;
+        }
+
+        const endDate =
+            endDateInput.value;
+
+        // If there is no end date, do nothing
+        if (endDate === "") {
+            return;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const sprintEndDate = new Date(endDate);
+        sprintEndDate.setHours(0, 0, 0, 0);
+
+        // If the sprint has ended
+        if (sprintEndDate < today) {
+            sprintBox.style.opacity = "0.7";
+        } else {
+            sprintBox.style.opacity = "1";
+
+        }
+    }
+
+    function updateSprintDates(input) {
+
+        const sprintBox =
+            input.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
+
+
+        const endDateInput =
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        endDateInput.min =
+            startDate;
+
+
+        if (
+            startDate &&
+            endDate &&
+            endDate < startDate
+        ) {
+
+            endDateInput.value =
+                "";
+
+        }
+
+        checkSprintDeadline(sprintBox);
+
+    }
+
+
+
+    function closeSprintDates(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const startDateInput =
+            sprintBox.querySelector(
+                ".sprint-start-date"
+            );
+
+
+        const endDateInput =
+            sprintBox.querySelector(
+                ".sprint-end-date"
+            );
+
+
+        const dateDisplay =
+            sprintBox.querySelector(
+                ".sprint-date-display"
+            );
+
+
+        const dateEditor =
+            sprintBox.querySelector(
+                ".sprint-date-editor"
+            );
+
+
+        const startDate =
+            startDateInput.value;
+
+
+        const endDate =
+            endDateInput.value;
+
+
+        dateDisplay.textContent =
+            formatSprintDate(startDate)
+            + " - "
+            + formatSprintDate(endDate);
+
+
+        dateEditor.style.display =
+            "none";
+
+
+        dateDisplay.style.display =
+            "inline-block";
+
+    }
+
+
+
+    // ==================== DELETE SPRINT ====================
+
+
+    function deleteSprint(button) {
+
+        const sprintBox =
+            button.closest(".sprint-box");
+
+
+        const sprintNameInput =
+            sprintBox.querySelector(
+                ".sprint-name-input"
+            );
+
+
+        const sprintName =
+            sprintNameInput.value;
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete "
+                + sprintName
+                + "?"
+            );
+
+
+        if (confirmed) {
+
+            sprintBox.remove();
+
+        }
+
+    }
+
+
+
+    // ==================== ADD SPRINT ====================
+
+
+    function addSprint() {
+
+        sprintCount++;
+
+
+        // sprint container
+        const newSprint =
+            document.createElement("section");
+
+
+        newSprint.className =
+            "sprint-box";
+
+
+
+        // delete button
+        const deleteButton =
+            document.createElement("button");
+
+
+        deleteButton.type =
+            "button";
+
+
+        deleteButton.className =
+            "delete-sprint-button";
+
+
+        deleteButton.textContent =
+            "×";
+
+
+        deleteButton.setAttribute(
+            "aria-label",
+            "Delete sprint"
+        );
+
+
+        deleteButton.onclick =
+            function () {
+
+                deleteSprint(this);
+
+            };
+
+
+
+        // sprint name
+        const sprintName =
+            document.createElement("input");
+
+
+        sprintName.className =
+            "sprint-name-input";
+
+
+        sprintName.type =
+            "text";
+
+
+        sprintName.value =
+            "SPRINT " + sprintCount;
+
+
+
+        // date area
+        const sprintDates =
+            document.createElement("section");
+
+
+        sprintDates.className =
+            "sprint-dates";
+
+
+
+        // compact date
+        const dateDisplay =
+            document.createElement("button");
+
+
+        dateDisplay.type =
+            "button";
+
+
+        dateDisplay.className =
+            "sprint-date-display";
+
+
+        dateDisplay.textContent =
+            "--/-- - --/--";
+
+
+        dateDisplay.onclick =
+            function () {
+
+                openSprintDates(this);
+
+            };
+
+
+
+        // date editor
+        const dateEditor =
+            document.createElement("section");
+
+
+        dateEditor.className =
+            "sprint-date-editor";
+
+
+        dateEditor.style.display =
+            "none";
+
+
+
+        // start date
+        const startDate =
+            document.createElement("input");
+
+
+        startDate.type =
+            "date";
+
+
+        startDate.className =
+            "sprint-start-date";
+
+
+        startDate.onchange =
+            function () {
+
+                updateSprintDates(this);
+
+            };
+
+
+
+        // dash
+        const dash =
+            document.createElement("span");
+
+
+        dash.textContent =
+            "-";
+
+
+
+        // end date
+        const endDate =
+            document.createElement("input");
+
+
+        endDate.type =
+            "date";
+
+
+        endDate.className =
+            "sprint-end-date";
+
+
+        endDate.onchange =
+            function () {
+
+                updateSprintDates(this);
+
+            };
+
+
+
+        // done button
+        const doneButton =
+            document.createElement("button");
+
+
+        doneButton.type =
+            "button";
+
+
+        doneButton.className =
+            "date-done-button";
+
+
+        doneButton.textContent =
+            "✓";
+
+
+        doneButton.onclick =
+            function () {
+
+                closeSprintDates(this);
+
+            };
+
+
+
+        // build date editor
+        dateEditor.appendChild(
+            startDate
+        );
+
+
+        dateEditor.appendChild(
+            dash
+        );
+
+
+        dateEditor.appendChild(
+            endDate
+        );
+
+
+        dateEditor.appendChild(
+            doneButton
+        );
+
+
+
+        // build date area
+        sprintDates.appendChild(
+            dateDisplay
+        );
+
+
+        sprintDates.appendChild(
+            dateEditor
+        );
+
+
+
+        // task area
+        const taskArea =
+            document.createElement("section");
+
+
+        taskArea.className =
+            "task-area";
+
+
+        taskArea.ondragover =
+            allowTaskDrop;
+
+
+        taskArea.ondragenter =
+            taskDragEnter;
+
+
+        taskArea.ondragleave =
+            taskDragLeave;
+
+
+        taskArea.ondrop =
+            dropTask;
+
+
+
+        // build sprint
+        newSprint.appendChild(
+            deleteButton
+        );
+
+
+        newSprint.appendChild(
+            sprintName
+        );
+
+
+        newSprint.appendChild(
+            sprintDates
+        );
+
+
+        newSprint.appendChild(
+            taskArea
+        );
+
+
+
+        // add sprint
+        document
+            .getElementById("sprintArea")
+            .appendChild(newSprint);
+
+    }
+
+
+
+    // ==================== TASK DRAG AND DROP ====================
+
+
+    // keeps track of the task currently being dragged
+    let draggedTask = null;
+
+
+    // when the user starts dragging a task
+    function startTaskDrag(event) {
+
+        draggedTask =
+            event.currentTarget;
+
+
+        draggedTask.classList.add(
+            "task-card-dragging"
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+
+
+    // allows the task area to receive a drop
+    function allowTaskDrop(event) {
+
+        event.preventDefault();
+
+
+        event.dataTransfer.dropEffect =
+            "move";
+
+    }
+
+
+    // highlights the sprint/backlog when a task is dragged over it
+    function taskDragEnter(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.add(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // removes the highlight when leaving
+    function taskDragLeave(event) {
+
+        const taskArea =
+            event.currentTarget;
+
+
+        if (
+            event.relatedTarget &&
+            taskArea.contains(
+                event.relatedTarget
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+    }
+
+
+    // moves the task when it is dropped
+    function dropTask(event) {
+
+        event.preventDefault();
+
+
+        const taskArea =
+            event.currentTarget;
+
+
+        taskArea.classList.remove(
+            "task-area-drag-over"
+        );
+
+
+        if (!draggedTask) {
+
+            return;
+
+        }
+
+
+        taskArea.appendChild(
+            draggedTask
+        );
+
+
+        draggedTask.classList.remove(
+            "task-card-dragging"
+        );
+
+
+        draggedTask = null;
+
+        updateProjectProgress();
+
+    }
+
+
+    // cleanup when dragging finishes
+    function endTaskDrag() {
+
+        if (draggedTask) {
+
+            draggedTask.classList.remove(
+                "task-card-dragging"
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                ".task-area-drag-over"
+            )
+            .forEach(function (area) {
+
+                area.classList.remove(
+                    "task-area-drag-over"
+                );
+
+            });
+
+
+        draggedTask = null;
+
+    }
+
+
+    // ==================== TASK FORM ====================
+
+
+    function openTaskForm() {
+
+        editingTaskCard = null;
+        clearTaskForm();
+
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
+
+    }
+
+
+    function closeTaskForm() {
+
+        document.getElementById("taskForm").style.display = "none";
+        document.getElementById("projectOverview").style.display = "block";
+
+    }
+
+
+    function openTaskDetails(taskCard) {
+
+        editingTaskCard = taskCard;
+
+        document.getElementById("taskNameInput").value = taskCard.dataset.name || "";
+        document.getElementById("taskDescriptionInput").value = taskCard.dataset.description || "";
+        document.getElementById("taskPriorityInput").value = taskCard.dataset.priority || "";
+        document.getElementById("taskWeightInput").value = taskCard.dataset.weight || "";
+        document.getElementById("taskWeightNumber").textContent = taskCard.dataset.weight || "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = taskCard.dataset.status === "overdue" ? "todo" : (taskCard.dataset.status || "todo");
+        updateStatusColour(statusInput);
+
+        const taskDeadline = taskCard.dataset.deadline || "";
+        if (taskDeadline) {
+            const parts = taskDeadline.split("-");
+            calendarSelectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            calendarViewYear = calendarSelectedDate.getFullYear();
+            calendarViewMonth = calendarSelectedDate.getMonth();
+            document.getElementById("deadlineLabel").textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " " +
+                calendarSelectedDate.getDate() + ", " +
+                calendarSelectedDate.getFullYear();
+        } else {
+            calendarSelectedDate = null;
+            document.getElementById("deadlineLabel").textContent = "Deadline";
+        }
+
+        loadTaskChecklists(taskCard);
+
+        document.getElementById("taskSaveButton").textContent = "Save Changes";
+        document.getElementById("projectOverview").style.display = "none";
+        document.getElementById("taskForm").style.display = "block";
+
+    }
+
+
+    function clearTaskForm() {
+
+        document.getElementById("taskNameInput").value = "";
+        document.getElementById("taskDescriptionInput").value = "";
+        document.getElementById("taskPriorityInput").value = "";
+        document.getElementById("taskWeightInput").value = "";
+        document.getElementById("taskWeightNumber").textContent = "";
+
+        const statusInput = document.getElementById("taskStatusInput");
+        statusInput.value = "";
+        updateStatusColour(statusInput);
+
+        calendarSelectedDate = null;
+        document.getElementById("deadlineLabel").textContent = "Deadline";
+        document.getElementById("deadlineCalendar").style.display = "none";
+        resetTags();
+        document.getElementById("checklistContainer").innerHTML = "";
+
+    }
+
+
+    function updateTaskWeight(weight) {
+
+        document
+            .getElementById("taskWeightNumber")
+            .textContent = weight;
+
+    }
+
+    const statusColours = {
+            todo:     "#18273A",
+            inReview: "#5200A3",
+            ongoing:  "#FBB13C",
+            complete: "#00B800",
+            overdue:  "#D62839"
+    };
+
+    function updateStatusColour(select) {
+
+        const colour = statusColours[select.value];
+
+        select.style.backgroundColor = colour || "#18273A";
+
+        // dark text on the yellow so it stays readable
+        select.style.color =
+            select.value === "ongoing" ? "#18273A" : "#D9D9D9";
+
+    }
+
+    //To check if the task is past its due date and set to overdue
+    function checkTaskStatus(taskStatus, deadline) {
+        if(!deadline){
+            return taskStatus;
+        }
+
+        if(taskStatus === "complete"){
+            return taskStatus;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        deadline.setHours(0, 0, 0, 0);
+
+        if(deadline < today) {
+            taskStatus = "overdue";
+        }
+
+        return taskStatus;
+    }
+
+
+
+
+
+    // ==================== SAVE TASK ====================
+
+
+    function updateTaskCardStatus(taskCard, statusCircle, taskStatus) {
+        taskCard.style.backgroundColor = "#D9D9D9";
+        taskCard.style.opacity = "1";
+        statusCircle.style.backgroundColor = "#8A8A8A";
+
+        if (taskStatus === "inReview") statusCircle.style.backgroundColor = "#5200A3";
+        else if (taskStatus === "ongoing") statusCircle.style.backgroundColor = "#FBB13C";
+        else if (taskStatus === "complete") {
+            statusCircle.style.backgroundColor = "#00B800";
+            taskCard.style.backgroundColor = "#E0E0E0";
+            taskCard.style.opacity = "0.5";
+        } else if (taskStatus === "overdue") statusCircle.style.backgroundColor = "#D62839";
+    }
+
+    function addTaskPriority(taskInfo, taskPriority) {
+        if (!taskPriority) return;
+        const priorityText = document.createElement("span");
+        priorityText.className = "task-priority";
+        priorityText.textContent = taskPriority === "high" ? "⌃" : taskPriority === "medium" ? "-" : "⌄";
+        taskInfo.appendChild(priorityText);
+    }
+
+    function addTaskWeight(taskInfo, taskWeight) {
+        if (!taskWeight) return;
+        const weightText = document.createElement("span");
+        weightText.className = "task-card-weight";
+        weightText.textContent = taskWeight;
+        taskInfo.appendChild(weightText);
+    }
+
+    function saveTask() {
+        const taskName = document.getElementById("taskNameInput").value.trim();
+        const taskDescription = document.getElementById("taskDescriptionInput").value.trim();
+        const taskPriority = document.getElementById("taskPriorityInput").value;
+        const taskWeight = document.getElementById("taskWeightInput").value;
+        const taskStatusInput = document.getElementById("taskStatusInput");
+        let taskStatus = taskStatusInput.value || "todo";
+        taskStatus = checkTaskStatus(taskStatus, calendarSelectedDate);
+
+        if (!taskName) { alert("Please enter a task name."); return; }
+
+        let taskDeadline = "";
+        if (calendarSelectedDate) {
+            const year = calendarSelectedDate.getFullYear();
+            const month = String(calendarSelectedDate.getMonth() + 1).padStart(2, "0");
+            const day = String(calendarSelectedDate.getDate()).padStart(2, "0");
+            taskDeadline = year + "-" + month + "-" + day;
+        }
+
+        if (editingTaskCard) {
+            editingTaskCard.dataset.name = taskName;
+            editingTaskCard.dataset.description = taskDescription;
+            editingTaskCard.dataset.priority = taskPriority;
+            editingTaskCard.dataset.weight = taskWeight;
+            editingTaskCard.dataset.status = taskStatus;
+            editingTaskCard.dataset.deadline = taskDeadline;
+            editingTaskCard.dataset.checklists = JSON.stringify(getChecklistData());
+
+            editingTaskCard.querySelector(".task-card-name").textContent = taskName;
+            updateTaskCardStatus(editingTaskCard, editingTaskCard.querySelector(".task-status-circle"), taskStatus);
+            const taskInfo = editingTaskCard.querySelector(".task-card-info");
+            taskInfo.innerHTML = "";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+            editingTaskCard = null;
+        } else {
+            const taskCard = document.createElement("section");
+            taskCard.className = "task-card";
+            taskCard.dataset.name = taskName;
+            taskCard.dataset.description = taskDescription;
+            taskCard.dataset.priority = taskPriority;
+            taskCard.dataset.weight = taskWeight;
+            taskCard.dataset.status = taskStatus;
+            taskCard.dataset.deadline = taskDeadline;
+            taskCard.dataset.checklists = JSON.stringify(getChecklistData());
+            taskCard.draggable = true;
+            taskCard.ondragstart = startTaskDrag;
+            taskCard.ondragend = endTaskDrag;
+            taskCard.onclick = function () {
+                if (draggedTask === null) openTaskDetails(this);
+            };
+
+            const statusCircle = document.createElement("span");
+            statusCircle.className = "task-status-circle";
+            updateTaskCardStatus(taskCard, statusCircle, taskStatus);
+
+            const taskNameText = document.createElement("span");
+            taskNameText.className = "task-card-name";
+            taskNameText.textContent = taskName;
+
+            const taskInfo = document.createElement("section");
+            taskInfo.className = "task-card-info";
+            addTaskPriority(taskInfo, taskPriority);
+            addTaskWeight(taskInfo, taskWeight);
+
+            taskCard.appendChild(statusCircle);
+            taskCard.appendChild(taskNameText);
+            taskCard.appendChild(taskInfo);
+            document.getElementById("backlogTaskArea").appendChild(taskCard);
+        }
+
+        clearTaskForm();
+        document.getElementById("taskSaveButton").textContent = "Save Task";
+        updateProjectProgress();
+        closeTaskForm();
+    }
+
+
+    // ==================== TASK CHECKLISTS ====================
+
+    function addChecklist(title = "", items = []) {
+        const container = document.getElementById("checklistContainer");
+        const checklist = document.createElement("section");
+        checklist.className = "task-checklist";
+        checklist.style.cssText = "background:#f0f0f0; border-radius:16px; padding:16px; margin-bottom:15px;";
+
+        const header = document.createElement("section");
+        header.style.cssText = "display:flex; gap:10px; align-items:center; margin-bottom:12px;";
+
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.className = "checklist-title-input";
+        titleInput.placeholder = "Checklist name";
+        titleInput.value = title;
+        titleInput.style.cssText = "flex:1; padding:10px 12px; border:1px solid #bbb; border-radius:10px; font-family:inherit;";
+
+        const deleteList = document.createElement("button");
+        deleteList.type = "button";
+        deleteList.textContent = "Delete list";
+        deleteList.style.cssText = "border:none; border-radius:10px; padding:9px 12px; cursor:pointer;";
+        deleteList.onclick = function () { checklist.remove(); };
+
+        header.appendChild(titleInput);
+        header.appendChild(deleteList);
+
+        const itemsContainer = document.createElement("section");
+        itemsContainer.className = "checklist-items";
+
+        const addItemButton = document.createElement("button");
+        addItemButton.type = "button";
+        addItemButton.textContent = "+ Add item";
+        addItemButton.style.cssText = "margin-top:10px; border:none; border-radius:10px; padding:9px 12px; cursor:pointer;";
+        addItemButton.onclick = function () { addChecklistItem(itemsContainer); };
+
+        checklist.appendChild(header);
+        checklist.appendChild(itemsContainer);
+        checklist.appendChild(addItemButton);
+        container.appendChild(checklist);
+
+        items.forEach(function (item) {
+            addChecklistItem(itemsContainer, item.text || "", !!item.checked);
+        });
+
+        if (items.length === 0) addChecklistItem(itemsContainer);
+        titleInput.focus();
+    }
+
+    function addChecklistItem(container, text = "", checked = false) {
+        const row = document.createElement("section");
+        row.className = "checklist-item";
+        row.style.cssText = "display:flex; align-items:center; gap:10px; margin:8px 0;";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "checklist-item-checkbox";
+        checkbox.checked = checked;
+
+        const itemInput = document.createElement("input");
+        itemInput.type = "text";
+        itemInput.className = "checklist-item-text";
+        itemInput.placeholder = "Checklist item";
+        itemInput.value = text;
+        itemInput.style.cssText = "flex:1; padding:9px 10px; border:1px solid #bbb; border-radius:9px; font-family:inherit;";
+
+        const deleteItem = document.createElement("button");
+        deleteItem.type = "button";
+        deleteItem.textContent = "×";
+        deleteItem.title = "Delete item";
+        deleteItem.style.cssText = "border:none; background:transparent; font-size:22px; cursor:pointer;";
+        deleteItem.onclick = function () { row.remove(); };
+
+        row.appendChild(checkbox);
+        row.appendChild(itemInput);
+        row.appendChild(deleteItem);
+        container.appendChild(row);
+    }
+
+    function getChecklistData() {
+        return Array.from(document.querySelectorAll("#checklistContainer .task-checklist")).map(function (list) {
+            return {
+                title: list.querySelector(".checklist-title-input").value.trim(),
+                items: Array.from(list.querySelectorAll(".checklist-item")).map(function (item) {
+                    return {
+                        text: item.querySelector(".checklist-item-text").value.trim(),
+                        checked: item.querySelector(".checklist-item-checkbox").checked
+                    };
+                }).filter(function (item) { return item.text !== ""; })
+            };
+        }).filter(function (list) { return list.title !== "" || list.items.length > 0; });
+    }
+
+    function loadTaskChecklists(taskCard) {
+        const container = document.getElementById("checklistContainer");
+        container.innerHTML = "";
+        let checklists = [];
+        try {
+            checklists = JSON.parse(taskCard.dataset.checklists || "[]");
+        } catch (error) {
+            checklists = [];
+        }
+        checklists.forEach(function (list) {
+            addChecklist(list.title || "", list.items || []);
+        });
+    }
+
+    // ==================== CUSTOM TAGS ====================
+
+    // the colours a tag can be given
+    const tagColours = [
+        { name: "Green",  hex: "#3F9B76" },
+        { name: "Teal",   hex: "#1F7F85" },
+        { name: "Blue",   hex: "#3C6FC4" },
+        { name: "Indigo", hex: "#5B4BB5" },
+        { name: "Purple", hex: "#963A91" },
+        { name: "Pink",   hex: "#C2467F" },
+        { name: "Red",    hex: "#C94A4A" },
+        { name: "Orange", hex: "#B8581A" },
+        { name: "Gold",   hex: "#94700A" },
+        { name: "Slate",  hex: "#5C6B7E" }
+    ];
+
+    // colour picked in the popup, first one by default
+    let selectedTagColour = tagColours[0].hex;
+
+
+    // building the colour swatches, only needs doing once
+    function renderTagColours() {
+
+        const grid = document.getElementById("tagColourGrid");
+
+        tagColours.forEach(function (colour) {
+
+            const swatch = document.createElement("button");
+
+            swatch.type = "button";
+            swatch.className = "tag-colour-swatch";
+            swatch.style.backgroundColor = colour.hex;
+            swatch.dataset.colour = colour.hex;
+            swatch.title = colour.name;
+            swatch.setAttribute("aria-label", colour.name);
+
+            swatch.onclick = function () {
+                selectTagColour(colour.hex);
+            };
+
+            grid.appendChild(swatch);
+
+        });
+
+        selectTagColour(selectedTagColour);
+
+    }
+
+
+    // highlighting the picked swatch
+    function selectTagColour(hex) {
+
+        selectedTagColour = hex;
+
+        document
+            .querySelectorAll(".tag-colour-swatch")
+            .forEach(function (swatch) {
+
+                const isSelected = swatch.dataset.colour === hex;
+
+                swatch.classList.toggle("tag-colour-swatch-selected", isSelected);
+                swatch.setAttribute("aria-pressed", isSelected);
+
+            });
+
+    }
+
+
+    // showing/hiding the create tag popup
+    function toggleTagPopup() {
+
+        const popup = document.getElementById("tagPopup");
+
+        if (popup.style.display === "block") {
+            closeTagPopup();
+        } else {
+            popup.style.display = "block";
+            document.getElementById("tagNameInput").focus();
+        }
+
+    }
+
+
+    // hiding the popup and getting it ready for the next tag
+    function closeTagPopup() {
+
+        document
+            .getElementById("tagPopup")
+            .style.display = "none";
+
+        document
+            .getElementById("tagNameInput")
+            .value = "";
+
+        selectTagColour(tagColours[0].hex);
+
+    }
+
+
+    // enter adds the tag, escape closes the popup
+    function handleTagNameKey(event) {
+
+        if (event.key === "Enter") {
+            addTag();
+        }
+
+        if (event.key === "Escape") {
+            closeTagPopup();
+        }
+
+    }
+
+
+    // putting the new tag in the tag row
+    function addTag() {
+
+        const nameInput = document.getElementById("tagNameInput");
+
+        const tagName = nameInput.value.trim();
+
+        // tag needs a name
+        if (tagName === "") {
+
+            nameInput.focus();
+
+            return;
+
+        }
+
+
+        const newTag = document.createElement("button");
+
+        newTag.type = "button";
+        newTag.className = "tag-button custom-tag";
+        newTag.textContent = tagName;
+        newTag.style.backgroundColor = selectedTagColour;
+
+
+        // goes after the existing tags, before the popup
+        document
+            .getElementById("tagPopup")
+            .before(newTag);
+
+        closeTagPopup();
+
+    }
+
+
+    // removing the tags that were created in the form
+    function resetTags() {
+
+        document
+            .querySelectorAll(".custom-tag")
+            .forEach(function (tag) {
+                tag.remove();
+            });
+
+        closeTagPopup();
+
+    }
+
+
+    // clicking anywhere outside the tag area closes the popup
+    document.addEventListener("click", function (event) {
+
+        const tagArea = document.querySelector(".task-tags");
+
+        if (!tagArea.contains(event.target)) {
+            closeTagPopup();
+        }
+
+    });
+
+
+    renderTagColours();
+
+
+    // ==================== DEADLINE CALENDAR ====================
+
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // what month/year the calendar is currently showing
+    const today = new Date();
+    let calendarViewYear = today.getFullYear();
+    let calendarViewMonth = today.getMonth();
+
+    // the date the user has actually picked, if any
+    let calendarSelectedDate = null;
+
+
+    // showing/hiding the calendar popup
+    function toggleDeadlineCalendar() {
+
+        const calendar = document.getElementById("deadlineCalendar");
+
+        const isOpen = calendar.style.display === "block";
+
+        if (isOpen) {
+            calendar.style.display = "none";
+        } else {
+            renderCalendar();
+            calendar.style.display = "block";
+        }
+
+    }
+
+
+    // going back a month
+    function calendarPrevMonth() {
+
+        if (calendarViewMonth === 0) {
+            calendarViewMonth = 11;
+            calendarViewYear--;
+        } else {
+            calendarViewMonth--;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // going forward a month
+    function calendarNextMonth() {
+
+        if (calendarViewMonth === 11) {
+            calendarViewMonth = 0;
+            calendarViewYear++;
+        } else {
+            calendarViewMonth++;
+        }
+
+        renderCalendar();
+
+    }
+
+
+    // user picked a day in the grid
+    function selectDeadlineDay(day) {
+
+        calendarSelectedDate = new Date(calendarViewYear, calendarViewMonth, day);
+
+        document
+            .getElementById("deadlineLabel")
+            .textContent =
+                monthNames[calendarSelectedDate.getMonth()] + " "
+                + calendarSelectedDate.getDate() + ", "
+                + calendarSelectedDate.getFullYear();
+
+        document
+            .getElementById("deadlineCalendar")
+            .style.display = "none";
+
+    }
+
+
+    // rebuilding the header + day grid for the current view month
+    function renderCalendar() {
+
+        document
+            .getElementById("calendarMonthLabel")
+            .textContent = monthNames[calendarViewMonth] + " " + calendarViewYear;
+
+
+        const daysContainer = document.getElementById("calendarDays");
+
+        daysContainer.innerHTML = "";
+
+
+        const firstWeekday = new Date(calendarViewYear, calendarViewMonth, 1).getDay();
+        const daysInMonth = new Date(calendarViewYear, calendarViewMonth + 1, 0).getDate();
+
+
+        // empty cells before the 1st
+        for (let i = 0; i < firstWeekday; i++) {
+
+            const emptyCell = document.createElement("button");
+
+            emptyCell.type = "button";
+            emptyCell.className = "calendar-day calendar-day-empty";
+            emptyCell.disabled = true;
+
+            daysContainer.appendChild(emptyCell);
+
+        }
+
+
+        // the actual day buttons
+        for (let day = 1; day <= daysInMonth; day++) {
+
+            const dayButton = document.createElement("button");
+
+            dayButton.type = "button";
+            dayButton.className = "calendar-day";
+            dayButton.textContent = day;
+
+            const isSelected =
+                calendarSelectedDate &&
+                day === calendarSelectedDate.getDate() &&
+                calendarViewMonth === calendarSelectedDate.getMonth() &&
+                calendarViewYear === calendarSelectedDate.getFullYear();
+
+            if (isSelected) {
+                dayButton.className += " calendar-day-selected";
+            }
+
+            dayButton.onclick = function () {
+                selectDeadlineDay(day);
+            };
+
+            daysContainer.appendChild(dayButton);
+
+        }
+
+    }
+
+
+    // ==================== LOGIN NAVIGATION ====================
+
+
+        function openDevPage() {
+
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
+
+
+            document
+                .getElementById("clientLanding")
+                .style.display = "none";
+
+
+            document
+                .getElementById("devDashboard")
+                .style.display = "block";
+
+        }
+
+
+        function openClientPage() {
+
+            document
+                .getElementById("loginPage")
+                .style.display = "none";
+
+
+            document
+                .getElementById("devDashboard")
+                .style.display = "none";
+
+
+            document
+                .getElementById("clientLanding")
+                .style.display = "flex";
+        }
+
+</script>
+
+
+<!-- progressbar.js for the client landing donut chart -->
+<!-- The progress bar being used is taken from: https://kimmobrunfeldt.github.io/progressbar.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"></script>
+<script>
+
+    var donut = new ProgressBar.Circle('#progress-donut', {
+        color: '#6FD361',
+        trailColor: '#18273A',
+        strokeWidth: 15,
+        trailWidth: 15,
+        fill: null,
+        duration: 1200,
+        easing: 'easeOut',
+        svgStyle: {
+            display: 'block',
+            width: '100%',
+            height: '100%'
+        }
+    });
+
+    donut.set(0.67); // 67%
+
+    document.querySelectorAll(".sprint-box").forEach(function(sprintBox) {
+
+        checkSprintDeadline(sprintBox);
+
+    });
+
+    // refresh progress bar on page load
+    updateProjectProgress();
+
+</script>
+
+
+</body>
+
+</html>

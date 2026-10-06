@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./ProjectOverview.css";
 
@@ -24,6 +24,50 @@ function ProjectOverview({
             }
 
         ]);
+
+
+    // stores which sprint each task currently belongs to
+    // null means the task is in the backlog
+    const [taskSprintAssignments, setTaskSprintAssignments] =
+        useState({});
+
+
+    // stores the task currently being dragged
+    const [draggedTaskId, setDraggedTaskId] =
+        useState(null);
+
+
+    // stores the sprint/backlog currently being dragged over
+    const [dragOverSprintId, setDragOverSprintId] =
+        useState(null);
+
+
+    // when a new task is created, put it in the backlog
+    useEffect(() => {
+
+        setTaskSprintAssignments((currentAssignments) => {
+
+            const updatedAssignments = {
+                ...currentAssignments
+            };
+
+
+            tasks.forEach((task) => {
+
+                if (!(task.id in updatedAssignments)) {
+
+                    updatedAssignments[task.id] = null;
+
+                }
+
+            });
+
+
+            return updatedAssignments;
+
+        });
+
+    }, [tasks]);
 
 
     // formatting sprint dates
@@ -273,6 +317,38 @@ function ProjectOverview({
         }
 
 
+        // move tasks from deleted sprint back to backlog
+        setTaskSprintAssignments(
+            (currentAssignments) => {
+
+                const updatedAssignments = {
+                    ...currentAssignments
+                };
+
+
+                Object.keys(updatedAssignments).forEach(
+                    (taskId) => {
+
+                        if (
+                            updatedAssignments[taskId]
+                            === sprintId
+                        ) {
+
+                            updatedAssignments[taskId] =
+                                null;
+
+                        }
+
+                    }
+                );
+
+
+                return updatedAssignments;
+
+            }
+        );
+
+
         setSprints((currentSprints) =>
 
             currentSprints.filter(
@@ -283,6 +359,232 @@ function ProjectOverview({
         );
 
     }
+
+
+    // when user starts dragging a task
+    function handleDragStart(
+        event,
+        taskId
+    ) {
+
+        setDraggedTaskId(taskId);
+
+
+        event.dataTransfer.setData(
+            "text/plain",
+            String(taskId)
+        );
+
+
+        event.dataTransfer.effectAllowed =
+            "move";
+
+    }
+
+
+    // allows a sprint to accept a dropped task
+    function handleDragOver(
+        event,
+        sprintId
+    ) {
+
+        event.preventDefault();
+
+
+        event.dataTransfer.dropEffect =
+            "move";
+
+
+        setDragOverSprintId(
+            sprintId
+        );
+
+    }
+
+
+    // remove drag highlight when leaving sprint
+    function handleDragLeave(event) {
+
+        // prevents flickering when moving over children
+        if (
+            event.currentTarget.contains(
+                event.relatedTarget
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        setDragOverSprintId(null);
+
+    }
+
+
+    // move task into selected sprint
+    function handleDrop(
+        event,
+        sprintId
+    ) {
+
+        event.preventDefault();
+
+
+        const transferredTaskId =
+            event.dataTransfer.getData(
+                "text/plain"
+            );
+
+
+        let taskId =
+            draggedTaskId;
+
+
+        if (
+            taskId === null &&
+            transferredTaskId
+        ) {
+
+            const numericTaskId =
+                Number(transferredTaskId);
+
+
+            taskId =
+                Number.isNaN(numericTaskId)
+                    ? transferredTaskId
+                    : numericTaskId;
+
+        }
+
+
+        if (taskId === null) {
+
+            return;
+
+        }
+
+
+        setTaskSprintAssignments(
+            (currentAssignments) => ({
+
+                ...currentAssignments,
+
+                [taskId]: sprintId
+
+            })
+        );
+
+
+        setDraggedTaskId(null);
+
+        setDragOverSprintId(null);
+
+    }
+
+
+    // finish dragging
+    function handleDragEnd() {
+
+        setDraggedTaskId(null);
+
+        setDragOverSprintId(null);
+
+    }
+
+
+    // get tasks belonging to a sprint
+    function getTasksForSprint(sprintId) {
+
+        return tasks.filter(
+            (task) =>
+                taskSprintAssignments[task.id]
+                === sprintId
+        );
+
+    }
+
+
+    // reusable task card
+    function renderTaskCard(task) {
+
+        return (
+
+            <section
+                className={
+                    "task-card"
+                    + (
+                        draggedTaskId === task.id
+                            ? " task-card-dragging"
+                            : ""
+                    )
+                }
+                key={task.id}
+                draggable="true"
+                onDragStart={(event) =>
+                    handleDragStart(
+                        event,
+                        task.id
+                    )
+                }
+                onDragEnd={
+                    handleDragEnd
+                }
+            >
+
+
+                <span
+                    className="task-status-circle"
+                ></span>
+
+
+                <span className="task-card-name">
+
+                    {task.name}
+
+                </span>
+
+
+
+                <section className="task-card-info">
+
+
+                    {task.priority && (
+
+                        <span className="task-priority">
+
+                            {getPrioritySymbol(
+                                task.priority
+                            )}
+
+                        </span>
+
+                    )}
+
+
+                    {task.weight && (
+
+                        <span className="task-card-weight">
+
+                            {task.weight}
+
+                        </span>
+
+                    )}
+
+
+                </section>
+
+
+            </section>
+
+        );
+
+    }
+
+
+    const backlogTasks =
+        getTasksForSprint(null);
 
 
     return (
@@ -321,7 +623,31 @@ function ProjectOverview({
 
 
                     {/* backlog */}
-                    <section className="sprint-box">
+                    <section
+                        className={
+                            "sprint-box"
+                            + (
+                                dragOverSprintId === "backlog"
+                                    ? " sprint-box-drag-over"
+                                    : ""
+                            )
+                        }
+                        onDragOver={(event) =>
+                            handleDragOver(
+                                event,
+                                "backlog"
+                            )
+                        }
+                        onDragLeave={
+                            handleDragLeave
+                        }
+                        onDrop={(event) =>
+                            handleDrop(
+                                event,
+                                null
+                            )
+                        }
+                    >
 
 
                         <h2>
@@ -332,60 +658,19 @@ function ProjectOverview({
                         <section className="task-area">
 
 
-                            {tasks.map((task) => (
-
-                                <section
-                                    className="task-card"
-                                    key={task.id}
-                                >
+                            {backlogTasks.map(
+                                (task) =>
+                                    renderTaskCard(task)
+                            )}
 
 
-                                    <span
-                                        className="task-status-circle"
-                                    ></span>
+                            {backlogTasks.length === 0 && (
 
+                                <p className="empty-sprint-message">
+                                    Drop tasks here
+                                </p>
 
-                                    <span className="task-card-name">
-
-                                        {task.name}
-
-                                    </span>
-
-
-
-                                    <section className="task-card-info">
-
-
-                                        {task.priority && (
-
-                                            <span className="task-priority">
-
-                                                {getPrioritySymbol(
-                                                    task.priority
-                                                )}
-
-                                            </span>
-
-                                        )}
-
-
-                                        {task.weight && (
-
-                                            <span className="task-card-weight">
-
-                                                {task.weight}
-
-                                            </span>
-
-                                        )}
-
-
-                                    </section>
-
-
-                                </section>
-
-                            ))}
+                            )}
 
 
                         </section>
@@ -396,138 +681,186 @@ function ProjectOverview({
 
 
                     {/* sprints */}
-                    {sprints.map((sprint) => (
+                    {sprints.map((sprint) => {
 
-                        <section
-                            className="sprint-box"
-                            key={sprint.id}
-                        >
+                        const sprintTasks =
+                            getTasksForSprint(
+                                sprint.id
+                            );
 
 
-                            <button
-                                type="button"
-                                className="delete-sprint-button"
-                                aria-label="Delete sprint"
-                                onClick={() =>
-                                    deleteSprint(
-                                        sprint.id,
-                                        sprint.name
+                        return (
+
+                            <section
+                                className={
+                                    "sprint-box"
+                                    + (
+                                        dragOverSprintId === sprint.id
+                                            ? " sprint-box-drag-over"
+                                            : ""
+                                    )
+                                }
+                                key={sprint.id}
+                                onDragOver={(event) =>
+                                    handleDragOver(
+                                        event,
+                                        sprint.id
+                                    )
+                                }
+                                onDragLeave={
+                                    handleDragLeave
+                                }
+                                onDrop={(event) =>
+                                    handleDrop(
+                                        event,
+                                        sprint.id
                                     )
                                 }
                             >
-                                ×
-                            </button>
+
+
+                                <button
+                                    type="button"
+                                    className="delete-sprint-button"
+                                    aria-label="Delete sprint"
+                                    onClick={() =>
+                                        deleteSprint(
+                                            sprint.id,
+                                            sprint.name
+                                        )
+                                    }
+                                >
+                                    ×
+                                </button>
 
 
 
-                            <input
-                                className="sprint-name-input"
-                                type="text"
-                                value={sprint.name}
-                                onChange={(event) =>
-                                    updateSprintName(
-                                        sprint.id,
-                                        event.target.value
-                                    )
-                                }
-                            />
+                                <input
+                                    className="sprint-name-input"
+                                    type="text"
+                                    value={sprint.name}
+                                    onChange={(event) =>
+                                        updateSprintName(
+                                            sprint.id,
+                                            event.target.value
+                                        )
+                                    }
+                                />
 
 
 
-                            <section className="sprint-dates">
+                                <section className="sprint-dates">
 
 
-                                {!sprint.editingDates ? (
-
-                                    <button
-                                        type="button"
-                                        className="sprint-date-display"
-                                        onClick={() =>
-                                            setSprintDateEditing(
-                                                sprint.id,
-                                                true
-                                            )
-                                        }
-                                    >
-
-                                        {formatDate(
-                                            sprint.startDate
-                                        )}
-
-                                        {" - "}
-
-                                        {formatDate(
-                                            sprint.endDate
-                                        )}
-
-                                    </button>
-
-                                ) : (
-
-                                    <section className="sprint-date-editor">
-
-
-                                        <input
-                                            type="date"
-                                            value={sprint.startDate}
-                                            onChange={(event) =>
-                                                updateStartDate(
-                                                    sprint.id,
-                                                    event.target.value
-                                                )
-                                            }
-                                        />
-
-
-                                        <span>
-                                            -
-                                        </span>
-
-
-                                        <input
-                                            type="date"
-                                            value={sprint.endDate}
-                                            min={sprint.startDate}
-                                            onChange={(event) =>
-                                                updateEndDate(
-                                                    sprint.id,
-                                                    event.target.value
-                                                )
-                                            }
-                                        />
-
+                                    {!sprint.editingDates ? (
 
                                         <button
                                             type="button"
-                                            className="date-done-button"
+                                            className="sprint-date-display"
                                             onClick={() =>
                                                 setSprintDateEditing(
                                                     sprint.id,
-                                                    false
+                                                    true
                                                 )
                                             }
                                         >
-                                            ✓
+
+                                            {formatDate(
+                                                sprint.startDate
+                                            )}
+
+                                            {" - "}
+
+                                            {formatDate(
+                                                sprint.endDate
+                                            )}
+
                                         </button>
 
+                                    ) : (
 
-                                    </section>
+                                        <section className="sprint-date-editor">
 
-                                )}
+
+                                            <input
+                                                type="date"
+                                                value={sprint.startDate}
+                                                onChange={(event) =>
+                                                    updateStartDate(
+                                                        sprint.id,
+                                                        event.target.value
+                                                    )
+                                                }
+                                            />
+
+
+                                            <span>
+                                                -
+                                            </span>
+
+
+                                            <input
+                                                type="date"
+                                                value={sprint.endDate}
+                                                min={sprint.startDate}
+                                                onChange={(event) =>
+                                                    updateEndDate(
+                                                        sprint.id,
+                                                        event.target.value
+                                                    )
+                                                }
+                                            />
+
+
+                                            <button
+                                                type="button"
+                                                className="date-done-button"
+                                                onClick={() =>
+                                                    setSprintDateEditing(
+                                                        sprint.id,
+                                                        false
+                                                    )
+                                                }
+                                            >
+                                                ✓
+                                            </button>
+
+
+                                        </section>
+
+                                    )}
+
+
+                                </section>
+
+
+
+                                <section className="task-area">
+
+
+                                    {sprintTasks.map(
+                                        (task) =>
+                                            renderTaskCard(task)
+                                    )}
+
+
+                                    {sprintTasks.length === 0 && (
+
+                                        <p className="empty-sprint-message">
+                                            Drop tasks here
+                                        </p>
+
+                                    )}
+
+
+                                </section>
 
 
                             </section>
 
+                        );
 
-
-                            <section className="task-area">
-
-                            </section>
-
-
-                        </section>
-
-                    ))}
+                    })}
 
 
                 </section>
