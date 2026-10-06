@@ -5,8 +5,8 @@
 1. Copy `.env.example` to `.env.local` and set the Supabase project URL and publishable key. These are browser-safe values; never use a service-role key in the app.
 2. Install dependencies and start the Vite app with `npm install` and `npm run dev`.
 3. Ensure the Supabase project has the baseline tables, enum types, and constraints represented by `database/schema.sql`. That file documents the schema; it is not a standalone migration.
-4. On a fresh database with the baseline schema in place, run the files in `database/migrations/` once, in filename order. If the two `20261005` migrations have already been applied, run only `20261006_app_workflows.sql`. The access migration expects the role values `Admin`, `Developer`, and `Client`; the app migration discovers the values in `default_status_enum` and seeds matching status rows.
-5. Create test accounts in Supabase Authentication. The latest migration creates profiles for new accounts and backfills existing Auth users as Developers. Promote trusted test accounts to Admin in the SQL Editor when required:
+4. On a fresh database with the baseline schema in place, run the files in `database/migrations/` once, in filename order. If the two `20261005` migrations have already been applied, run only `20261006_app_workflows.sql` from the earlier migrations. The access migration expects the role values `Admin`, `Developer`, and `Client`; the app migration discovers the values in `default_status_enum` and seeds matching status rows.
+5. Run `20261006_auth_profile_repair.sql` after the app workflow migration to ensure the profile-creation trigger is installed and any existing Auth accounts without profiles are backfilled. The app's sign-up form creates Supabase Auth accounts with first and last names; new accounts receive the least-privileged Developer role. Assign Client or Admin roles to trusted accounts in the SQL Editor when required:
 
    ```sql
    UPDATE public."user"
@@ -16,7 +16,17 @@
 
 Use `Client` instead of `Admin` in the role lookup to prepare a client test account.
 
-6. As an Admin, create projects and add developer/client accounts from the project overview. Developers only see projects they belong to and tasks assigned to them.
+6. Apply `20261007_project_settings.sql` after the role/access and app workflow migrations. It enables safe comment deletion and returns role and email details to project-member candidate lists.
+7. Link this repository to the Supabase project with the Supabase CLI and deploy the `create-project-member` Edge Function:
+
+   ```sh
+   supabase link --project-ref <project-ref>
+   supabase functions deploy create-project-member
+   ```
+
+   The function verifies the signed-in Admin and project membership before creating an Auth account, assigning its Developer or Client role, and adding it to that project. The Supabase Edge Function runtime supplies the service-role key; never put that key in frontend environment variables or source files.
+
+8. As an Admin, open a project, select Settings, then Developer or Client to add an existing account or create a new account with a temporary password. Added users should change that password under Settings → Security after signing in. Admins can delete projects from the project list; comment authors can delete their own comments, and project Admins can delete any comment in the project.
 
 For Netlify, set the same `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables in the site's environment settings. The deploy configuration runs `npm run build` and publishes `dist`.
 
