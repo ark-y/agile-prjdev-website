@@ -72,6 +72,17 @@ function CreateTaskForm({
     const [assigneeIds, setAssigneeIds] =
         useState(initialTask?.assigneeIds || []);
 
+    const canToggleChecklist =
+        roleName === "Admin" ||
+        (
+            roleName === "Developer" &&
+            currentUser?.user_id != null &&
+            assigneeIds.some(
+                (assigneeId) =>
+                    String(assigneeId) === String(currentUser.user_id)
+            )
+        );
+
 
     // tags
     const [tagIds, setTagIds] =
@@ -379,6 +390,13 @@ function CreateTaskForm({
 
     // mark checklist item complete / incomplete
     function handleToggleChecklistItem(itemId) {
+
+        if (!canToggleChecklist) {
+
+            return;
+
+        }
+
 
         setChecklists((current) =>
             current.map((item) => {
@@ -1317,6 +1335,7 @@ function CreateTaskForm({
                                                 item.completed
                                             )
                                         }
+                                        disabled={!canToggleChecklist}
                                         onChange={() =>
                                             handleToggleChecklistItem(
                                                 item.id

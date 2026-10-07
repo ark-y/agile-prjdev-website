@@ -17,7 +17,8 @@
 Use `Client` instead of `Admin` in the role lookup to prepare a client test account.
 
 6. Apply `20261007_project_settings.sql` after the role/access and app workflow migrations. It enables safe comment deletion and returns role and email details to project-member candidate lists.
-7. Link this repository to the Supabase project with the Supabase CLI and deploy the `create-project-member` Edge Function:
+7. Apply `20261007_task_checklist_permissions.sql` after the other migrations. It allows assigned developers to update checklist completion while keeping other task-field updates restricted. Existing projects must apply this migration to Supabase before developers can save checklist changes.
+8. Link this repository to the Supabase project with the Supabase CLI and deploy the `create-project-member` Edge Function:
 
    ```sh
    supabase link --project-ref <project-ref>
