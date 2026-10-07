@@ -795,3 +795,57 @@
 .back-projects-button:hover {
     opacity: 0.9;
 }
+
+/* =========================================
+   COMPLETED TASKS
+   Only changes appearance when task is done
+========================================= */
+
+.task-card.task-card-complete {
+    background-color: #B5B5B5;
+    opacity: 0.55;
+}
+
+.task-card.task-card-complete .task-card-name,
+.task-card.task-card-complete .task-priority {
+    color: #5F5F5F;
+}
+
+.task-card.task-card-complete .task-card-weight {
+    background-color: #5F5F5F;
+    color: #D9D9D9;
+}
+
+
+/* =========================================
+   COMPLETED SPRINTS
+   Sprint is greyed when:
+   - its end date has passed
+   OR
+   - all its tasks are complete
+========================================= */
+
+.sprint-box.sprint-box-complete {
+    background-color: #747A80;
+    opacity: 0.65;
+}
+
+
+/*
+   Keep the contents readable while
+   still making the sprint look inactive.
+*/
+
+.sprint-box.sprint-box-complete .task-card {
+    opacity: 0.75;
+}
+
+
+/*
+   Completed tasks inside completed sprints
+   should still look more faded.
+*/
+
+.sprint-box.sprint-box-complete .task-card.task-card-complete {
+    opacity: 0.5;
+}

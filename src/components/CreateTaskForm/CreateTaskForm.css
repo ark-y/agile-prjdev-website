@@ -513,3 +513,252 @@
     background-color: #18273A;
     color: #D9D9D9;
 }
+
+/* =========================================
+   TASK CHECKLIST
+========================================= */
+
+.task-checklist-section {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.task-checklist-section h2 {
+    margin: 0 0 12px 5px;
+
+    color: #18273A;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.task-checklist-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.task-checklist-empty {
+    margin: 0;
+
+    padding: 14px 20px;
+
+    border-radius: 20px;
+
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #18273A;
+
+    font-size: 16px;
+}
+
+.task-checklist-item {
+    min-height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 8px 16px;
+
+    box-sizing: border-box;
+
+    border-radius: 25px;
+
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.task-checklist-item label {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    cursor: pointer;
+}
+
+.task-checklist-item input[type="checkbox"] {
+    width: 19px;
+    height: 19px;
+
+    accent-color: #18273A;
+
+    cursor: pointer;
+}
+
+.task-checklist-item span {
+    color: #18273A;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 17px;
+
+    overflow-wrap: anywhere;
+}
+
+.task-checklist-item-complete span {
+    opacity: 0.5;
+
+    text-decoration: line-through;
+}
+
+.task-checklist-remove {
+    width: 30px;
+    height: 30px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+    color: #18273A;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.task-checklist-remove:hover {
+    background-color: rgba(24, 39, 58, 0.1);
+}
+
+
+/* add checklist item */
+
+.task-checklist-add-row {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+.task-checklist-add-row input {
+    height: 50px;
+
+    flex: 1;
+
+    border: 2px solid #18273A;
+    outline: none;
+
+    border-radius: 25px;
+
+    padding: 0 20px;
+
+    box-sizing: border-box;
+
+    background: transparent;
+    color: #18273A;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 17px;
+}
+
+.task-checklist-add-row input::placeholder {
+    color: rgba(24, 39, 58, 0.55);
+}
+
+.task-checklist-add-row button {
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: #18273A;
+    color: #D9D9D9;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+.task-checklist-add-row button:disabled {
+    opacity: 0.4;
+
+    cursor: default;
+}
+
+
+/* =========================================
+   ADMIN DELETE TASK
+========================================= */
+
+.task-delete-edit-button {
+    border: none;
+    border-radius: 20px;
+
+    padding: 12px 24px;
+
+    background-color: #8c3434;
+    color: #D9D9D9;
+
+    font-family: "Fustat", sans-serif;
+    font-size: 16px;
+
+    cursor: pointer;
+
+    margin-right: auto;
+}
+
+.task-delete-edit-button:hover {
+    opacity: 0.9;
+}
+
+.task-delete-edit-button:disabled {
+    opacity: 0.5;
+
+    cursor: default;
+}
+
+/* =========================================
+   CHECKLIST CREATOR
+========================================= */
+
+.task-checklist-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.task-checklist-item-text {
+    color: #18273A;
+    font-family: "Fustat", sans-serif;
+    font-size: 17px;
+}
+
+.task-checklist-added-by {
+    color: #18273A;
+    font-family: "Fustat", sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.55;
+}
+
+.task-checklist-item-complete .task-checklist-item-text {
+    text-decoration: line-through;
+}
+
+.task-checklist-item-complete .task-checklist-added-by {
+    text-decoration: none;
+}
+
+.assignee-select:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

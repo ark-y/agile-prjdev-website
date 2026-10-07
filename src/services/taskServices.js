@@ -213,7 +213,8 @@ export async function addTask({
     weight,
     deadline = null,
     statusId = null,
-    assigneeIds = []
+    assigneeIds = [],
+    checklists = []
 }) {
     if (!name?.trim()) {
         throw new Error("A task name is required.");
@@ -243,6 +244,7 @@ export async function addTask({
             task_weight: Number(weight),
             task_deadline: deadline,
             task_status_id: statusId,
+            task_checklists: checklists,
             task_created_by: profileId
         })
         .select()
@@ -303,7 +305,8 @@ export async function modifyTask(taskId, changes) {
         weight: "task_weight",
         deadline: "task_deadline",
         sprintId: "sprint_id",
-        statusId: "task_status_id"
+        statusId: "task_status_id",
+        checklists: "task_checklists"
     };
     const update = {};
 
