@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm";
 import CreateTaskForm from "./components/CreateTaskForm/CreateTaskForm";
-import NotificationCenter from "./components/NotificationCenter/NotificationCenter";
-import ProjectSettings from "./components/ProjectSettings/ProjectSettings";
 import ClientLanding from "./pages/ClientLanding/ClientLanding";
+import ClientProject from "./pages/ClientProject/ClientProject";
 import Login from "./pages/Login/Login";
 import ResetPassword from "./pages/Login/ResetPassword";
 import ProjectOverview from "./pages/ProjectOverview/ProjectOverview";
 import ProjectsLanding from "./pages/ProjectsLanding/ProjectsLanding";
+import SettingsPage from "./pages/Settings/SettingsPage";
 import {
     addProject,
     deleteProject,
@@ -23,10 +23,7 @@ import {
     modifySprint
 } from "./services/sprintService";
 import {
-    addProjectMember,
-    fetchCurrentProfile,
-    fetchProjectMemberCandidates,
-    removeProjectMember
+    fetchCurrentProfile
 } from "./services/serviceHelpers";
 import {
     addProjectTag,
@@ -103,7 +100,6 @@ function App() {
     const [tagsByTask, setTagsByTask] = useState({});
 
     const [members, setMembers] = useState([]);
-    const [memberCandidates, setMemberCandidates] = useState([]);
 
     const [taskToEdit, setTaskToEdit] = useState(null);
 
@@ -398,18 +394,6 @@ function App() {
                     );
 
 
-                /*
-                 * Only admins need the list
-                 * of users who could be added
-                 * to the project.
-                 */
-                const loadedCandidates =
-                    profile?.role_name === "Admin"
-                        ? await fetchProjectMemberCandidates(
-                            projectId
-                        )
-                        : [];
-
 
                 setProject(
                     loadedProject
@@ -439,10 +423,6 @@ function App() {
                     loadedMembers
                 );
 
-                setMemberCandidates(
-                    loadedCandidates
-                );
-
 
                 setTaskToEdit(null);
                 setShowTaskForm(false);
@@ -452,69 +432,6 @@ function App() {
             },
             [profile?.role_name]
         );
-
-
-    /*
-     * ==============================
-     * CLIENT PROJECT
-     * ==============================
-     */
-
-    useEffect(() => {
-
-        if (
-            profile?.role_name !== "Client" ||
-            !projects.length ||
-            project
-        ) {
-
-            return;
-
-        }
-
-
-        let isActive = true;
-
-
-        setIsLoading(true);
-
-
-        loadProject(
-            projects[0].project_id
-        )
-            .catch((loadError) => {
-
-                if (isActive) {
-
-                    setError(
-                        loadError.message ||
-                        "Could not load your client project."
-                    );
-
-                }
-
-            })
-            .finally(() => {
-
-                if (isActive) {
-                    setIsLoading(false);
-                }
-
-            });
-
-
-        return () => {
-
-            isActive = false;
-
-        };
-
-    }, [
-        profile?.role_name,
-        projects,
-        project,
-        loadProject
-    ]);
 
 
     /*
@@ -999,90 +916,6 @@ function App() {
 
     /*
      * ==============================
-     * PROJECT MEMBERS
-     * ==============================
-     */
-
-    async function handleAddMember(
-        userId
-    ) {
-
-        try {
-
-            await addProjectMember(
-                project.project_id,
-                userId
-            );
-
-
-            await loadProject(
-                project.project_id
-            );
-
-
-            return true;
-
-        } catch (addError) {
-
-            setError(
-                addError.message ||
-                "Could not add the project member."
-            );
-
-
-            return false;
-
-        }
-
-    }
-
-
-    async function handleRemoveMember(
-        member
-    ) {
-
-        const displayName =
-            member.user_pref_name ||
-            `${member.user_first_name} ${member.user_last_name}`;
-
-
-        if (
-            !window.confirm(
-                `Remove ${displayName} from this project and unassign their tasks?`
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            await removeProjectMember(
-                project.project_id,
-                member.user_id
-            );
-
-
-            await loadProject(
-                project.project_id
-            );
-
-        } catch (removeError) {
-
-            setError(
-                removeError.message ||
-                "Could not remove the project member."
-            );
-
-        }
-
-    }
-
-
-    /*
-     * ==============================
      * DELETE TASK
      * ==============================
      */
@@ -1163,6 +996,7 @@ function App() {
      */
 
     async function handleRenameProject(
+        projectId,
         name
     ) {
 
@@ -1181,13 +1015,17 @@ function App() {
 
             const updatedProject =
                 await renameProject(
-                    project.project_id,
+                    projectId,
                     name
                 );
 
 
             setProject(
-                updatedProject
+                (currentProject) =>
+                    currentProject?.project_id ===
+                    updatedProject.project_id
+                        ? updatedProject
+                        : currentProject
             );
 
 
@@ -1313,6 +1151,44 @@ function App() {
             );
 
         }
+
+    }
+
+
+    /*
+     * ==============================
+     * SETTINGS PAGE
+     * ==============================
+     */
+
+    function handleLeaveSettings() {
+
+        setShowSettings(false);
+
+        // Everyone lands back on their project list (Clients on their shared projects).
+        setProject(null);
+
+    }
+
+
+    async function handleProfileUpdated() {
+
+        setProfile(
+            await fetchCurrentProfile()
+        );
+
+    }
+
+
+    async function handleCreateProjectFromSettings(
+        values
+    ) {
+
+        await handleCreateProject(
+            values
+        );
+
+        setShowSettings(false);
 
     }
 
@@ -1447,6 +1323,63 @@ function App() {
     }
 
 
+    if (showSettings) {
+
+        return (
+
+            <>
+
+                {error && (
+
+                    <p
+                        className="app-error"
+                        role="alert"
+                    >
+                        {error}
+                    </p>
+
+                )}
+
+
+                <SettingsPage
+
+                    profile={
+                        profile
+                    }
+
+                    projects={
+                        projects
+                    }
+
+                    onOpenProjects={
+                        handleLeaveSettings
+                    }
+
+                    onSignOut={
+                        handleSignOut
+                    }
+
+                    onCreateProject={
+                        handleCreateProjectFromSettings
+                    }
+
+                    onRenameProject={
+                        handleRenameProject
+                    }
+
+                    onProfileUpdated={
+                        handleProfileUpdated
+                    }
+
+                />
+
+            </>
+
+        );
+
+    }
+
+
     /*
      * ==============================
      * APP
@@ -1456,11 +1389,6 @@ function App() {
     return (
 
         <>
-
-
-            {(profile.role_name === "Client" || showTaskForm) && (
-                <NotificationCenter />
-            )}
 
 
             {error && (
@@ -1498,49 +1426,63 @@ function App() {
 
             {profile.role_name === "Client" ? (
 
-                <ClientLanding
+                project ? (
 
-                    project={project}
+                    <ClientProject
 
-                    projects={projects}
-
-                    tasks={tasks}
-
-                    sprints={sprints}
-
-                    currentUserId={
-                        session.user.id
-                    }
-
-                    roleName={
-                        profile.role_name
-                    }
-
-                    onOpenSettings={() =>
-                        setShowSettings(true)
-                    }
-
-                    onProjectChange={(
-                        selectedProject
-                    ) => {
-
-                        if (
-                            selectedProject
-                        ) {
-
-                            handleOpenProject(
-                                selectedProject
-                            );
-
+                        profile={
+                            profile
                         }
 
-                    }}
+                        project={project}
 
-                    onSignOut={
-                        handleSignOut
-                    }
+                        tasks={tasks}
 
-                />
+                        sprints={sprints}
+
+                        currentUserId={
+                            session.user.id
+                        }
+
+                        onBack={() =>
+                            setProject(null)
+                        }
+
+                        onOpenSettings={() =>
+                            setShowSettings(true)
+                        }
+
+                        onSignOut={
+                            handleSignOut
+                        }
+
+                    />
+
+                ) : (
+
+                    <ClientLanding
+
+                        profile={
+                            profile
+                        }
+
+                        projects={projects}
+
+                        onOpenProject={
+                            handleOpenProject
+                        }
+
+                        onOpenSettings={() =>
+                            setShowSettings(true)
+                        }
+
+                        onSignOut={
+                            handleSignOut
+                        }
+
+                    />
+
+                )
 
 
             ) : project ? (
@@ -1635,6 +1577,32 @@ function App() {
 
                             onSaveTask={
                                 handleSaveTask
+                            }
+
+                            onOpenProjects={() => {
+
+                                setShowTaskForm(
+                                    false
+                                );
+
+                                setTaskToEdit(
+                                    null
+                                );
+
+                                setProject(
+                                    null
+                                );
+
+                            }}
+
+                            onOpenSettings={() =>
+                                setShowSettings(
+                                    true
+                                )
+                            }
+
+                            onSignOut={
+                                handleSignOut
                             }
 
                         />
@@ -1818,60 +1786,6 @@ function App() {
                         )}
 
                 </>
-
-            )}
-
-
-
-            {/* =========================
-                PROJECT SETTINGS
-            ========================== */}
-
-            {showSettings && (
-
-                <ProjectSettings
-
-                    project={
-                        project
-                    }
-
-                    roleName={
-                        profile.role_name
-                    }
-
-                    members={
-                        members
-                    }
-
-                    memberCandidates={
-                        memberCandidates
-                    }
-
-                    onClose={() =>
-                        setShowSettings(
-                            false
-                        )
-                    }
-
-                    onAddMember={
-                        handleAddMember
-                    }
-
-                    onRemoveMember={
-                        handleRemoveMember
-                    }
-
-                    onRenameProject={
-                        handleRenameProject
-                    }
-
-                    onMemberCreated={() =>
-                        loadProject(
-                            project.project_id
-                        )
-                    }
-
-                />
 
             )}
 

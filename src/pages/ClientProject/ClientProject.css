@@ -1,0 +1,285 @@
+.cp-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.03fr) minmax(0, 1fr);
+    gap: 26px;
+    align-items: stretch;
+}
+
+.cp-side {
+    display: grid;
+    gap: 25px;
+    align-content: start;
+    min-width: 0;
+}
+
+/* ---------- Cards ---------- */
+.cp-card {
+    padding: 30px 32px;
+    border-radius: 24px;
+    background: var(--qx-panel);
+    box-shadow: 0 6px 14px rgba(37, 57, 92, 0.1);
+}
+
+.cp-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cp-card-head h2 {
+    font-size: 29px;
+    font-weight: 700;
+}
+
+.cp-pill {
+    flex: none;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: var(--qx-salmon);
+    font-size: 17.5px;
+    font-weight: 700;
+    line-height: 39px;
+    color: var(--qx-ink);
+}
+
+.cp-pill-light {
+    background: var(--qx-paper);
+}
+
+.cp-pill-large {
+    padding: 0 16px;
+    font-size: 24px;
+    line-height: 50px;
+}
+
+/* ---------- Overall progress ---------- */
+.cp-progress {
+    display: flex;
+    flex-direction: column;
+}
+
+/* The ring stays in view beside a long task list */
+.cp-donut {
+    position: sticky;
+    top: 24px;
+    width: min(100%, 315px);
+    aspect-ratio: 1;
+    margin: 79px auto 0;
+}
+
+.cp-donut svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.cp-donut circle {
+    fill: none;
+    stroke-width: 12;
+}
+
+.cp-donut-track {
+    stroke: #fff;
+}
+
+.cp-donut-arc {
+    stroke: var(--qx-salmon);
+    transition: stroke-dashoffset 0.9s ease-out;
+}
+
+.cp-donut-text {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 72px;
+    font-weight: 800;
+    pointer-events: none;
+}
+
+/* ---------- Tasks ---------- */
+.cp-tasks {
+    display: grid;
+    gap: 14px;
+    margin-top: 22px;
+    list-style: none;
+}
+
+.cp-task {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 14px;
+    padding-left: 24px;
+}
+
+.cp-task::before {
+    content: "";
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--qx-salmon);
+}
+
+.cp-task-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.cp-task-status {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--qx-muted);
+}
+
+.cp-task.is-complete::before {
+    background: var(--qx-blue);
+}
+
+.cp-task.is-complete .cp-task-name {
+    color: var(--qx-muted);
+}
+
+.cp-none {
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--qx-muted);
+}
+
+/* the shared comments widget, dressed for this page */
+.cp-task .task-comments {
+    color: var(--qx-ink);
+}
+
+.cp-task .task-comments-toggle {
+    color: var(--qx-blue-dark);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.cp-task .task-comments-content {
+    padding: 10px 14px;
+    border-left: 2px solid var(--qx-blue);
+}
+
+.cp-task .task-comments-content li {
+    border-bottom-color: var(--qx-line);
+}
+
+.cp-task .task-comments-content textarea {
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    font-size: 15px;
+    color: var(--qx-ink);
+}
+
+.cp-task .task-comments-content textarea:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
+}
+
+.cp-task .task-comments-content form > button {
+    height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--qx-ink);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cp-task .task-comments-content form > button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ---------- Sprints ---------- */
+.cp-sprint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 159px;
+}
+
+.cp-sprint h3 {
+    font-size: 28px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.cp-sprint p {
+    margin-top: 12px;
+    font-size: 19.5px;
+    font-weight: 500;
+}
+
+/* a sprint that has finished is greyed out */
+.cp-sprint.is-finished {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+@media (max-width: 1000px) {
+    .cp-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cp-donut {
+        position: relative;
+        top: 0;
+        margin: 36px auto 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .cp-card {
+        padding: 22px 18px;
+    }
+
+    .cp-card-head h2 {
+        font-size: 24px;
+    }
+
+    .cp-task-name {
+        font-size: 20px;
+    }
+
+    .cp-donut-text {
+        font-size: 56px;
+    }
+
+    .cp-sprint {
+        min-height: 0;
+    }
+
+    .cp-sprint h3 {
+        font-size: 24px;
+    }
+
+    .cp-sprint p {
+        font-size: 16.5px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cp-donut-arc {
+        transition: none;
+    }
+}

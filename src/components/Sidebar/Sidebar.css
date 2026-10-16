@@ -59,11 +59,16 @@
     outline-offset: 2px;
 }
 
+.sidebar-bottom {
+    display: grid;
+    gap: 18px;
+    margin-top: auto;
+}
+
 .sidebar-signout {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: auto;
     padding: 6px 14px;
     border: 0;
     background: none;
@@ -101,7 +106,7 @@
         height: 40px;
     }
 
-    .sidebar-signout {
+    .sidebar-bottom {
         margin: 0 0 0 auto;
     }
 }

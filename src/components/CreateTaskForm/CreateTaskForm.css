@@ -1,61 +1,516 @@
-@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@400;700&display=swap');
-
-/* whole task page */
-.task-form-page {
-    min-height: 100vh;
-    background-color: #D9D9D9;
-    font-family: "Fustat", sans-serif;
+/* ---------- Page ---------- */
+.tf-page {
+    display: grid;
+    gap: 20px;
+    align-content: start;
 }
 
-/* top blue bit */
-.task-form-header {
-    height: 105px;
-    background-color: #18273A;
+.tf-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------- Header actions (Edit task) ---------- */
+.tf-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ---------- Buttons ---------- */
+.tf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 17.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.tf-btn:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 2px;
+}
+
+.tf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tf-btn-light {
+    background: #fff;
+    color: var(--qx-ink);
+    box-shadow: inset 0 0 0 1px #E1E7EA;
+}
+
+.tf-btn-light:hover:not(:disabled) {
+    background: var(--qx-paper);
+}
+
+.tf-btn-dark {
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.tf-btn-dark:hover:not(:disabled) {
+    background: #1B2C49;
+}
+
+.tf-btn-danger {
+    background: #fff;
+    color: #A33A26;
+    box-shadow: inset 0 0 0 1px #F0C3B8;
+}
+
+.tf-btn-danger:hover:not(:disabled) {
+    background: #FDF3F0;
+}
+
+/* ---------- Edit task: banner ---------- */
+.tf-banner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
-    box-sizing: border-box;
+    gap: 24px;
+    min-height: 131px;
+    padding: 22px 26px;
+    border-radius: 20px;
+    background: var(--qx-ink);
+    color: #fff;
 }
 
-/* task name */
-.task-name-input {
-    width: 75%;
-    border: none;
-    outline: none;
+.tf-banner-name {
+    flex: 1;
+    min-width: 0;
+}
+
+.tf-banner-kicker {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #C5D5E8;
+}
+
+.tf-banner-input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 2px 8px;
+    margin-left: -8px;
+    border: 0;
+    border-radius: 8px;
     background: none;
-    color: #D9D9D9;
-    font-family: "Fustat", sans-serif;
-    font-size: 52px;
-    font-weight: 400;
+    font: inherit;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #fff;
 }
 
-.task-name-input::placeholder {
-    color: #D9D9D9;
+.tf-banner-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
 
-/* weight number at the top */
-.task-weight-number {
-    color: #D9D9D9;
-    font-size: 44px;
+.tf-banner-input:hover {
+    background: rgba(255, 255, 255, 0.08);
 }
 
-/* everything under the header */
-.task-form-body {
-    padding: 26px 36px;
-    box-sizing: border-box;
+.tf-banner-input:focus-visible {
+    outline: 2px solid #fff;
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* rows in the form */
-.task-form-row {
+.tf-banner-pill {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 20px 9px 10px;
+    border-radius: 14px;
+    background: #51617D;
+    font-size: 17.5px;
+    font-weight: 700;
+}
+
+.tf-weight-badge {
+    display: grid;
+    place-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--qx-ink);
+}
+
+/* "Task workspace" card above Sign out */
+.tf-sidebar-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--qx-panel);
+}
+
+.tf-sidebar-card .tf-weight-badge {
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.tf-sidebar-card span:last-child {
+    display: grid;
+    line-height: 1.25;
+}
+
+.tf-sidebar-card strong {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.tf-sidebar-card small {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--qx-muted);
+}
+
+/* ---------- Add task: heading ---------- */
+.tf-intro h1 {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+}
+
+.tf-intro p {
+    margin-top: 10px;
+    font-size: 17.5px;
+    font-weight: 500;
+}
+
+/* ---------- Cards ---------- */
+.tf-card {
+    display: grid;
+    gap: 24px;
+    padding: 26px;
+    border-radius: 20px;
+    background: var(--qx-panel);
+}
+
+.tf-row-five {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* Add task: name | status, tags | priority | weight, deadline | assignee */
+.tf-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 218px 218px;
+    gap: 24px 21px;
+    align-items: start;
+}
+
+.tf-wide {
+    grid-column: 1 / 3;
+}
+
+.tf-cell {
+    grid-column: 1 / 2;
+    min-width: 0;
+}
+
+/* Rows 1 and 3 (name | status, deadline | assignee) use taller inputs */
+.tf-grid > :nth-child(1) .tf-input,
+.tf-grid > :nth-child(2) .tf-input,
+.tf-grid > :nth-child(6) .tf-input,
+.tf-grid > :nth-child(7) .tf-input {
+    height: 62px;
+}
+
+/* ---------- Fields ---------- */
+.tf-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    align-content: start;
+    min-width: 0;
+}
+
+.tf-field > label,
+.tf-label {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.tf-input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--qx-ink);
+}
+
+.tf-input::placeholder {
+    color: var(--qx-muted);
+    opacity: 1;
+}
+
+.tf-input:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
+}
+
+.tf-input:disabled {
+    background: rgba(255, 255, 255, 0.6);
+    cursor: not-allowed;
+}
+
+.tf-select {
+    padding-right: 44px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2325395C' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right 18px center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+/* A button styled like a select (deadline, assignee) */
+.tf-dropdown {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
+    gap: 10px;
+    text-align: left;
+    cursor: pointer;
 }
 
-/* tag area */
-.task-tags {
+.tf-dropdown > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tf-dropdown .is-placeholder {
+    color: var(--qx-muted);
+}
+
+.tf-dropdown svg {
+    flex: none;
+}
+
+.tf-anchor {
+    position: relative;
+}
+
+/* ---------- Popovers ---------- */
+.tf-calendar,
+.tf-menu,
+.tf-tag-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 25;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 16px 38px rgba(37, 57, 92, 0.24);
+}
+
+/* ---------- Deadline calendar ---------- */
+.tf-calendar {
+    width: 300px;
+    padding: 14px;
+}
+
+.tf-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.tf-calendar-month {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.tf-calendar-nav {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--qx-paper);
+    font: inherit;
+    font-size: 20px;
+    color: var(--qx-ink);
+    cursor: pointer;
+}
+
+.tf-calendar-nav:hover {
+    background: var(--qx-panel);
+}
+
+.tf-calendar-weekdays,
+.tf-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.tf-calendar-weekdays span {
+    padding: 6px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--qx-muted);
+    text-align: center;
+}
+
+.tf-calendar-day {
+    aspect-ratio: 1;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--qx-ink);
+    cursor: pointer;
+}
+
+.tf-calendar-day:hover:not(:disabled) {
+    background: var(--qx-panel);
+}
+
+.tf-calendar-day.is-empty {
+    visibility: hidden;
+}
+
+.tf-calendar-day.is-selected {
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.tf-calendar-clear {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--qx-paper);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--qx-ink);
+    cursor: pointer;
+}
+
+.tf-calendar-clear:hover {
+    background: var(--qx-panel);
+}
+
+.tf-calendar button:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
+}
+
+/* ---------- Assignee list ---------- */
+.tf-menu {
+    width: min(360px, 100%);
+    min-width: 260px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.tf-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.tf-menu-item:hover {
+    background: var(--qx-paper);
+}
+
+.tf-menu-item input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tf-menu-check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--qx-line);
+    border-radius: 6px;
+    color: transparent;
+}
+
+.tf-menu-item input:checked + .tf-menu-check {
+    border-color: var(--qx-ink);
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.tf-menu-item input:focus-visible + .tf-menu-check {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 2px;
+}
+
+.tf-menu-name {
+    display: grid;
+    min-width: 0;
+}
+
+.tf-menu-name strong {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.tf-menu-name small {
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--qx-muted);
+    text-overflow: ellipsis;
+}
+
+.tf-menu-empty {
+    padding: 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--qx-muted);
+}
+
+/* ---------- Tags ---------- */
+.tf-tags {
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -63,702 +518,320 @@
     gap: 12px;
 }
 
-.task-tags > button {
-    border: none;
-    border-radius: 30px;
-    padding: 10px 22px;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
+.tf-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 18px;
+    border: 1px solid #E1E7EA;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--qx-ink);
     cursor: pointer;
+    transition: background 0.15s ease;
 }
 
-.add-tag-button {
-    background-color: rgba(0, 0, 0, 0.30);
-    color: #D9D9D9;
+.tf-chip:hover:not(:disabled):not(.is-selected) {
+    background: var(--qx-paper);
 }
 
-.tag-green {
-    background-color: #3F9B76;
-    color: #D9D9D9;
+.tf-chip.is-selected {
+    border-color: transparent;
+    color: #fff;
 }
 
-.tag-purple {
-    background-color: #963A91;
-    color: #D9D9D9;
+.tf-chip:disabled {
+    cursor: not-allowed;
 }
 
-/* tags made with the + tag popup, the background is set by js */
-.custom-tag {
-    color: #D9D9D9;
+.tf-chip:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 2px;
 }
 
-/* create tag popup, opens under the + tag button */
-.tag-popup {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 10px;
-    width: 320px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    border-radius: 20px;
-    padding: 18px 22px;
-    box-sizing: border-box;
-    z-index: 10;
+.tf-tags-empty {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--qx-muted);
 }
 
-.tag-popup-label {
-    display: block;
-    margin-bottom: 8px;
+.tf-tag-popup {
+    top: calc(100% + 8px);
+    display: grid;
+    gap: 10px;
+    width: 300px;
+    padding: 16px;
+}
+
+.tf-popup-label {
     font-size: 14px;
     font-weight: 700;
-    opacity: 0.7;
 }
 
-.tag-name-input {
-    width: 100%;
+.tf-popup-input {
     height: 42px;
-    border: none;
-    outline: none;
-    border-radius: 21px;
-    background-color: rgba(217, 217, 217, 0.15);
-    color: #D9D9D9;
-    padding: 0 18px;
-    margin-bottom: 18px;
-    box-sizing: border-box;
-    font-family: "Fustat", sans-serif;
-    font-size: 18px;
+    padding: 0 12px;
+    border: 1px solid var(--qx-line);
+    border-radius: 8px;
+    background: var(--qx-paper);
+    font: inherit;
+    font-size: 16px;
+    color: var(--qx-ink);
 }
 
-.tag-name-input::placeholder {
-    color: #D9D9D9;
-    opacity: 0.5;
+.tf-popup-input:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
 }
 
-.tag-name-input:focus {
-    background-color: rgba(217, 217, 217, 0.25);
-}
-
-/* 10 colours, 5 per row */
-.tag-colour-grid {
+.tf-swatches {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: 8px;
 }
 
-.tag-colour-swatch {
-    aspect-ratio: 1 / 1;
-    border: none;
+.tf-swatch {
+    aspect-ratio: 1;
+    border: 2px solid transparent;
     border-radius: 50%;
     cursor: pointer;
 }
 
-.tag-colour-swatch:hover {
-    transform: scale(1.08);
+.tf-swatch.is-selected {
+    border-color: var(--qx-ink);
+    box-shadow: 0 0 0 2px #fff inset;
 }
 
-.tag-colour-swatch-selected {
-    box-shadow: 0 0 0 3px #18273A, 0 0 0 5px #D9D9D9;
-}
-
-.tag-popup-buttons {
+.tf-popup-buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 8px;
 }
 
-.tag-popup-buttons button {
-    border: none;
-    border-radius: 20px;
-    padding: 8px 18px;
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-    cursor: pointer;
+.tf-popup-buttons .tf-btn {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 15px;
 }
 
-.tag-popup-cancel {
-    background-color: rgba(217, 217, 217, 0.15);
-    color: #D9D9D9;
-}
-
-.tag-popup-add {
-    background-color: #D9D9D9;
-    color: #18273A;
-}
-
-/* priority and weight together */
-.task-options {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* assignee and task status together*/
-.task-details {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* priority wrapper */
-.priority-wrapper {
-    position: relative;
-    width: 165px;
-}
-
-/* priority dropdown */
-.priority-select {
+/* ---------- Description ---------- */
+.tf-textarea {
     width: 100%;
-    height: 55px;
-    border: none;
-    outline: none;
-    border-radius: 28px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    padding: 0 50px 0 25px;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-/* weight wrapper */
-.weight-wrapper {
-    position: relative;
-    width: 165px;
-}
-
-/* weight dropdown */
-.weight-select {
-    width: 100%;
-    height: 55px;
-    border: none;
-    outline: none;
-    border-radius: 28px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    padding: 0 50px 0 25px;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-/* arrow for priority and weight */
-.select-arrow {
-    position: absolute;
-    top: 50%;
-    right: 25px;
-    transform: translateY(-50%);
-    color: #D9D9D9;
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1;
-    pointer-events: none;
-}
-
-/* deadline and assignee */
-.fake-dropdown {
-    height: 55px;
-    border: none;
-    border-radius: 28px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.dropdown-arrow {
-    color: #D9D9D9;
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.deadline-dropdown {
-    width: 380px;
-}
-
-/* deadline button + calendar popup */
-.deadline-wrapper {
-    position: relative;
-}
-
-.deadline-calendar {
-    position: absolute;
-    top: 65px;
-    left: 0;
-    width: 320px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    border-radius: 20px;
-    padding: 18px 22px;
-    box-sizing: border-box;
-    z-index: 10;
-}
-
-.calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-}
-
-.calendar-nav-button {
-    border: none;
-    background: none;
-    color: #D9D9D9;
-    font-size: 22px;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 0 8px;
-}
-
-.calendar-month-label {
-    font-family: "Fustat", sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.calendar-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 6px;
-}
-
-.calendar-weekday {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    opacity: 0.7;
-}
-
-.calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-}
-
-.calendar-clear-button {
-    margin-top: 10px;
-    border: 0;
-    padding: 5px 0;
-    background: transparent;
-    color: #D9D9D9;
+    min-height: 280px;
+    padding: 16px 18px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: #fff;
     font: inherit;
-    cursor: pointer;
-    text-decoration: underline;
+    font-size: 17.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--qx-ink);
+    resize: vertical;
 }
 
-.calendar-day {
-    aspect-ratio: 1 / 1;
-    border: none;
-    border-radius: 50%;
-    background: none;
-    color: #D9D9D9;
-    font-family: "Fustat", sans-serif;
-    font-size: 14px;
-    cursor: pointer;
+.tf-textarea-tall {
+    min-height: 420px;
 }
 
-.calendar-day:not(.calendar-day-empty):hover {
-    background-color: rgba(217, 217, 217, 0.2);
+.tf-textarea::placeholder {
+    color: var(--qx-muted);
+    opacity: 1;
 }
 
-.calendar-day-empty {
-    cursor: default;
+.tf-textarea:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
 }
 
-.calendar-day-selected {
-    background-color: #D9D9D9;
-    color: #18273A;
-    font-weight: 700;
-}
-
-.assignee-dropdown {
-    width: 190px;
-}
-
-/* task status wrapper */
-.task-status-wrapper {
-    position: relative;
-    width: 190px;
-}
-
-/* task status dropdown */
-.task-status-select {
-    width: 100%;
-    height: 55px;
-    border: none;
-    outline: none;
-    border-radius: 28px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    padding: 0 50px 0 25px;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-.assignee-dropdown {
-    width: 190px;
-}
-
-.assignee-dropdown select,
-.task-form-row label select {
-    display: block;
-    width: 100%;
-    min-height: 42px;
-    margin-top: 6px;
-    padding: 6px 10px;
-    border: 1px solid #18273a;
-    border-radius: 8px;
-    background: #d9d9d9;
-    color: #18273a;
-    font: inherit;
-}
-
-.assignee-wrapper {
-    position: relative;
-    width: 190px;
-}
-
-.assignee-select {
-    width: 100%;
-    height: 55px;
-    border: none;
-    outline: none;
-    border-radius: 28px;
-    background-color: #18273A;
-    color: #D9D9D9;
-    padding: 0 50px 0 25px;
-    font-family: "Fustat", sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-.assignee-select option {
-    background-color: #18273A;
-    color: #D9D9D9;
-}
-
-.task-form-error,
-.app-error {
-    color: #8c2020;
-    font-weight: 700;
-}
-
-.app-error {
-    position: relative;
-    z-index: 30;
-    margin: 0;
-    padding: 12px 20px;
-    background: #fff0f0;
-}
-
-.task-description {
-    width: 100%;
-    height: 390px;
-    border: none;
-    outline: none;
-    border-radius: 30px;
-    background-color: rgba(0, 0, 0, 0.35);
-    color: #18273A;
-    padding: 22px 34px;
-    box-sizing: border-box;
-    resize: none;
-    font-family: "Fustat", sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.task-description::placeholder {
-    color: #18273A;
-}
-
-.task-form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.task-form-buttons button {
-    border: none;
-    border-radius: 20px;
-    padding: 12px 24px;
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.task-cancel-button {
-    background-color: rgba(0, 0, 0, 0.30);
-    color: #18273A;
-}
-
-.task-save-button {
-    background-color: #18273A;
-    color: #D9D9D9;
-}
-
-/* =========================================
-   TASK CHECKLIST
-========================================= */
-
-.task-checklist-section {
-    width: 100%;
-    margin-top: 24px;
-}
-
-.task-checklist-section h2 {
-    margin: 0 0 12px 5px;
-
-    color: #18273A;
-
-    font-family: "Fustat", sans-serif;
+/* ---------- Checklist ---------- */
+.tf-checklist h2 {
     font-size: 24px;
     font-weight: 700;
 }
 
-.task-checklist-list {
-    display: flex;
-    flex-direction: column;
-
-    gap: 8px;
+.tf-checklist-list {
+    display: grid;
+    gap: 10px;
 }
 
-.task-checklist-empty {
-    margin: 0;
-
-    padding: 14px 20px;
-
-    border-radius: 20px;
-
-    background-color: rgba(0, 0, 0, 0.08);
-    color: #18273A;
-
+.tf-checklist-empty {
     font-size: 16px;
+    font-weight: 600;
+    color: var(--qx-muted);
 }
 
-.task-checklist-item {
-    min-height: 50px;
-
+.tf-checklist-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 12px;
-
-    padding: 8px 16px;
-
-    box-sizing: border-box;
-
-    border-radius: 25px;
-
-    background-color: rgba(0, 0, 0, 0.12);
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #fff;
 }
 
-.task-checklist-item label {
-    flex: 1;
-
+.tf-checklist-item label {
     display: flex;
+    flex: 1;
     align-items: center;
-
-    gap: 12px;
-
+    gap: 14px;
+    min-width: 0;
     cursor: pointer;
 }
 
-.task-checklist-item input[type="checkbox"] {
-    width: 19px;
-    height: 19px;
-
-    accent-color: #18273A;
-
+.tf-checklist-item input[type="checkbox"] {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--qx-ink);
     cursor: pointer;
 }
 
-.task-checklist-item span {
-    color: #18273A;
+.tf-checklist-item input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
 
-    font-family: "Fustat", sans-serif;
+.tf-checklist-text {
+    display: grid;
+    min-width: 0;
+}
+
+.tf-checklist-name {
     font-size: 17px;
-
+    font-weight: 600;
     overflow-wrap: anywhere;
 }
 
-.task-checklist-item-complete span {
-    opacity: 0.5;
+.tf-checklist-by {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--qx-muted);
+}
 
+.tf-checklist-item.is-complete .tf-checklist-name {
+    color: var(--qx-muted);
     text-decoration: line-through;
 }
 
-.task-checklist-remove {
+.tf-checklist-remove {
+    display: grid;
+    flex: none;
+    place-items: center;
     width: 30px;
     height: 30px;
-
-    border: none;
+    border: 0;
     border-radius: 50%;
-
-    background: transparent;
-    color: #18273A;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 22px;
-
+    background: none;
+    color: var(--qx-muted);
     cursor: pointer;
 }
 
-.task-checklist-remove:hover {
-    background-color: rgba(24, 39, 58, 0.1);
+.tf-checklist-remove:hover {
+    background: var(--qx-panel);
+    color: var(--qx-ink);
 }
 
+.tf-checklist-remove:focus-visible {
+    outline: 2px solid var(--qx-ink);
+}
 
-/* add checklist item */
-
-.task-checklist-add-row {
+.tf-checklist-add {
     display: flex;
-    align-items: center;
-
     gap: 10px;
-
-    margin-top: 10px;
 }
 
-.task-checklist-add-row input {
-    height: 50px;
-
-    flex: 1;
-
-    border: 2px solid #18273A;
-    outline: none;
-
-    border-radius: 25px;
-
-    padding: 0 20px;
-
-    box-sizing: border-box;
-
-    background: transparent;
-    color: #18273A;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 17px;
+.tf-checklist-add .tf-btn {
+    flex: none;
+    width: 54px;
+    height: 54px;
+    padding: 0;
 }
 
-.task-checklist-add-row input::placeholder {
-    color: rgba(24, 39, 58, 0.55);
+/* ---------- Messages and footer ---------- */
+.tf-error {
+    font-size: 15px;
+    font-weight: 600;
+    color: #8c2020;
 }
 
-.task-checklist-add-row button {
-    width: 50px;
-    height: 50px;
+.tf-error-page {
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #FBE9E5;
+}
 
-    border: none;
-    border-radius: 50%;
-
-    background-color: #18273A;
-    color: #D9D9D9;
-
+.tf-footer {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 28px;
-
-    cursor: pointer;
+    justify-content: space-between;
+    gap: 16px;
 }
 
-.task-checklist-add-row button:disabled {
-    opacity: 0.4;
-
-    cursor: default;
-}
-
-
-/* =========================================
-   ADMIN DELETE TASK
-========================================= */
-
-.task-delete-edit-button {
-    border: none;
-    border-radius: 20px;
-
-    padding: 12px 24px;
-
-    background-color: #8c3434;
-    color: #D9D9D9;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-
-    cursor: pointer;
-
-    margin-right: auto;
-}
-
-.task-delete-edit-button:hover {
-    opacity: 0.9;
-}
-
-.task-delete-edit-button:disabled {
-    opacity: 0.5;
-
-    cursor: default;
-}
-
-/* =========================================
-   CHECKLIST CREATOR
-========================================= */
-
-.task-checklist-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-}
-
-.task-checklist-item-text {
-    color: #18273A;
-    font-family: "Fustat", sans-serif;
+.tf-footer p {
     font-size: 17px;
+    font-weight: 500;
 }
 
-.task-checklist-added-by {
-    color: #18273A;
-    font-family: "Fustat", sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    opacity: 0.55;
+.tf-footer-buttons {
+    display: flex;
+    gap: 12px;
 }
 
-.task-checklist-item-complete .task-checklist-item-text {
-    text-decoration: line-through;
+.tf-footer .tf-btn {
+    height: 50px;
 }
 
-.task-checklist-item-complete .task-checklist-added-by {
-    text-decoration: none;
+/* ---------- Narrower screens ---------- */
+@media (max-width: 1200px) {
+    .tf-row-five {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
-.assignee-select:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+@media (max-width: 900px) {
+    .tf-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tf-wide,
+    .tf-cell {
+        grid-column: 1 / -1;
+    }
+
+    .tf-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tf-banner-input {
+        font-size: 30px;
+    }
+
+    .tf-header-actions .tf-btn {
+        padding: 0 14px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 640px) {
+    .tf-row-five {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tf-card {
+        padding: 20px 16px;
+    }
+
+    .tf-menu,
+    .tf-calendar {
+        left: 0;
+        right: auto;
+        max-width: calc(100vw - 56px);
+    }
 }

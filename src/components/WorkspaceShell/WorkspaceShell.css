@@ -30,6 +30,25 @@
     border-radius: 14px;
 }
 
+.ws-topbar-compact {
+    height: 70px;
+    margin-top: 24px;
+}
+
+.ws-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17.5px;
+    font-weight: 600;
+}
+
+.ws-chip .ws-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+}
+
 .ws-owner {
     display: flex;
     align-items: center;
@@ -76,6 +95,9 @@
 }
 
 .ws-breadcrumb button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 0;
     border: 0;
     background: none;
@@ -93,8 +115,16 @@
     outline-offset: 3px;
 }
 
+.ws-topbar-card .ws-breadcrumb {
+    font-size: 18px;
+}
+
 .ws-breadcrumb [aria-current="page"] {
     font-weight: 800;
+}
+
+/* Project names are shown in capitals, as on the project page */
+.ws-topbar-crumbs .ws-breadcrumb [aria-current="page"] {
     text-transform: uppercase;
 }
 
@@ -127,5 +157,14 @@
 
     .ws-title {
         font-size: 20px;
+    }
+
+    /* the compact header can carry buttons, so let it grow and wrap */
+    .ws-topbar-compact {
+        height: auto;
+        min-height: 70px;
+        flex-wrap: wrap;
+        padding-top: 12px;
+        padding-bottom: 12px;
     }
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useNotifications } from "../../hooks/useNotifications";
 import Icon from "../Icons/Icons";
 import "./NotificationCenter.css";
 
@@ -125,16 +124,3 @@ export function NotificationBell({ notifications }) {
         </div>
     );
 }
-
-// The bell pinned to the top right, for pages that have no header of their own.
-function NotificationCenter() {
-    const notifications = useNotifications();
-
-    return (
-        <div className="notification-floating">
-            <NotificationBell notifications={notifications} />
-        </div>
-    );
-}
-
-export default NotificationCenter;

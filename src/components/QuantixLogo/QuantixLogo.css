@@ -55,3 +55,17 @@
     font-size: 17px;
     font-weight: 500;
 }
+
+/* ---------- Client sidebar (navy) ---------- */
+.quantix-logo-client {
+    color: #fff;
+}
+
+.quantix-logo-client .quantix-tile {
+    background: var(--qx-salmon);
+    color: var(--qx-ink);
+}
+
+.quantix-logo-client .quantix-sub {
+    font-size: 15px;
+}

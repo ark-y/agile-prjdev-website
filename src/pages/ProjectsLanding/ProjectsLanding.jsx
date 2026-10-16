@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
 import Icon from "../../components/Icons/Icons";
 import WorkspaceShell from "../../components/WorkspaceShell/WorkspaceShell";
 import { useNotifications } from "../../hooks/useNotifications";
-import { fetchSprintDates } from "../../services/projectServices";
-import { formatProjectDates, projectDateRange } from "../../utils/projectDates";
+import { useProjectDates } from "../../hooks/useProjectDates";
 import "./ProjectsLanding.css";
 
 // The landing page for Admins and Developers. Only Admins can add or delete projects.
@@ -18,45 +16,7 @@ function ProjectsLanding({
 }) {
     const isAdmin = profile.role_name === "Admin";
     const notifications = useNotifications();
-    const [sprintDates, setSprintDates] = useState(null);
-
-    useEffect(() => {
-        let active = true;
-
-        fetchSprintDates()
-            .then((rows) => {
-                if (active) {
-                    setSprintDates(rows);
-                }
-            })
-            .catch(() => {
-                if (active) {
-                    setSprintDates(undefined);
-                }
-            });
-
-        return () => {
-            active = false;
-        };
-    }, [projects]);
-
-    const datesByProject = useMemo(() => {
-        const byProject = {};
-        for (const sprint of sprintDates || []) {
-            (byProject[sprint.project_id] ??= []).push(sprint);
-        }
-        return byProject;
-    }, [sprintDates]);
-
-    function describeDates(project) {
-        if (sprintDates === undefined) {
-            return "Dates unavailable";
-        }
-        if (sprintDates === null) {
-            return "–";
-        }
-        return formatProjectDates(projectDateRange(datesByProject[project.project_id] || []));
-    }
+    const describeDates = useProjectDates(projects);
 
     const ownerName = isAdmin ? "Admin" : profile.user_pref_name || profile.user_first_name || "My";
 

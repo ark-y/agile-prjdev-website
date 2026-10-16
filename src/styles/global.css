@@ -9,3 +9,15 @@
     --qx-salmon: #E9AB9A;
     --qx-line: #C5D2E3;
 }
+
+/* Error banner shown above any page */
+.app-error {
+    position: relative;
+    z-index: 30;
+    margin: 0;
+    padding: 12px 20px;
+    background: #fff0f0;
+    color: #8c2020;
+    font-weight: 700;
+}
+

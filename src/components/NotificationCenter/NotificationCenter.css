@@ -1,11 +1,3 @@
-/* The bell pinned to the top right on pages without their own header */
-.notification-floating {
-    position: fixed;
-    top: 16px;
-    right: 18px;
-    z-index: 30;
-}
-
 .notif-bell {
     position: relative;
     z-index: 30;
