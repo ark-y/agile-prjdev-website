@@ -1,32 +1,57 @@
 .quantix-logo {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--qx-navy);
+    color: var(--qx-ink);
 }
 
-.quantix-wordmark {
-    font-size: 24px;
+/* ---------- Text wordmark (signed-out pages) ---------- */
+.quantix-logo-text {
+    align-items: center;
+    gap: 10px;
+}
+
+.quantix-logo-text .quantix-wordmark {
+    font-size: 29px;
     font-weight: 800;
     letter-spacing: -0.01em;
 }
 
-.quantix-sub {
+.quantix-logo-text .quantix-sub {
     align-self: flex-end;
     padding-bottom: 5px;
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 600;
 }
 
-.quantix-logo-compact {
-    gap: 8px;
+/* ---------- Tile + stacked name (sidebar) ---------- */
+.quantix-logo-stacked {
+    align-items: center;
+    gap: 12px;
 }
 
-.quantix-logo-compact svg {
-    width: 28px;
-    height: 28px;
+.quantix-tile {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--qx-ink);
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
 }
 
-.quantix-logo-compact .quantix-wordmark {
-    font-size: 20px;
+.quantix-stack {
+    display: grid;
+    line-height: 1.1;
+}
+
+.quantix-logo-stacked .quantix-wordmark {
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.quantix-logo-stacked .quantix-sub {
+    font-size: 17px;
+    font-weight: 500;
 }

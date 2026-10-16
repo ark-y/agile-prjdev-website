@@ -4,12 +4,11 @@ import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm"
 import CreateTaskForm from "./components/CreateTaskForm/CreateTaskForm";
 import NotificationCenter from "./components/NotificationCenter/NotificationCenter";
 import ProjectSettings from "./components/ProjectSettings/ProjectSettings";
-import AdminLanding from "./pages/AdminLanding/AdminLanding";
-import DevLanding from "./pages/DevLanding/DevLanding";
 import ClientLanding from "./pages/ClientLanding/ClientLanding";
 import Login from "./pages/Login/Login";
 import ResetPassword from "./pages/Login/ResetPassword";
 import ProjectOverview from "./pages/ProjectOverview/ProjectOverview";
+import ProjectsLanding from "./pages/ProjectsLanding/ProjectsLanding";
 import {
     addProject,
     deleteProject,
@@ -1459,7 +1458,7 @@ function App() {
         <>
 
 
-            {!(profile.role_name === "Admin" && !project) && (
+            {(profile.role_name === "Client" || showTaskForm) && (
                 <NotificationCenter />
             )}
 
@@ -1654,6 +1653,10 @@ function App() {
 
                     <ProjectOverview
 
+                        profile={
+                            profile
+                        }
+
                         project={
                             project
                         }
@@ -1678,20 +1681,14 @@ function App() {
                             tagsByTask
                         }
 
+                        members={
+                            members
+                        }
+
                         roleName={
                             profile.role_name
                         }
 
-                        currentUserId={
-                            session.user.id
-                        }
-
-
-                        /*
-                         * Only the Admin UI
-                         * displays the Add Task
-                         * button in ProjectOverview.
-                         */
                         onAddTask={() => {
 
                             setTaskToEdit(
@@ -1704,66 +1701,46 @@ function App() {
 
                         }}
 
-
-                        /*
-                         * Admins and Developers
-                         * can click an existing
-                         * task.
-                         */
                         onEditTask={
                             handleEditTask
                         }
-
-
-                        onDeleteTask={
-                            handleDeleteTask
-                        }
-
 
                         onAddSprint={
                             handleAddSprint
                         }
 
-
                         onUpdateSprint={
                             handleUpdateSprint
                         }
-
 
                         onDeleteSprint={
                             handleDeleteSprint
                         }
 
-
-                        onChangeTaskStatus={
-                            handleChangeTaskStatus
-                        }
-
-
                         onMoveTaskToSprint={
                             handleMoveTaskToSprint
                         }
-
 
                         onAddTag={
                             handleAddTag
                         }
 
-
                         onDeleteTag={
                             handleDeleteTag
                         }
-
 
                         onBack={() =>
                             setProject(null)
                         }
 
-
                         onOpenSettings={() =>
                             setShowSettings(
                                 true
                             )
+                        }
+
+                        onSignOut={
+                            handleSignOut
                         }
 
                     />
@@ -1783,88 +1760,41 @@ function App() {
                 <>
 
 
-                    {profile.role_name === "Admin" ? (
+                    <ProjectsLanding
 
-                        <AdminLanding
+                        profile={
+                            profile
+                        }
 
-                            profile={
-                                profile
-                            }
+                        projects={
+                            projects
+                        }
 
-                            projects={
-                                projects
-                            }
+                        onOpenProject={
+                            handleOpenProject
+                        }
 
-                            onOpenProject={
-                                handleOpenProject
-                            }
+                        onAddProject={() =>
+                            setShowProjectForm(
+                                true
+                            )
+                        }
 
-                            onAddProject={() =>
-                                setShowProjectForm(
-                                    true
-                                )
-                            }
+                        onDeleteProject={
+                            handleDeleteProject
+                        }
 
-                            onDeleteProject={
-                                handleDeleteProject
-                            }
+                        onOpenSettings={() =>
+                            setShowSettings(
+                                true
+                            )
+                        }
 
-                            onOpenSettings={() =>
-                                setShowSettings(
-                                    true
-                                )
-                            }
+                        onSignOut={
+                            handleSignOut
+                        }
 
-                            onSignOut={
-                                handleSignOut
-                            }
-
-                        />
-
-                    ) : (
-
-                        <DevLanding
-
-                            projects={
-                                projects
-                            }
-
-                            canCreateProject={
-                                profile.role_name ===
-                                "Admin"
-                            }
-
-                            onOpenProject={
-                                handleOpenProject
-                            }
-
-                            onAddProject={
-                                profile.role_name ===
-                                "Admin"
-                                    ? () =>
-                                        setShowProjectForm(
-                                            true
-                                        )
-                                    : undefined
-                            }
-
-                            onDeleteProject={
-                                handleDeleteProject
-                            }
-
-                            onOpenSettings={() =>
-                                setShowSettings(
-                                    true
-                                )
-                            }
-
-                            onSignOut={
-                                handleSignOut
-                            }
-
-                        />
-
-                    )}
+                    />
 
 
                     {showProjectForm &&

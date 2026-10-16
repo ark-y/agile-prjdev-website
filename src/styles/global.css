@@ -1,11 +1,11 @@
-/* Quantix brand tokens shared by the sign-in page and the admin workspace */
+/* Quantix brand tokens, taken from the Figma frames */
 :root {
-    --qx-navy: #18273A;
-    --qx-muted: #4A5B73;
-    --qx-blue: #6B8FBA;
+    --qx-ink: #25395C;
+    --qx-muted: #677488;
+    --qx-blue: #678EB5;
     --qx-blue-dark: #55789F;
-    --qx-panel: #D9E5F3;
-    --qx-paper: #FAF8F4;
-    --qx-salmon: #E8A598;
+    --qx-panel: #D9E5F1;
+    --qx-paper: #FAF8F5;
+    --qx-salmon: #E9AB9A;
     --qx-line: #C5D2E3;
 }

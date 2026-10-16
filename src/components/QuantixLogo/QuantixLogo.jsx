@@ -1,13 +1,24 @@
 import "./QuantixLogo.css";
 
-function QuantixLogo({ compact = false }) {
+/*
+ * "text": the plain wordmark on the signed-out pages.
+ * "stacked": the navy Q tile with the name beside it, for the sidebar.
+ */
+function QuantixLogo({ variant = "text" }) {
+    if (variant === "stacked") {
+        return (
+            <div className="quantix-logo quantix-logo-stacked">
+                <span className="quantix-tile" aria-hidden="true">Q</span>
+                <span className="quantix-stack">
+                    <span className="quantix-wordmark">Quantix</span>
+                    <span className="quantix-sub">Services</span>
+                </span>
+            </div>
+        );
+    }
+
     return (
-        <div className={`quantix-logo${compact ? " quantix-logo-compact" : ""}`}>
-            <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
-                <rect width="32" height="32" rx="8" fill="#4F86D9" />
-                <circle cx="15" cy="15" r="6.5" fill="none" stroke="#fff" strokeWidth="2.4" />
-                <path d="M19.6 19.6 24 24" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
-            </svg>
+        <div className="quantix-logo quantix-logo-text">
             <span className="quantix-wordmark">Quantix</span>
             <span className="quantix-sub">services</span>
         </div>

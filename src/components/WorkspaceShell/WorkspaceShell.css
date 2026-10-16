@@ -1,0 +1,131 @@
+.ws-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    background: var(--qx-paper);
+    color: var(--qx-ink);
+    font-family: "Fustat", sans-serif;
+}
+
+.ws-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ---------- Header ---------- */
+.ws-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #fff;
+}
+
+/* Landing page: a white card holding the owner and the bell */
+.ws-topbar-card {
+    height: 86px;
+    margin: 32px 32px 0;
+    padding: 0 24px 0 20px;
+    border-radius: 14px;
+}
+
+.ws-owner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.ws-avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--qx-panel);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.ws-title {
+    overflow: hidden;
+    font-size: 29px;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* Project pages: breadcrumb bar across the top */
+.ws-topbar-crumbs {
+    height: 86px;
+    padding: 0 24px;
+    border-bottom: 1px solid #EEF1F5;
+}
+
+.ws-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.ws-breadcrumb button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.ws-breadcrumb button:hover {
+    text-decoration: underline;
+}
+
+.ws-breadcrumb button:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 3px;
+}
+
+.ws-breadcrumb [aria-current="page"] {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* ---------- Content ---------- */
+.ws-content {
+    flex: 1;
+    padding: 32px 32px 48px;
+}
+
+.ws-topbar-crumbs + .ws-content {
+    padding: 32px 24px 48px;
+}
+
+@media (max-width: 900px) {
+    .ws-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ws-topbar-card {
+        margin: 20px 20px 0;
+    }
+
+    .ws-topbar-crumbs {
+        padding: 0 20px;
+    }
+
+    .ws-content {
+        padding: 24px 20px 40px;
+    }
+
+    .ws-title {
+        font-size: 20px;
+    }
+}

@@ -14,35 +14,19 @@ export async function fetchAllProjects() {
 }
 
 /*
- * Everything the admin landing needs to summarise every visible project in
- * three queries instead of three per project: sprints, tasks with their status
- * name, and members with their role.
+ * Every visible sprint's dates, in one query, so the project cards can show each
+ * project's timeline.
  */
-export async function fetchProjectSummaryData() {
-    const [sprintsResult, tasksResult, membersResult] = await Promise.all([
-        supabase
-            .from("sprint")
-            .select("sprint_id, project_id, sprint_name, sprint_start_date, sprint_end_date")
-            .order("sprint_id"),
-        supabase
-            .from("task")
-            .select("task_id, project_id, sprint_id, task_status:status!task_task_status_id_fkey(status_name)"),
-        supabase
-            .from("project_member")
-            .select("project_id, user:user!project_member_user_id_fkey(user_id, user_first_name, user_last_name, user_pref_name, role:role!user_role_id_fkey(role_name))")
-    ]);
+export async function fetchSprintDates() {
+    const { data, error } = await supabase
+        .from("sprint")
+        .select("project_id, sprint_start_date, sprint_end_date");
 
-    for (const { error } of [sprintsResult, tasksResult, membersResult]) {
-        if (error) {
-            throw error;
-        }
+    if (error) {
+        throw error;
     }
 
-    return {
-        sprints: sprintsResult.data,
-        tasks: tasksResult.data,
-        members: membersResult.data
-    };
+    return data;
 }
 
 export async function fetchProject(projectId) {

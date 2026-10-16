@@ -5,22 +5,22 @@ import PasswordField from "./PasswordField";
 
 const COPY = {
     signin: {
-        title: "Welcome back.",
-        lede: "Sign in to pick up where your team left off.",
+        title: "Welcome back",
+        lede: "Sign in to continue to your workspace.",
         submit: "Sign in",
         submitting: "Signing in...",
         fallbackError: "Could not sign in."
     },
     signup: {
-        title: "Create your account.",
-        lede: "Tell us who you are and we'll get your workspace ready.",
+        title: "Create your account",
+        lede: "Join your team's workspace in a minute.",
         submit: "Create account",
         submitting: "Creating account...",
         fallbackError: "Could not create your account."
     },
     forgot: {
-        title: "Reset your password.",
-        lede: "Enter the email you signed up with and we'll send you a link to choose a new password.",
+        title: "Reset your password",
+        lede: "Enter your email and we'll send you a link to choose a new one.",
         submit: "Send reset link",
         submitting: "Sending...",
         fallbackError: "Could not send the reset link."
@@ -112,7 +112,7 @@ function Login({ linkError = "" }) {
     return (
         <AuthLayout>
             <form className="login-form" onSubmit={handleSubmit}>
-                <p className="login-eyebrow">Your Quantix workspace</p>
+                <span className="login-dash" aria-hidden="true" />
                 <h1>{copy.title}</h1>
                 <p className="login-lede">{copy.lede}</p>
 
@@ -151,7 +151,7 @@ function Login({ linkError = "" }) {
                         id="email"
                         type="email"
                         autoComplete="email"
-                        placeholder="you@company.com"
+                        placeholder="Enter your email"
                         required
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
@@ -168,10 +168,17 @@ function Login({ linkError = "" }) {
                     />
                 )}
 
+                {error && <p className="login-feedback login-feedback-error" role="alert">{error}</p>}
+                {message && <p className="login-feedback login-feedback-success" role="status">{message}</p>}
+
+                <button className="login-submit" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? copy.submitting : copy.submit}
+                </button>
+
                 {mode === "signin" && (
                     <div className="login-forgot-row">
                         <button
-                            className="auth-mode-toggle"
+                            className="auth-mode-toggle auth-mode-toggle-strong"
                             type="button"
                             disabled={isSubmitting}
                             onClick={() => switchMode("forgot")}
@@ -181,19 +188,12 @@ function Login({ linkError = "" }) {
                     </div>
                 )}
 
-                {error && <p className="login-feedback login-feedback-error" role="alert">{error}</p>}
-                {message && <p className="login-feedback login-feedback-success" role="status">{message}</p>}
-
-                <button className="login-submit" type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? copy.submitting : copy.submit}
-                </button>
-
                 <p className="login-switch">
                     {mode === "signin" && (
                         <>
                             New here?{" "}
                             <button className="auth-mode-toggle" type="button" disabled={isSubmitting} onClick={() => switchMode("signup")}>
-                                Sign up
+                                Create an account
                             </button>
                         </>
                     )}

@@ -31,3 +31,21 @@ export async function markNotificationRead(notificationId) {
 
     return data.notif_id;
 }
+
+export async function deleteNotification(notificationId) {
+    const { data, error } = await supabase
+        .from("notification")
+        .delete()
+        .eq("notif_id", notificationId)
+        .select("notif_id");
+
+    if (error) {
+        throw error;
+    }
+
+    // Row-level security filters rows silently, so "nothing deleted" is how a
+    // missing delete policy shows up.
+    if (!data?.length) {
+        throw new Error("Could not delete this notification.");
+    }
+}

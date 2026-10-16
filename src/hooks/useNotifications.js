@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchNotifications, markNotificationRead } from "../services/notificationService";
+import { deleteNotification, fetchNotifications, markNotificationRead } from "../services/notificationService";
 
 export function useNotifications(intervalMs = 30000) {
     const [notifications, setNotifications] = useState([]);
@@ -43,7 +43,23 @@ export function useNotifications(intervalMs = 30000) {
         }
     }
 
+    async function remove(notificationId) {
+        try {
+            await deleteNotification(notificationId);
+            setNotifications((current) => current.filter((notification) => notification.notif_id !== notificationId));
+            setError("");
+        } catch (deleteError) {
+            const blocked = deleteError.code === "42501"
+                || /permission denied|row-level security|could not delete/i.test(deleteError.message || "");
+            setError(
+                blocked
+                    ? "Deleting notifications needs the 20261008_notification_delete.sql migration to be applied in Supabase."
+                    : deleteError.message || "Could not delete the notification."
+            );
+        }
+    }
+
     const unreadCount = notifications.filter((notification) => !notification.notif_is_read).length;
 
-    return { notifications, unreadCount, error, markRead };
+    return { notifications, unreadCount, error, markRead, remove };
 }

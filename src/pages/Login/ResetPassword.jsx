@@ -43,8 +43,8 @@ function ResetPassword({ onDone, onCancel }) {
     return (
         <AuthLayout>
             <form className="login-form" onSubmit={handleSubmit}>
-                <p className="login-eyebrow">Your Quantix workspace</p>
-                <h1>Choose a new password.</h1>
+                <span className="login-dash" aria-hidden="true" />
+                <h1>Choose a new password</h1>
                 <p className="login-lede">
                     Use at least 8 characters. You'll use it to sign in from now on.
                 </p>

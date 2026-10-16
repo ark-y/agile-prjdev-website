@@ -1,23 +1,21 @@
-import LoginShowcase from "./LoginShowcase";
+import QuantixLogo from "../../components/QuantixLogo/QuantixLogo";
 import "./Login.css";
 
-// Shared shell for every signed-out screen: brand panel on the left, the form on the right.
+// Shared shell for every signed-out screen: wordmark top left, the form in a
+// centred card, and a short line of brand copy bottom left.
 function AuthLayout({ children }) {
     return (
         <main className="login-page">
-            <LoginShowcase />
+            <header className="login-brand">
+                <QuantixLogo variant="text" />
+            </header>
 
-            <section className="login-panel">
-                {children}
+            <section className="login-card-wrap">{children}</section>
 
-                <footer className="login-footer">
-                    <span>&copy; 2026 Quantix services</span>
-                    <span className="login-footer-links">
-                        <span>Privacy</span>
-                        <span>Need help?</span>
-                    </span>
-                </footer>
-            </section>
+            <footer className="login-note">
+                <p>Projects, sprints and conversations.</p>
+                <p>One shared workspace.</p>
+            </footer>
         </main>
     );
 }
