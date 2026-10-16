@@ -1,0 +1,32 @@
+.quantix-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--qx-navy);
+}
+
+.quantix-wordmark {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.quantix-sub {
+    align-self: flex-end;
+    padding-bottom: 5px;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.quantix-logo-compact {
+    gap: 8px;
+}
+
+.quantix-logo-compact svg {
+    width: 28px;
+    height: 28px;
+}
+
+.quantix-logo-compact .quantix-wordmark {
+    font-size: 20px;
+}

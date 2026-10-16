@@ -17,21 +17,12 @@ body {
 
 /* Page layout: brand panel on the left, sign-in panel on the right */
 .login-page {
-    --login-navy: #18273A;
-    --login-muted: #4A5B73;
-    --login-blue: #6B8FBA;
-    --login-blue-dark: #55789F;
-    --login-panel: #D9E5F3;
-    --login-paper: #FAF8F4;
-    --login-salmon: #E8A598;
-    --login-line: #C5D2E3;
-
     min-height: 100vh;
     display: grid;
     grid-template-columns: minmax(0, 9fr) minmax(0, 11fr);
-    background: var(--login-paper);
+    background: var(--qx-paper);
     font-family: "Fustat", sans-serif;
-    color: var(--login-navy);
+    color: var(--qx-navy);
 }
 
 .login-eyebrow {
@@ -52,7 +43,7 @@ body {
     width: 18px;
     height: 2px;
     border-radius: 2px;
-    background: var(--login-salmon);
+    background: var(--qx-salmon);
 }
 
 /* ---------- Left: brand panel ---------- */
@@ -61,26 +52,7 @@ body {
     flex-direction: column;
     gap: 40px;
     padding: 56px 64px 48px;
-    background: var(--login-panel);
-}
-
-.quantix-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.quantix-wordmark {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-}
-
-.quantix-sub {
-    align-self: flex-end;
-    padding-bottom: 5px;
-    font-size: 9px;
-    font-weight: 600;
+    background: var(--qx-panel);
 }
 
 .showcase-body {
@@ -153,7 +125,7 @@ body {
     right: 18px;
     width: 12px;
     height: 12px;
-    background: var(--login-salmon);
+    background: var(--qx-salmon);
 }
 
 .showcase-dot-blue {
@@ -161,14 +133,14 @@ body {
     left: -4px;
     width: 6px;
     height: 6px;
-    background: var(--login-blue);
+    background: var(--qx-blue);
 }
 
 .showcase-card {
     position: absolute;
-    border: 1px solid var(--login-line);
+    border: 1px solid var(--qx-line);
     border-radius: 12px;
-    background: var(--login-paper);
+    background: var(--qx-paper);
     box-shadow: 0 10px 28px rgba(24, 39, 58, 0.10);
 }
 
@@ -196,7 +168,7 @@ body {
     align-items: center;
     gap: 10px;
     padding-bottom: 14px;
-    border-bottom: 1px solid var(--login-line);
+    border-bottom: 1px solid var(--qx-line);
 }
 
 .showcase-card-icon {
@@ -205,7 +177,7 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 9px;
-    background: var(--login-panel);
+    background: var(--qx-panel);
 }
 
 .showcase-card-title {
@@ -217,7 +189,7 @@ body {
     margin-top: 1px;
     font-size: 10.5px;
     font-weight: 600;
-    color: var(--login-muted);
+    color: var(--qx-muted);
 }
 
 .showcase-card-row {
@@ -231,14 +203,14 @@ body {
 .showcase-track {
     height: 6px;
     border-radius: 999px;
-    background: var(--login-panel);
+    background: var(--qx-panel);
     overflow: hidden;
 }
 
 .showcase-fill {
     height: 100%;
     border-radius: 999px;
-    background: var(--login-blue);
+    background: var(--qx-blue);
 }
 
 .showcase-card-team {
@@ -257,8 +229,8 @@ body {
     font-weight: 700;
 }
 
-.showcase-avatar-blue { background: var(--login-panel); }
-.showcase-avatar-salmon { background: var(--login-salmon); }
+.showcase-avatar-blue { background: var(--qx-panel); }
+.showcase-avatar-salmon { background: var(--qx-salmon); }
 .showcase-avatar-light { background: #E8EEF6; }
 
 .showcase-card-note {
@@ -274,7 +246,7 @@ body {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--login-salmon);
+    background: var(--qx-salmon);
 }
 
 /* ---------- Right: sign-in panel ---------- */
@@ -282,7 +254,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 32px 64px 28px;
-    background: var(--login-paper);
+    background: var(--qx-paper);
 }
 
 .login-form {
@@ -326,13 +298,13 @@ body {
     width: 100%;
     height: 46px;
     padding: 0 14px;
-    border: 1px solid var(--login-line);
+    border: 1px solid var(--qx-line);
     border-radius: 6px;
     background: #fff;
     font: inherit;
     font-size: 13px;
     font-weight: 600;
-    color: var(--login-navy);
+    color: var(--qx-navy);
 }
 
 .login-password {
@@ -355,27 +327,34 @@ body {
     border: 0;
     border-radius: 6px;
     background: none;
-    color: var(--login-muted);
+    color: var(--qx-muted);
     cursor: pointer;
 }
 
 .login-password-toggle:hover {
-    color: var(--login-navy);
+    color: var(--qx-navy);
 }
 
 .login-password-toggle:focus-visible {
-    outline: 2px solid var(--login-blue);
+    outline: 2px solid var(--qx-blue);
 }
 
 .login-field input::placeholder {
-    color: var(--login-muted);
+    color: var(--qx-muted);
     opacity: 0.75;
 }
 
 .login-field input:focus-visible {
-    outline: 2px solid var(--login-blue);
+    outline: 2px solid var(--qx-blue);
     outline-offset: 1px;
-    border-color: var(--login-blue);
+    border-color: var(--qx-blue);
+}
+
+.login-forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -6px;
+    font-size: 12px;
 }
 
 .login-feedback {
@@ -395,7 +374,7 @@ body {
 .login-feedback-success {
     background: #E6EFF9;
     color: #1F3F66;
-    border: 1px solid var(--login-line);
+    border: 1px solid var(--qx-line);
 }
 
 .login-submit {
@@ -403,7 +382,7 @@ body {
     margin-top: 6px;
     border: 0;
     border-radius: 6px;
-    background: var(--login-blue);
+    background: var(--qx-blue);
     font: inherit;
     font-size: 14px;
     font-weight: 700;
@@ -413,12 +392,12 @@ body {
 }
 
 .login-submit:hover:not(:disabled) {
-    background: var(--login-blue-dark);
+    background: var(--qx-blue-dark);
 }
 
 .login-submit:focus-visible,
 .auth-mode-toggle:focus-visible {
-    outline: 2px solid var(--login-navy);
+    outline: 2px solid var(--qx-navy);
     outline-offset: 2px;
 }
 

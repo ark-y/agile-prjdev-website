@@ -1,0 +1,217 @@
+.admin-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid #E3E8EF;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(24, 39, 58, 0.04);
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.admin-card-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--qx-panel);
+    color: var(--qx-blue-dark);
+}
+
+.admin-card-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-card-heading h3 {
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-card-heading p {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--qx-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-card-delete {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 9px;
+    border: 1px solid #F0C3B8;
+    border-radius: 6px;
+    background: #FDF3F0;
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #A33A26;
+    cursor: pointer;
+}
+
+.admin-card-delete:hover {
+    background: #FBE3DC;
+}
+
+.admin-card-delete:focus-visible,
+.admin-card-open:focus-visible {
+    outline: 2px solid var(--qx-navy);
+    outline-offset: 2px;
+}
+
+.admin-card-description {
+    display: -webkit-box;
+    min-height: 2.9em;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--qx-muted);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.admin-card-sprint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.admin-card-sprint-name {
+    font-size: 11.5px;
+    font-weight: 800;
+}
+
+.admin-card-pills {
+    display: flex;
+    gap: 6px;
+}
+
+.pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.pill-progress {
+    background: var(--qx-panel);
+}
+
+.pill-planning {
+    background: #F6E7E1;
+}
+
+.pill-completed {
+    background: #BFE3CE;
+    color: #1F5A3A;
+}
+
+.pill-overdue {
+    background: var(--qx-salmon);
+}
+
+.admin-card-progress-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--qx-muted);
+}
+
+.admin-card-progress-row strong {
+    font-weight: 800;
+    color: var(--qx-navy);
+}
+
+.admin-card-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--qx-panel);
+    overflow: hidden;
+}
+
+.admin-card-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--qx-blue);
+    transition: width 0.3s ease;
+}
+
+.admin-card-pending {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--qx-muted);
+}
+
+.admin-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    gap: 12px;
+}
+
+.admin-card-team {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-avatar {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.admin-avatar-blue { background: var(--qx-panel); }
+.admin-avatar-salmon { background: var(--qx-salmon); }
+.admin-avatar-light { background: #E8EEF6; }
+
+.admin-card-members {
+    margin-left: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--qx-muted);
+}
+
+.admin-card-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #3F73B8;
+    cursor: pointer;
+}
+
+.admin-card-open:hover {
+    text-decoration: underline;
+}

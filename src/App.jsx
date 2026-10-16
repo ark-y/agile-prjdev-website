@@ -4,9 +4,11 @@ import CreateProjectForm from "./components/CreateProjectForm/CreateProjectForm"
 import CreateTaskForm from "./components/CreateTaskForm/CreateTaskForm";
 import NotificationCenter from "./components/NotificationCenter/NotificationCenter";
 import ProjectSettings from "./components/ProjectSettings/ProjectSettings";
+import AdminLanding from "./pages/AdminLanding/AdminLanding";
 import DevLanding from "./pages/DevLanding/DevLanding";
 import ClientLanding from "./pages/ClientLanding/ClientLanding";
 import Login from "./pages/Login/Login";
+import ResetPassword from "./pages/Login/ResetPassword";
 import ProjectOverview from "./pages/ProjectOverview/ProjectOverview";
 import {
     addProject,
@@ -46,10 +48,48 @@ import {
 import "./styles/global.css";
 
 
+/*
+ * A password-reset email links back to the app with the outcome in the URL
+ * hash. Read it once at load, before supabase-js tidies the hash away.
+ */
+const LINK_EXPIRED_MESSAGE =
+    "That link has expired or was already used. If you were resetting your password, choose “Forgot password?” to get a new one.";
+
+function readAuthRedirect() {
+
+    const params = new URLSearchParams(
+        window.location.hash.replace(/^#/, "")
+    );
+
+    let error = "";
+
+    if (params.has("error_description")) {
+
+        error =
+            params.get("error_code") === "otp_expired"
+                ? LINK_EXPIRED_MESSAGE
+                : params.get("error_description");
+
+    }
+
+    return {
+        isRecovery:
+            params.get("type") === "recovery" &&
+            params.has("access_token"),
+        error
+    };
+
+}
+
+const authRedirect = readAuthRedirect();
+
+
 function App() {
 
     const [session, setSession] = useState(null);
     const [isCheckingSession, setIsCheckingSession] = useState(true);
+    const [isRecovering, setIsRecovering] = useState(authRedirect.isRecovery);
+    const [linkError, setLinkError] = useState(authRedirect.error);
 
     const [profile, setProfile] = useState(null);
 
@@ -84,6 +124,22 @@ function App() {
 
     useEffect(() => {
 
+        if (authRedirect.error) {
+
+            window.history.replaceState(
+                null,
+                "",
+                window.location.pathname +
+                window.location.search
+            );
+
+        }
+
+    }, []);
+
+
+    useEffect(() => {
+
         let isActive = true;
 
 
@@ -102,6 +158,14 @@ function App() {
 
 
                 setSession(data.session);
+
+                if (!data.session && authRedirect.isRecovery) {
+
+                    setIsRecovering(false);
+                    setLinkError(LINK_EXPIRED_MESSAGE);
+
+                }
+
                 setIsCheckingSession(false);
 
             })
@@ -126,8 +190,15 @@ function App() {
                 subscription
             }
         } = supabase.auth.onAuthStateChange(
-            (_event, nextSession) =>
-                setSession(nextSession)
+            (event, nextSession) => {
+
+                if (event === "PASSWORD_RECOVERY") {
+                    setIsRecovering(true);
+                }
+
+                setSession(nextSession);
+
+            }
         );
 
 
@@ -140,6 +211,15 @@ function App() {
         };
 
     }, []);
+
+
+    useEffect(() => {
+
+        if (session) {
+            setLinkError("");
+        }
+
+    }, [session]);
 
 
     /*
@@ -1238,6 +1318,26 @@ function App() {
     }
 
 
+    async function handleCancelRecovery() {
+
+        try {
+
+            await supabase.auth.signOut();
+
+            setIsRecovering(false);
+
+        } catch (signOutError) {
+
+            setError(
+                signOutError.message ||
+                "Could not sign out."
+            );
+
+        }
+
+    }
+
+
     /*
      * ==============================
      * LOADING / LOGIN
@@ -1250,6 +1350,22 @@ function App() {
             <p role="status">
                 Checking sign-in...
             </p>
+        );
+
+    }
+
+
+    if (session && isRecovering) {
+
+        return (
+            <ResetPassword
+                onDone={() =>
+                    setIsRecovering(false)
+                }
+                onCancel={
+                    handleCancelRecovery
+                }
+            />
         );
 
     }
@@ -1273,7 +1389,7 @@ function App() {
                 )}
 
 
-                <Login />
+                <Login linkError={linkError} />
 
             </>
 
@@ -1343,7 +1459,9 @@ function App() {
         <>
 
 
-            <NotificationCenter />
+            {!(profile.role_name === "Admin" && !project) && (
+                <NotificationCenter />
+            )}
 
 
             {error && (
@@ -1665,46 +1783,88 @@ function App() {
                 <>
 
 
-                    <DevLanding
+                    {profile.role_name === "Admin" ? (
 
-                        projects={
-                            projects
-                        }
+                        <AdminLanding
 
-                        canCreateProject={
-                            profile.role_name ===
-                            "Admin"
-                        }
+                            profile={
+                                profile
+                            }
 
-                        onOpenProject={
-                            handleOpenProject
-                        }
+                            projects={
+                                projects
+                            }
 
-                        onAddProject={
-                            profile.role_name ===
-                            "Admin"
-                                ? () =>
-                                    setShowProjectForm(
-                                        true
-                                    )
-                                : undefined
-                        }
+                            onOpenProject={
+                                handleOpenProject
+                            }
 
-                        onDeleteProject={
-                            handleDeleteProject
-                        }
+                            onAddProject={() =>
+                                setShowProjectForm(
+                                    true
+                                )
+                            }
 
-                        onOpenSettings={() =>
-                            setShowSettings(
-                                true
-                            )
-                        }
+                            onDeleteProject={
+                                handleDeleteProject
+                            }
 
-                        onSignOut={
-                            handleSignOut
-                        }
+                            onOpenSettings={() =>
+                                setShowSettings(
+                                    true
+                                )
+                            }
 
-                    />
+                            onSignOut={
+                                handleSignOut
+                            }
+
+                        />
+
+                    ) : (
+
+                        <DevLanding
+
+                            projects={
+                                projects
+                            }
+
+                            canCreateProject={
+                                profile.role_name ===
+                                "Admin"
+                            }
+
+                            onOpenProject={
+                                handleOpenProject
+                            }
+
+                            onAddProject={
+                                profile.role_name ===
+                                "Admin"
+                                    ? () =>
+                                        setShowProjectForm(
+                                            true
+                                        )
+                                    : undefined
+                            }
+
+                            onDeleteProject={
+                                handleDeleteProject
+                            }
+
+                            onOpenSettings={() =>
+                                setShowSettings(
+                                    true
+                                )
+                            }
+
+                            onSignOut={
+                                handleSignOut
+                            }
+
+                        />
+
+                    )}
 
 
                     {showProjectForm &&

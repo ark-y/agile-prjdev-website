@@ -1,0 +1,11 @@
+/* Quantix brand tokens shared by the sign-in page and the admin workspace */
+:root {
+    --qx-navy: #18273A;
+    --qx-muted: #4A5B73;
+    --qx-blue: #6B8FBA;
+    --qx-blue-dark: #55789F;
+    --qx-panel: #D9E5F3;
+    --qx-paper: #FAF8F4;
+    --qx-salmon: #E8A598;
+    --qx-line: #C5D2E3;
+}
