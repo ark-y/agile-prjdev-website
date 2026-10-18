@@ -204,6 +204,26 @@ export async function fetchTaskAssignees(taskId) {
     return data.map(({ user_id }) => user_id);
 }
 
+// Who is assigned to each of the given tasks: { [taskId]: [userId, ...] }
+export async function fetchAssigneeIdsByTask(taskIds = []) {
+    if (!taskIds.length) {
+        return {};
+    }
+
+    const { data, error } = await supabase
+        .from("task_member")
+        .select("task_id, user_id")
+        .in("task_id", taskIds);
+
+    throwIfError(error);
+    return data.reduce((assigneesByTask, row) => {
+        const taskId = String(row.task_id);
+        assigneesByTask[taskId] ??= [];
+        assigneesByTask[taskId].push(row.user_id);
+        return assigneesByTask;
+    }, {});
+}
+
 export async function addTask({
     projectId,
     sprintId,

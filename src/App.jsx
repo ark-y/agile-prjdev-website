@@ -31,6 +31,7 @@ import {
     deleteTask,
     deleteProjectTag,
     fetchAllTasks,
+    fetchAssigneeIdsByTask,
     fetchProjectMembers,
     fetchProjectTags,
     fetchTaskAssignees,
@@ -98,6 +99,7 @@ function App() {
 
     const [projectTags, setProjectTags] = useState([]);
     const [tagsByTask, setTagsByTask] = useState({});
+    const [assigneesByTask, setAssigneesByTask] = useState({});
 
     const [members, setMembers] = useState([]);
 
@@ -235,6 +237,7 @@ function App() {
             setStatuses([]);
             setProjectTags([]);
             setTagsByTask({});
+            setAssigneesByTask({});
 
             return;
 
@@ -393,6 +396,17 @@ function App() {
                         )
                     );
 
+                const loadedAssigneesByTask =
+                    profile?.role_name === "Admin" ||
+                    profile?.role_name === "Developer"
+                        ? await fetchAssigneeIdsByTask(
+                            loadedTasks.map(
+                                (task) =>
+                                    task.task_id
+                            )
+                        )
+                        : {};
+
 
 
                 setProject(
@@ -419,6 +433,10 @@ function App() {
                     loadedTagsByTask
                 );
 
+                setAssigneesByTask(
+                    loadedAssigneesByTask
+                );
+
                 setMembers(
                     loadedMembers
                 );
@@ -432,6 +450,25 @@ function App() {
             },
             [profile?.role_name]
         );
+
+
+    /*
+     * A developer can open every task, but only edit the ones
+     * they are assigned to. Everyone else's tasks open read-only.
+     */
+    function isTaskReadOnlyForUser(task) {
+
+        if (profile?.role_name !== "Developer") {
+            return false;
+        }
+
+        return !(task?.assigneeIds || []).some(
+            (assigneeId) =>
+                String(assigneeId) ===
+                String(profile.user_id)
+        );
+
+    }
 
 
     /*
@@ -688,6 +725,15 @@ function App() {
 
 
         let savedTask;
+
+        if (
+            taskId &&
+            isTaskReadOnlyForUser(taskToEdit)
+        ) {
+            throw new Error(
+                "You can only edit tasks assigned to you."
+            );
+        }
 
 
         if (taskId) {
@@ -1553,6 +1599,12 @@ function App() {
                                 profile.role_name
                             }
 
+                            readOnly={
+                                isTaskReadOnlyForUser(
+                                    taskToEdit
+                                )
+                            }
+
                             currentUser={
                                 profile
                             }
@@ -1647,6 +1699,10 @@ function App() {
 
                         tagsByTask={
                             tagsByTask
+                        }
+
+                        assigneesByTask={
+                            assigneesByTask
                         }
 
                         members={

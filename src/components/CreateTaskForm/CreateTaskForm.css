@@ -835,3 +835,23 @@
         max-width: calc(100vw - 56px);
     }
 }
+
+
+/* ---------- Read-only task view (a task assigned to someone else) ---------- */
+.tf-readonly-note {
+    margin: 0;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: rgba(37, 57, 92, 0.08);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.tf-banner-input[readonly],
+.tf-textarea[readonly] {
+    cursor: default;
+}
+
+.tf-banner-input[readonly]:hover {
+    background: transparent;
+}
