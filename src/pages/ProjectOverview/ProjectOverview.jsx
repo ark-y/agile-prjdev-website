@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icon from "../../components/Icons/Icons";
 import WorkspaceShell from "../../components/WorkspaceShell/WorkspaceShell";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -24,10 +24,31 @@ function getMemberName(member) {
         || member.user_email;
 }
 
+// Initials for the task card: first + last name letters, e.g. "Jane Doe" -> "JD".
+function getMemberInitials(member) {
+    const first = (member.user_first_name || "").trim();
+    const last = (member.user_last_name || "").trim();
+
+    if (first || last) {
+        return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+    }
+
+    const words = getMemberName(member).trim().split(/\s+/).filter(Boolean);
+    const letters = words.length > 1
+        ? `${words[0].charAt(0)}${words[words.length - 1].charAt(0)}`
+        : words[0]?.slice(0, 2) || "?";
+
+    return letters.toUpperCase();
+}
+
 /*
  * The project page for Admins and Developers: a Backlog column, one column per
  * sprint, and a progress panel. Admins can also drag tasks between columns,
  * edit and delete sprints, add tasks and sprints, and manage tags.
+ *
+ * Developers see every task in the project and can filter the board by one or
+ * more assignees to see what those people are working on. They can open any task, but tasks that
+ * are not assigned to them open read-only.
  */
 function ProjectOverview({
     profile,
@@ -37,6 +58,7 @@ function ProjectOverview({
     statuses = [],
     projectTags = [],
     tagsByTask = {},
+    assigneesByTask = {},
     members = [],
     roleName,
     onAddTask,
@@ -58,8 +80,96 @@ function ProjectOverview({
     const [tagError, setTagError] = useState("");
     const [draggedTaskId, setDraggedTaskId] = useState(null);
     const [dragOverLaneId, setDragOverLaneId] = useState(null);
+    // Empty shows every task; otherwise only tasks assigned to any of these user ids.
+    const [filterUserIds, setFilterUserIds] = useState([]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const filterRef = useRef(null);
+
+    // Close the assignee dropdown on Escape or a click outside it.
+    useEffect(() => {
+        if (!isFilterOpen) {
+            return undefined;
+        }
+
+        function handlePointerDown(event) {
+            if (!filterRef.current?.contains(event.target)) {
+                setIsFilterOpen(false);
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === "Escape") {
+                setIsFilterOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handlePointerDown);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isFilterOpen]);
 
     const isAdmin = roleName === "Admin";
+    const isDeveloper = roleName === "Developer";
+
+    // Is the signed-in user one of this task's assignees?
+    const isMine = (task) =>
+        (assigneesByTask[String(task.task_id)] || []).some(
+            (userId) => String(userId) === String(profile?.user_id)
+        );
+
+    const isAssignedTo = (task, userId) =>
+        (assigneesByTask[String(task.task_id)] || []).some(
+            (assigneeId) => String(assigneeId) === String(userId)
+        );
+
+    // The developers on this project, with the signed-in user first.
+    const filterDevelopers = members
+        .filter((member) => member.role?.role_name === "Developer")
+        .sort((a, b) => {
+            const aIsMe = String(a.user_id) === String(profile?.user_id);
+            const bIsMe = String(b.user_id) === String(profile?.user_id);
+            if (aIsMe !== bIsMe) {
+                return aIsMe ? -1 : 1;
+            }
+            return getMemberName(a).localeCompare(getMemberName(b));
+        });
+
+    const isFilterSelected = (userId) =>
+        filterUserIds.some((selectedId) => String(selectedId) === String(userId));
+
+    function toggleFilterUser(userId) {
+        setFilterUserIds((current) =>
+            current.some((selectedId) => String(selectedId) === String(userId))
+                ? current.filter((selectedId) => String(selectedId) !== String(userId))
+                : [...current, userId]
+        );
+    }
+
+    const selectedDevelopers = filterDevelopers.filter((member) => isFilterSelected(member.user_id));
+    const filterLabel = selectedDevelopers.length === 0
+        ? "All tasks"
+        : selectedDevelopers.length === 1
+            ? `${getMemberName(selectedDevelopers[0])}${
+                String(selectedDevelopers[0].user_id) === String(profile?.user_id) ? " (you)" : ""
+            }`
+            : `${getMemberName(selectedDevelopers[0])} +${selectedDevelopers.length - 1}`;
+
+    // The tasks shown on the board. Only developers get the assignee filter.
+    const activeFilterUserIds = isDeveloper ? selectedDevelopers.map((member) => member.user_id) : [];
+    const hasActiveFilter = activeFilterUserIds.length > 0;
+    const visibleTasks = hasActiveFilter
+        ? tasks.filter((task) => activeFilterUserIds.some((userId) => isAssignedTo(task, userId)))
+        : tasks;
+
+    // The people assigned to a task, for the initials on the task card.
+    const assigneeMembers = (task) =>
+        (assigneesByTask[String(task.task_id)] || [])
+            .map((userId) => members.find((member) => String(member.user_id) === String(userId)))
+            .filter(Boolean);
 
     // Names such as Done, Complete and Completed all count as complete.
     const completedStatusIds = new Set(
@@ -159,8 +269,13 @@ function ProjectOverview({
     function renderTask(task) {
         const statusName = task.task_status?.status_name || "No status";
         const taskTags = tagsByTask[String(task.task_id)] || [];
+        const mine = isMine(task);
+        const assignees = isDeveloper ? assigneeMembers(task) : [];
+        const shownAssignees = assignees.slice(0, 3);
+        const hiddenAssignees = assignees.slice(3);
         const classes = [
             "po-task",
+            isDeveloper && !mine ? "po-task-others" : "",
             isTaskComplete(task) ? "po-task-complete" : "",
             draggedTaskId === task.task_id ? "po-task-dragging" : ""
         ].filter(Boolean).join(" ");
@@ -205,16 +320,49 @@ function ProjectOverview({
                     </span>
                 </div>
 
-                {taskTags.length > 0 && (
-                    <div className="po-task-tags" aria-label="Task tags">
-                        {taskTags.map((tagId) => {
-                            const tag = projectTags.find((item) => String(item.tag_id) === tagId);
-                            return tag ? (
-                                <span key={tagId} style={{ backgroundColor: tag.tag_colour || undefined }}>
-                                    {tag.tag_name}
-                                </span>
-                            ) : null;
-                        })}
+                {(taskTags.length > 0 || isDeveloper) && (
+                    <div className="po-task-meta">
+                        <div className="po-task-tags" aria-label="Task tags">
+                            {taskTags.map((tagId) => {
+                                const tag = projectTags.find((item) => String(item.tag_id) === tagId);
+                                return tag ? (
+                                    <span key={tagId} style={{ backgroundColor: tag.tag_colour || undefined }}>
+                                        {tag.tag_name}
+                                    </span>
+                                ) : null;
+                            })}
+                        </div>
+
+                        {isDeveloper && (
+                            <div className="po-task-people" aria-label="Assigned to">
+                                {shownAssignees.map((member) => (
+                                    <span
+                                        key={member.user_id}
+                                        className={`po-initials${
+                                            String(member.user_id) === String(profile?.user_id) ? " is-me" : ""
+                                        }`}
+                                        title={getMemberName(member)}
+                                        aria-label={getMemberName(member)}
+                                    >
+                                        {getMemberInitials(member)}
+                                    </span>
+                                ))}
+                                {hiddenAssignees.length > 0 && (
+                                    <span
+                                        className="po-initials"
+                                        title={hiddenAssignees.map(getMemberName).join(", ")}
+                                        aria-label={hiddenAssignees.map(getMemberName).join(", ")}
+                                    >
+                                        +{hiddenAssignees.length}
+                                    </span>
+                                )}
+                                {assignees.length === 0 && (
+                                    <span className="po-initials is-empty" title="Unassigned" aria-label="Unassigned">
+                                        &ndash;
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -222,7 +370,7 @@ function ProjectOverview({
     }
 
     function renderTasks(sprintId) {
-        const laneTasks = tasks.filter((task) =>
+        const laneTasks = visibleTasks.filter((task) =>
             sprintId === null
                 ? task.sprint_id === null || task.sprint_id === undefined
                 : task.sprint_id === sprintId
@@ -232,7 +380,11 @@ function ProjectOverview({
             <div className="po-lane-tasks">
                 {laneTasks.map(renderTask)}
                 {laneTasks.length === 0 && (
-                    <p className="po-lane-empty">{isAdmin ? "Drop tasks here" : "No tasks"}</p>
+                    <p className="po-lane-empty">
+                        {isAdmin
+                            ? "Drop tasks here"
+                            : hasActiveFilter ? "No matching tasks" : "No tasks"}
+                    </p>
                 )}
             </div>
         );
@@ -360,6 +512,72 @@ function ProjectOverview({
             <section className="po-head">
                 <h1>{project?.project_name || "Project"}</h1>
                 <p>Project overview, backlog, sprint, and progress</p>
+
+                {isDeveloper && (
+                    <div className="po-filter" ref={filterRef}>
+                        <label className="po-filter-label" htmlFor="po-filter-button">Filter</label>
+
+                        <div className="po-filter-anchor">
+                            <button
+                                type="button"
+                                id="po-filter-button"
+                                className="po-filter-button"
+                                aria-haspopup="listbox"
+                                aria-expanded={isFilterOpen}
+                                onClick={() => setIsFilterOpen((open) => !open)}
+                            >
+                                <span>{filterLabel}</span>
+                                <Icon name="chevronDown" size={16} />
+                            </button>
+
+                            {isFilterOpen && (
+                                <div className="po-filter-menu" role="listbox" aria-multiselectable="true" aria-label="Filter tasks by assignee">
+                                    <button
+                                        type="button"
+                                        role="option"
+                                        aria-selected={!hasActiveFilter}
+                                        className={`po-filter-item${!hasActiveFilter ? " is-selected" : ""}`}
+                                        onClick={() => setFilterUserIds([])}
+                                    >
+                                        <span className="po-filter-check" aria-hidden="true">
+                                            {!hasActiveFilter && <Icon name="check" size={13} />}
+                                        </span>
+                                        <span className="po-filter-name">
+                                            <strong>All tasks</strong>
+                                        </span>
+                                        <span className="po-filter-count">{tasks.length}</span>
+                                    </button>
+
+                                    {filterDevelopers.map((member) => {
+                                        const isSelected = isFilterSelected(member.user_id);
+                                        const isMe = String(member.user_id) === String(profile?.user_id);
+                                        const count = tasks.filter((task) => isAssignedTo(task, member.user_id)).length;
+
+                                        return (
+                                            <button
+                                                key={member.user_id}
+                                                type="button"
+                                                role="option"
+                                                aria-selected={isSelected}
+                                                className={`po-filter-item${isSelected ? " is-selected" : ""}`}
+                                                onClick={() => toggleFilterUser(member.user_id)}
+                                            >
+                                                <span className="po-filter-check" aria-hidden="true">
+                                                    {isSelected && <Icon name="check" size={13} />}
+                                                </span>
+                                                <span className="po-filter-name">
+                                                    <strong>{getMemberName(member)}{isMe ? " (you)" : ""}</strong>
+                                                    {member.user_email && <small>{member.user_email}</small>}
+                                                </span>
+                                                <span className="po-filter-count">{count}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </section>
 
             <div className="po-board">

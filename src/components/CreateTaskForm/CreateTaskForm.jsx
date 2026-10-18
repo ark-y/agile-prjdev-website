@@ -73,20 +73,28 @@ function CreateTaskForm({
     onAddTag,
     members = [],
     roleName = "",
-    currentUser = null
+    currentUser = null,
+    readOnly = false
 }) {
 
     // whether we are creating a new task or editing an existing task
     const isEditing = Boolean(initialTask?.task_id);
 
-    // admins and developers can edit tasks
+    // read-only: a developer viewing a task that is assigned to someone else
+    const isReadOnly = isEditing && readOnly;
+
+    // admins and developers can edit tasks (unless the card is read-only)
     const canEditTask =
-        roleName === "Admin" ||
-        roleName === "Developer";
+        !isReadOnly &&
+        (
+            roleName === "Admin" ||
+            roleName === "Developer"
+        );
 
     // only admins can delete tasks
     const canDeleteTask =
-        roleName === "Admin";
+        roleName === "Admin" &&
+        !isReadOnly;
 
 
     // task name
@@ -124,6 +132,8 @@ function CreateTaskForm({
         useState(initialTask?.assigneeIds || []);
 
     const canToggleChecklist =
+        !isReadOnly &&
+        (
         roleName === "Admin" ||
         (
             roleName === "Developer" &&
@@ -132,6 +142,7 @@ function CreateTaskForm({
                 (assigneeId) =>
                     String(assigneeId) === String(currentUser.user_id)
             )
+        )
         );
 
 
@@ -517,6 +528,13 @@ function CreateTaskForm({
     // remove checklist item
     function handleRemoveChecklistItem(itemId) {
 
+        if (isReadOnly) {
+
+            return;
+
+        }
+
+
         setChecklists((current) =>
             current.filter(
                 (item) =>
@@ -529,6 +547,13 @@ function CreateTaskForm({
 
     // saving task
     async function handleSaveTask() {
+
+        if (isReadOnly) {
+
+            return;
+
+        }
+
 
         if (
             !taskName.trim() ||
@@ -709,6 +734,7 @@ function CreateTaskForm({
                     className="tf-input tf-dropdown"
                     aria-haspopup="dialog"
                     aria-expanded={isCalendarOpen}
+                    disabled={isReadOnly}
                     onClick={() => {
 
                         setIsAssigneeOpen(false);
@@ -897,6 +923,7 @@ function CreateTaskForm({
                 id="task-weight"
                 className="tf-input tf-select"
                 value={taskWeight}
+                disabled={isReadOnly}
                 onChange={(event) =>
                     setTaskWeight(event.target.value)
                 }
@@ -917,6 +944,7 @@ function CreateTaskForm({
                 id="task-priority"
                 className="tf-input tf-select"
                 value={taskPriority}
+                disabled={isReadOnly}
                 onChange={(event) =>
                     setTaskPriority(event.target.value)
                 }
@@ -937,6 +965,7 @@ function CreateTaskForm({
                 id="task-status"
                 className="tf-input tf-select"
                 value={statusId}
+                disabled={isReadOnly}
                 onChange={(event) =>
                     setStatusId(event.target.value)
                 }
@@ -1113,6 +1142,7 @@ function CreateTaskForm({
                         : "Add task details, requirements, and context for the assignee."
                 }
                 value={taskDescription}
+                readOnly={isReadOnly}
                 onChange={(event) =>
                     setTaskDescription(event.target.value)
                 }
@@ -1163,16 +1193,20 @@ function CreateTaskForm({
 
                         </label>
 
-                        <button
-                            type="button"
-                            className="tf-checklist-remove"
-                            onClick={() =>
-                                handleRemoveChecklistItem(item.id)
-                            }
-                            aria-label={`Remove ${item.text}`}
-                        >
-                            <Icon name="x" size={14} />
-                        </button>
+                        {!isReadOnly && (
+
+                            <button
+                                type="button"
+                                className="tf-checklist-remove"
+                                onClick={() =>
+                                    handleRemoveChecklistItem(item.id)
+                                }
+                                aria-label={`Remove ${item.text}`}
+                            >
+                                <Icon name="x" size={14} />
+                            </button>
+
+                        )}
 
                     </div>
 
@@ -1180,32 +1214,36 @@ function CreateTaskForm({
 
             </div>
 
-            <div className="tf-checklist-add">
+            {!isReadOnly && (
 
-                <input
-                    type="text"
-                    className="tf-input"
-                    placeholder="Add checklist item"
-                    aria-label="New checklist item"
-                    value={newChecklistItem}
-                    onChange={(event) =>
-                        setNewChecklistItem(event.target.value)
-                    }
-                    onKeyDown={handleChecklistKeyDown}
-                    maxLength={200}
-                />
+                <div className="tf-checklist-add">
 
-                <button
-                    type="button"
-                    className="tf-btn tf-btn-dark"
-                    onClick={handleAddChecklistItem}
-                    disabled={!newChecklistItem.trim()}
-                    aria-label="Add checklist item"
-                >
-                    <Icon name="plus" size={18} />
-                </button>
+                    <input
+                        type="text"
+                        className="tf-input"
+                        placeholder="Add checklist item"
+                        aria-label="New checklist item"
+                        value={newChecklistItem}
+                        onChange={(event) =>
+                            setNewChecklistItem(event.target.value)
+                        }
+                        onKeyDown={handleChecklistKeyDown}
+                        maxLength={200}
+                    />
 
-            </div>
+                    <button
+                        type="button"
+                        className="tf-btn tf-btn-dark"
+                        onClick={handleAddChecklistItem}
+                        disabled={!newChecklistItem.trim()}
+                        aria-label="Add checklist item"
+                    >
+                        <Icon name="plus" size={18} />
+                    </button>
+
+                </div>
+
+            )}
 
         </section>
     );
@@ -1231,7 +1269,7 @@ function CreateTaskForm({
                 breadcrumb={[
                     { label: "Projects", icon: "arrowLeft", onClick: onOpenProjects },
                     { label: "Tasks", onClick: onCancel },
-                    { label: "Edit task" }
+                    { label: isReadOnly ? "View task" : "Edit task" }
                 ]}
                 breadcrumbStyle="card"
                 sidebarExtra={
@@ -1239,7 +1277,7 @@ function CreateTaskForm({
                         <span className="tf-weight-badge">{weightBadge}</span>
                         <span>
                             <strong>Task workspace</strong>
-                            <small>Edit mode</small>
+                            <small>{isReadOnly ? "View only" : "Edit mode"}</small>
                         </span>
                     </div>
                 }
@@ -1265,18 +1303,22 @@ function CreateTaskForm({
                             onClick={onCancel}
                             disabled={isBusy}
                         >
-                            Cancel
+                            {isReadOnly ? "Back" : "Cancel"}
                         </button>
 
-                        <button
-                            type="button"
-                            className="tf-btn tf-btn-dark"
-                            onClick={handleSaveTask}
-                            disabled={isBusy}
-                        >
-                            {isSaving ? "Saving..." : "Save changes"}
-                            {!isSaving && <Icon name="check" size={16} />}
-                        </button>
+                        {!isReadOnly && (
+
+                            <button
+                                type="button"
+                                className="tf-btn tf-btn-dark"
+                                onClick={handleSaveTask}
+                                disabled={isBusy}
+                            >
+                                {isSaving ? "Saving..." : "Save changes"}
+                                {!isSaving && <Icon name="check" size={16} />}
+                            </button>
+
+                        )}
 
                     </div>
                 }
@@ -1291,7 +1333,9 @@ function CreateTaskForm({
 
                         <div className="tf-banner-name">
 
-                            <p className="tf-banner-kicker">Task editor</p>
+                            <p className="tf-banner-kicker">
+                                {isReadOnly ? "Task viewer" : "Task editor"}
+                            </p>
 
                             <label className="tf-sr-only" htmlFor="task-name">Task name</label>
 
@@ -1301,6 +1345,7 @@ function CreateTaskForm({
                                 type="text"
                                 placeholder="Task name"
                                 value={taskName}
+                                readOnly={isReadOnly}
                                 onChange={(event) =>
                                     setTaskName(event.target.value)
                                 }
@@ -1310,10 +1355,18 @@ function CreateTaskForm({
 
                         <div className="tf-banner-pill" title="Task weight">
                             <span className="tf-weight-badge">{weightBadge}</span>
-                            Edit task
+                            {isReadOnly ? "View only" : "Edit task"}
                         </div>
 
                     </section>
+
+                    {isReadOnly && (
+
+                        <p className="tf-readonly-note" role="status">
+                            This task is assigned to someone else, so you can view it but not change it.
+                        </p>
+
+                    )}
 
                     <section className="tf-card">
 
