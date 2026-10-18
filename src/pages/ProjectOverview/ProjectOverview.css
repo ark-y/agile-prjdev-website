@@ -396,36 +396,50 @@
     font-weight: 800;
 }
 
-.po-task-assignees {
+/* Tags on the left, assignee initials on the same line at the right. */
+.po-task-meta {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--qx-muted);
-    overflow-wrap: anywhere;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
 }
 
-.po-task-mine,
-.po-task-viewonly {
-    padding: 2px 8px;
+.po-task-meta .po-task-tags {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+}
+
+.po-task-people {
+    display: flex;
+    flex: none;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.po-initials {
+    display: inline-grid;
+    place-items: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
     border-radius: 999px;
-    font-size: 11px;
+    background: rgba(37, 57, 92, 0.12);
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--qx-ink);
 }
 
-.po-task-mine {
+.po-initials.is-me {
     background: var(--qx-ink);
     color: #fff;
 }
 
-.po-task-viewonly {
-    margin-left: auto;
-    background: rgba(37, 57, 92, 0.1);
+.po-initials.is-empty {
+    background: transparent;
+    border: 1px dashed rgba(37, 57, 92, 0.35);
     color: var(--qx-muted);
 }
 
