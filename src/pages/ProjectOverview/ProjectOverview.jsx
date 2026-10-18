@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icon from "../../components/Icons/Icons";
 import WorkspaceShell from "../../components/WorkspaceShell/WorkspaceShell";
 import { useNotifications } from "../../hooks/useNotifications";
@@ -28,6 +28,11 @@ function getMemberName(member) {
  * The project page for Admins and Developers: a Backlog column, one column per
  * sprint, and a progress panel. Admins can also drag tasks between columns,
  * edit and delete sprints, add tasks and sprints, and manage tags.
+ *
+ * Developers see every task in the project and can filter the board by
+ * assignee ("All tasks", "My tasks", or any other developer on the project) to
+ * see what each person is working on. They can open any task, but tasks that
+ * are not assigned to them open read-only.
  */
 function ProjectOverview({
     profile,
@@ -37,6 +42,7 @@ function ProjectOverview({
     statuses = [],
     projectTags = [],
     tagsByTask = {},
+    assigneesByTask = {},
     members = [],
     roleName,
     onAddTask,
@@ -58,8 +64,85 @@ function ProjectOverview({
     const [tagError, setTagError] = useState("");
     const [draggedTaskId, setDraggedTaskId] = useState(null);
     const [dragOverLaneId, setDragOverLaneId] = useState(null);
+    // null shows every task; otherwise only the tasks assigned to this user id.
+    const [filterUserId, setFilterUserId] = useState(null);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const filterRef = useRef(null);
+
+    // Close the assignee dropdown on Escape or a click outside it.
+    useEffect(() => {
+        if (!isFilterOpen) {
+            return undefined;
+        }
+
+        function handlePointerDown(event) {
+            if (!filterRef.current?.contains(event.target)) {
+                setIsFilterOpen(false);
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === "Escape") {
+                setIsFilterOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handlePointerDown);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isFilterOpen]);
 
     const isAdmin = roleName === "Admin";
+    const isDeveloper = roleName === "Developer";
+
+    // Is the signed-in user one of this task's assignees?
+    const isMine = (task) =>
+        (assigneesByTask[String(task.task_id)] || []).some(
+            (userId) => String(userId) === String(profile?.user_id)
+        );
+
+    const isAssignedTo = (task, userId) =>
+        (assigneesByTask[String(task.task_id)] || []).some(
+            (assigneeId) => String(assigneeId) === String(userId)
+        );
+
+    // The developers on this project, with the signed-in user first.
+    const filterDevelopers = members
+        .filter((member) => member.role?.role_name === "Developer")
+        .sort((a, b) => {
+            const aIsMe = String(a.user_id) === String(profile?.user_id);
+            const bIsMe = String(b.user_id) === String(profile?.user_id);
+            if (aIsMe !== bIsMe) {
+                return aIsMe ? -1 : 1;
+            }
+            return getMemberName(a).localeCompare(getMemberName(b));
+        });
+
+    const selectedDeveloper = filterDevelopers.find(
+        (member) => String(member.user_id) === String(filterUserId)
+    );
+    const filterLabel = !selectedDeveloper
+        ? "All tasks"
+        : String(selectedDeveloper.user_id) === String(profile?.user_id)
+            ? `${getMemberName(selectedDeveloper)} (you)`
+            : getMemberName(selectedDeveloper);
+
+    // The tasks shown on the board. Only developers get the assignee filter.
+    const activeFilterUserId = isDeveloper ? filterUserId : null;
+    const visibleTasks = activeFilterUserId
+        ? tasks.filter((task) => isAssignedTo(task, activeFilterUserId))
+        : tasks;
+
+    // Names of the people assigned to a task, for the task card.
+    const assigneeNames = (task) =>
+        (assigneesByTask[String(task.task_id)] || [])
+            .map((userId) => members.find((member) => String(member.user_id) === String(userId)))
+            .filter(Boolean)
+            .map(getMemberName);
 
     // Names such as Done, Complete and Completed all count as complete.
     const completedStatusIds = new Set(
@@ -159,8 +242,11 @@ function ProjectOverview({
     function renderTask(task) {
         const statusName = task.task_status?.status_name || "No status";
         const taskTags = tagsByTask[String(task.task_id)] || [];
+        const mine = isMine(task);
+        const names = isDeveloper ? assigneeNames(task) : [];
         const classes = [
             "po-task",
+            isDeveloper && !mine ? "po-task-others" : "",
             isTaskComplete(task) ? "po-task-complete" : "",
             draggedTaskId === task.task_id ? "po-task-dragging" : ""
         ].filter(Boolean).join(" ");
@@ -205,6 +291,14 @@ function ProjectOverview({
                     </span>
                 </div>
 
+                {isDeveloper && (
+                    <p className="po-task-assignees">
+                        {mine && <span className="po-task-mine">Yours</span>}
+                        {names.length ? names.join(", ") : "Unassigned"}
+                        {!mine && <span className="po-task-viewonly">View only</span>}
+                    </p>
+                )}
+
                 {taskTags.length > 0 && (
                     <div className="po-task-tags" aria-label="Task tags">
                         {taskTags.map((tagId) => {
@@ -222,7 +316,7 @@ function ProjectOverview({
     }
 
     function renderTasks(sprintId) {
-        const laneTasks = tasks.filter((task) =>
+        const laneTasks = visibleTasks.filter((task) =>
             sprintId === null
                 ? task.sprint_id === null || task.sprint_id === undefined
                 : task.sprint_id === sprintId
@@ -232,7 +326,11 @@ function ProjectOverview({
             <div className="po-lane-tasks">
                 {laneTasks.map(renderTask)}
                 {laneTasks.length === 0 && (
-                    <p className="po-lane-empty">{isAdmin ? "Drop tasks here" : "No tasks"}</p>
+                    <p className="po-lane-empty">
+                        {isAdmin
+                            ? "Drop tasks here"
+                            : activeFilterUserId ? "No matching tasks" : "No tasks"}
+                    </p>
                 )}
             </div>
         );
@@ -360,6 +458,78 @@ function ProjectOverview({
             <section className="po-head">
                 <h1>{project?.project_name || "Project"}</h1>
                 <p>Project overview, backlog, sprint, and progress</p>
+
+                {isDeveloper && (
+                    <div className="po-filter" ref={filterRef}>
+                        <label className="po-filter-label" htmlFor="po-filter-button">Filter</label>
+
+                        <div className="po-filter-anchor">
+                            <button
+                                type="button"
+                                id="po-filter-button"
+                                className="po-filter-button"
+                                aria-haspopup="listbox"
+                                aria-expanded={isFilterOpen}
+                                onClick={() => setIsFilterOpen((open) => !open)}
+                            >
+                                <span>{filterLabel}</span>
+                                <Icon name="chevronDown" size={16} />
+                            </button>
+
+                            {isFilterOpen && (
+                                <div className="po-filter-menu" role="listbox" aria-label="Filter tasks by assignee">
+                                    <button
+                                        type="button"
+                                        role="option"
+                                        aria-selected={!filterUserId}
+                                        className={`po-filter-item${!filterUserId ? " is-selected" : ""}`}
+                                        onClick={() => {
+                                            setFilterUserId(null);
+                                            setIsFilterOpen(false);
+                                        }}
+                                    >
+                                        <span className="po-filter-check" aria-hidden="true">
+                                            {!filterUserId && <Icon name="check" size={13} />}
+                                        </span>
+                                        <span className="po-filter-name">
+                                            <strong>All tasks</strong>
+                                        </span>
+                                        <span className="po-filter-count">{tasks.length}</span>
+                                    </button>
+
+                                    {filterDevelopers.map((member) => {
+                                        const isSelected = String(filterUserId) === String(member.user_id);
+                                        const isMe = String(member.user_id) === String(profile?.user_id);
+                                        const count = tasks.filter((task) => isAssignedTo(task, member.user_id)).length;
+
+                                        return (
+                                            <button
+                                                key={member.user_id}
+                                                type="button"
+                                                role="option"
+                                                aria-selected={isSelected}
+                                                className={`po-filter-item${isSelected ? " is-selected" : ""}`}
+                                                onClick={() => {
+                                                    setFilterUserId(member.user_id);
+                                                    setIsFilterOpen(false);
+                                                }}
+                                            >
+                                                <span className="po-filter-check" aria-hidden="true">
+                                                    {isSelected && <Icon name="check" size={13} />}
+                                                </span>
+                                                <span className="po-filter-name">
+                                                    <strong>{getMemberName(member)}{isMe ? " (you)" : ""}</strong>
+                                                    {member.user_email && <small>{member.user_email}</small>}
+                                                </span>
+                                                <span className="po-filter-count">{count}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </section>
 
             <div className="po-board">
