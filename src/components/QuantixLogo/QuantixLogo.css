@@ -10,7 +10,7 @@
 }
 
 .quantix-logo-text .quantix-wordmark {
-    font-size: 29px;
+    font-size: 1.8125rem;
     font-weight: 800;
     letter-spacing: -0.01em;
 }
@@ -18,7 +18,7 @@
 .quantix-logo-text .quantix-sub {
     align-self: flex-end;
     padding-bottom: 5px;
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 600;
 }
 
@@ -36,7 +36,7 @@
     height: 40px;
     border-radius: 10px;
     background: var(--qx-ink);
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 800;
     color: #fff;
 }
@@ -47,12 +47,12 @@
 }
 
 .quantix-logo-stacked .quantix-wordmark {
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 800;
 }
 
 .quantix-logo-stacked .quantix-sub {
-    font-size: 17px;
+    font-size: 1.0625rem;
     font-weight: 500;
 }
 
@@ -67,5 +67,5 @@
 }
 
 .quantix-logo-client .quantix-sub {
-    font-size: 15px;
+    font-size: 0.9375rem;
 }

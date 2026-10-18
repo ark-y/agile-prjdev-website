@@ -1,6 +1,6 @@
 /* ---------- Page heading ---------- */
 .po-head h1 {
-    font-size: 34px;
+    font-size: 2.125rem;
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.005em;
@@ -10,7 +10,7 @@
 
 .po-head p {
     margin-top: 10px;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 500;
 }
 
@@ -66,7 +66,7 @@
 .po-lane-header h2,
 .po-lane-name {
     min-width: 0;
-    font-size: 27px;
+    font-size: 1.6875rem;
     font-weight: 700;
     line-height: 1.1;
     text-transform: uppercase;
@@ -109,7 +109,7 @@
     padding: 0 6px;
     border-radius: 50%;
     background: var(--qx-paper);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 800;
 }
 
@@ -144,7 +144,7 @@
     border-radius: 6px;
     background: none;
     font: inherit;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--qx-ink);
     cursor: default;
@@ -172,7 +172,7 @@
     border-radius: 6px;
     background: #fff;
     font: inherit;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--qx-ink);
 }
 
@@ -237,7 +237,7 @@
 .po-task-name {
     flex: 1;
     min-width: 0;
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 500;
     line-height: 1.2;
     overflow-wrap: anywhere;
@@ -248,13 +248,13 @@
     flex: none;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 700;
     color: var(--qx-muted);
 }
 
 .po-task-priority {
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 800;
 }
 
@@ -269,7 +269,7 @@
     padding: 4px 12px;
     border-radius: 999px;
     background: var(--qx-salmon);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 700;
 }
 
@@ -277,7 +277,7 @@
     padding: 20px 10px;
     border: 1px dashed rgba(37, 57, 92, 0.3);
     border-radius: 14px;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--qx-muted);
     text-align: center;
@@ -304,7 +304,7 @@
 }
 
 .po-progress h2 {
-    font-size: 23px;
+    font-size: 1.4375rem;
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -313,7 +313,7 @@
     padding: 6px 16px;
     border-radius: 999px;
     background: #3C5477;
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 800;
 }
 
@@ -335,7 +335,7 @@
 
 .po-count {
     margin: 12px 0 22px;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--qx-panel);
 }
@@ -350,7 +350,7 @@
     display: flex;
     align-items: baseline;
     gap: 12px;
-    font-size: 22px;
+    font-size: 1.375rem;
     font-weight: 500;
 }
 
@@ -366,7 +366,7 @@
 
 .po-facts strong {
     margin-left: auto;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 600;
     color: #C5D5E8;
     text-align: right;
@@ -390,7 +390,7 @@
     border-radius: 20px;
     background: var(--qx-ink);
     font: inherit;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 700;
     color: #fff;
     text-transform: uppercase;
@@ -413,7 +413,7 @@
 }
 
 .po-tags h2 {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 800;
     text-transform: uppercase;
 }
@@ -432,7 +432,7 @@
     border: 2px solid var(--qx-salmon);
     border-radius: 999px;
     background: var(--qx-paper);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 700;
 }
 
@@ -445,7 +445,7 @@
     border-radius: 50%;
     background: none;
     font: inherit;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1;
     color: var(--qx-muted);
     cursor: pointer;
@@ -457,7 +457,7 @@
 }
 
 .po-tags-empty {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--qx-muted);
 }
@@ -474,7 +474,7 @@
     flex: 1;
     gap: 6px;
     min-width: 140px;
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 700;
 }
 
@@ -486,7 +486,7 @@
     border-radius: 8px;
     background: var(--qx-paper);
     font: inherit;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--qx-ink);
 }
@@ -503,7 +503,7 @@
     border-radius: 8px;
     background: var(--qx-ink);
     font: inherit;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 700;
     color: #fff;
     cursor: pointer;
@@ -515,7 +515,7 @@
 }
 
 .po-tag-error {
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: #8A2F1E;
 }
@@ -529,11 +529,11 @@
 
 @media (max-width: 900px) {
     .po-head h1 {
-        font-size: 28px;
+        font-size: 1.75rem;
     }
 
     .po-head p {
-        font-size: 15px;
+        font-size: 0.9375rem;
     }
 
     .po-actions {

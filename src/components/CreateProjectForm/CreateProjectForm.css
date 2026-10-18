@@ -41,7 +41,7 @@
     color: #18273A;
 
     font-family: "Fustat", sans-serif;
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 700;
 }
 
@@ -50,7 +50,7 @@
 .create-project-popup label {
     color: #18273A;
 
-    font-size: 18px;
+    font-size: 1.125rem;
 }
 
 
@@ -64,7 +64,7 @@
     background-color: #D9D9D9;
     color: #18273A;
 
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 

@@ -40,7 +40,7 @@
     border-radius: 12px;
     background: #364869;
     font: inherit;
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 600;
     color: #fff;
     text-align: left;
@@ -79,18 +79,18 @@
 }
 
 .cs-role-card small {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--qx-panel);
 }
 
 .cs-role-card strong {
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 700;
 }
 
 .cs-role-card p {
-    font-size: 16.5px;
+    font-size: 1.0313rem;
     font-weight: 500;
     line-height: 1.35;
     color: var(--qx-panel);
@@ -104,7 +104,7 @@
     border: 0;
     background: none;
     font: inherit;
-    font-size: 19px;
+    font-size: 1.1875rem;
     font-weight: 600;
     color: #fff;
     cursor: pointer;
@@ -143,7 +143,7 @@
 
 .cs-heading h1 {
     overflow: hidden;
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 800;
     letter-spacing: 0;
     text-overflow: ellipsis;
@@ -159,7 +159,7 @@
     padding: 0 16px;
     border-radius: 999px;
     background: var(--qx-salmon);
-    font-size: 17.5px;
+    font-size: 1.0938rem;
     font-weight: 700;
     line-height: 40px;
     color: var(--qx-ink);
@@ -212,7 +212,7 @@
     padding: 0 18px 0 6px;
     border-radius: 999px;
     background: #364869;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 600;
 }
 
@@ -223,7 +223,7 @@
     height: 30px;
     border-radius: 50%;
     background: var(--qx-salmon);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 800;
     color: var(--qx-ink);
 }
@@ -273,7 +273,7 @@
     }
 
     .cs-heading h1 {
-        font-size: 22px;
+        font-size: 1.375rem;
     }
 
     .cs-content {
