@@ -1,5 +1,6 @@
-import { useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import Icon from "../Icons/Icons";
+import WorkspaceShell from "../WorkspaceShell/WorkspaceShell";
 import "./CreateTaskForm.css";
 
 
@@ -10,11 +11,61 @@ const MONTH_NAMES = [
     "July", "August", "September", "October", "November", "December"
 ];
 
+const TAG_COLOURS = [
+    "#3F9B76", "#963A91", "#3976B8", "#D18B2C", "#B94A48",
+    "#5B8C5A", "#5967A8", "#B45F91", "#4A8F9C", "#777777"
+];
+
+
+// Close a popover on Escape or a click outside it.
+function useDismiss(ref, isOpen, onDismiss) {
+
+    useEffect(() => {
+
+        if (!isOpen) {
+            return undefined;
+        }
+
+        function handlePointerDown(event) {
+            if (!ref.current?.contains(event.target)) {
+                onDismiss();
+            }
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === "Escape") {
+                onDismiss();
+            }
+        }
+
+        document.addEventListener("mousedown", handlePointerDown);
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("mousedown", handlePointerDown);
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+
+    }, [isOpen]);
+
+}
+
+
+function getMemberName(member) {
+
+    return member.user_pref_name ||
+        `${member.user_first_name} ${member.user_last_name}`;
+
+}
+
 
 function CreateTaskForm({
     onSaveTask,
     onCancel,
     onDeleteTask,
+    onOpenProjects,
+    onOpenSettings,
+    onSignOut,
     initialTask = null,
     sprints = [],
     statuses = [],
@@ -59,7 +110,7 @@ function CreateTaskForm({
 
 
     // sprint
-    const [sprintId, setSprintId] =
+    const [sprintId] =
         useState(initialTask?.sprint_id?.toString() || "");
 
 
@@ -135,6 +186,11 @@ function CreateTaskForm({
         useState("");
 
 
+    // whether the assignee list is open
+    const [isAssigneeOpen, setIsAssigneeOpen] =
+        useState(false);
+
+
     // whether the deadline calendar is open
     const [isCalendarOpen, setIsCalendarOpen] =
         useState(false);
@@ -161,6 +217,15 @@ function CreateTaskForm({
 
     const [viewMonth, setViewMonth] =
         useState(today.getMonth());
+
+
+    const calendarRef = useRef(null);
+    const assigneeRef = useRef(null);
+    const tagsRef = useRef(null);
+
+    useDismiss(calendarRef, isCalendarOpen, () => setIsCalendarOpen(false));
+    useDismiss(assigneeRef, isAssigneeOpen, () => setIsAssigneeOpen(false));
+    useDismiss(tagsRef, isTagPopupOpen, () => setIsTagPopupOpen(false));
 
 
     // move calendar back one month
@@ -212,7 +277,7 @@ function CreateTaskForm({
     // text shown on deadline button
     const deadlineLabel = selectedDate
         ? `${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`
-        : "Deadline";
+        : "Select deadline";
 
 
     // building calendar cells
@@ -237,6 +302,36 @@ function CreateTaskForm({
     for (let day = 1; day <= daysInMonth; day++) {
 
         calendarCells.push(day);
+
+    }
+
+
+    // the developers chosen for this task, by name
+    const isAssigned = (userId) =>
+        assigneeIds.some(
+            (assigneeId) =>
+                String(assigneeId) === String(userId)
+        );
+
+    const assigneeLabel = members
+        .filter((member) => isAssigned(member.user_id))
+        .map(getMemberName)
+        .join(", ");
+
+
+    function toggleAssignee(userId) {
+
+        setAssigneeIds((current) =>
+            current.some(
+                (assigneeId) =>
+                    String(assigneeId) === String(userId)
+            )
+                ? current.filter(
+                    (assigneeId) =>
+                        String(assigneeId) !== String(userId)
+                )
+                : [...current, userId]
+        );
 
     }
 
@@ -585,939 +680,778 @@ function CreateTaskForm({
     }
 
 
-    return (
+    const isBusy = isSaving || isDeleting;
 
-        // whole task form page
-        <main className="task-form-page">
+    const weightBadge = taskWeight || "–";
 
-
-            {/* top blue bit */}
-            <header className="task-form-header">
-
-
-                {/* task name */}
-                <input
-                    className="task-name-input"
-                    type="text"
-                    placeholder="Task name"
-                    value={taskName}
-                    onChange={(event) =>
-                        setTaskName(
-                            event.target.value
-                        )
-                    }
-                />
+    const initial = (
+        currentUser?.user_pref_name ||
+        currentUser?.user_first_name ||
+        "?"
+    )[0].toUpperCase();
 
 
-                {/* selected weight shown at top */}
-                <span className="task-weight-number">
+    /*
+     * ==============================
+     * FIELDS
+     * ==============================
+     */
 
-                    {taskWeight}
+    const deadlineField = (
+        <div className="tf-field">
+            <label htmlFor="task-deadline">Deadline</label>
 
-                </span>
+            <div className="tf-anchor" ref={calendarRef}>
 
+                <button
+                    type="button"
+                    id="task-deadline"
+                    className="tf-input tf-dropdown"
+                    aria-haspopup="dialog"
+                    aria-expanded={isCalendarOpen}
+                    onClick={() => {
 
-            </header>
+                        setIsAssigneeOpen(false);
 
+                        setIsCalendarOpen(!isCalendarOpen);
 
+                    }}
+                >
+                    <span className={selectedDate ? "" : "is-placeholder"}>
+                        {deadlineLabel}
+                    </span>
+                    <Icon name="chevronDown" size={16} />
+                </button>
 
-            {/* everything under header */}
-            <section className="task-form-body">
+                {/* calendar popup */}
+                {isCalendarOpen && (
 
+                    <div className="tf-calendar" role="dialog" aria-label="Choose a deadline">
 
-                {/* top row */}
-                <section className="task-form-row">
+                        <div className="tf-calendar-header">
 
+                            <button
+                                type="button"
+                                className="tf-calendar-nav"
+                                aria-label="Previous month"
+                                onClick={goToPreviousMonth}
+                            >
+                                ‹
+                            </button>
 
-                    <section className="task-tags">
+                            <span className="tf-calendar-month">
+                                {MONTH_NAMES[viewMonth]} {viewYear}
+                            </span>
 
-                        <button
-                            type="button"
-                            className="add-tag-button"
-                            aria-expanded={
-                                isTagPopupOpen
-                            }
-                            disabled={roleName !== "Admin"}
-                            title={
-                                roleName === "Admin"
-                                    ? "Add a tag"
-                                    : "Only project admins can edit task tags."
-                            }
-                            onClick={() => {
+                            <button
+                                type="button"
+                                className="tf-calendar-nav"
+                                aria-label="Next month"
+                                onClick={goToNextMonth}
+                            >
+                                ›
+                            </button>
 
-                                if (roleName !== "Admin") {
-                                    return;
-                                }
+                        </div>
 
-                                setTagError("");
+                        <div className="tf-calendar-weekdays">
+                            {WEEKDAYS.map((weekday, index) => (
+                                <span key={index}>{weekday}</span>
+                            ))}
+                        </div>
 
-                                setIsTagPopupOpen(
-                                    (open) => !open
-                                );
-
-                            }}
-                        >
-
-                            + tag
-
-                        </button>
-
-
-                        {projectTags.length
-                            ? projectTags.map((tag) => {
-
-                                const tagId =
-                                    String(tag.tag_id);
-
+                        <div className="tf-calendar-days">
+                            {calendarCells.map((day, index) => {
 
                                 const isSelected =
-                                    tagIds.includes(
-                                        tagId
-                                    );
-
+                                    selectedDate &&
+                                    day === selectedDate.getDate() &&
+                                    viewMonth === selectedDate.getMonth() &&
+                                    viewYear === selectedDate.getFullYear();
 
                                 return (
 
                                     <button
-                                        key={tagId}
+                                        key={index}
                                         type="button"
-                                        className="tag-button"
-                                        aria-pressed={
-                                            isSelected
+                                        className={
+                                            "tf-calendar-day"
+                                            + (day === null ? " is-empty" : "")
+                                            + (isSelected ? " is-selected" : "")
                                         }
-                                        title={
-                                            tag.tag_desc
-                                        }
-                                        style={{
-                                            backgroundColor:
-                                                tag.tag_colour ||
-                                                "#3F9B76",
-
-                                            opacity:
-                                                isSelected
-                                                    ? 1
-                                                    : 0.55
-                                        }}
-                                        disabled={roleName !== "Admin"}
-                                        onClick={() => {
-
-                                            if (roleName !== "Admin") {
-                                                return;
-                                            }
-
-                                            setTagIds(
-                                                (current) =>
-                                                    isSelected
-                                                        ? current.filter(
-                                                            (id) =>
-                                                                id !== tagId
-                                                        )
-                                                        : [
-                                                            ...current,
-                                                            tagId
-                                                        ]
-                                            );
-
-                                        }}
+                                        disabled={day === null}
+                                        onClick={() => handleSelectDay(day)}
                                     >
-
-                                        {tag.tag_name}
-
+                                        {day}
                                     </button>
 
                                 );
 
-                            })
-                            : (
-                                <span>
-                                    No project tags
-                                </span>
-                            )
-                        }
-
-
-                        {roleName === "Admin" && isTagPopupOpen && (
-
-                            <section className="tag-popup">
-
-
-                                <label
-                                    className="tag-popup-label"
-                                    htmlFor="new-task-tag-name"
-                                >
-
-                                    Tag name
-
-                                </label>
-
-
-                                <input
-                                    id="new-task-tag-name"
-                                    className="tag-name-input"
-                                    value={newTagName}
-                                    onChange={(event) =>
-                                        setNewTagName(
-                                            event.target.value
-                                        )
-                                    }
-                                    maxLength={40}
-                                    autoFocus
-                                />
-
-
-                                <span className="tag-popup-label">
-
-                                    Choose a colour
-
-                                </span>
-
-
-                                <section className="tag-colour-grid">
-
-                                    {[
-                                        "#3F9B76",
-                                        "#963A91",
-                                        "#3976B8",
-                                        "#D18B2C",
-                                        "#B94A48",
-                                        "#5B8C5A",
-                                        "#5967A8",
-                                        "#B45F91",
-                                        "#4A8F9C",
-                                        "#777777"
-                                    ].map((colour) => (
-
-                                        <button
-                                            key={colour}
-                                            type="button"
-                                            className={
-                                                `tag-colour-swatch${
-                                                    newTagColour === colour
-                                                        ? " tag-colour-swatch-selected"
-                                                        : ""
-                                                }`
-                                            }
-                                            style={{
-                                                backgroundColor:
-                                                    colour
-                                            }}
-                                            aria-label={
-                                                `Choose ${colour}`
-                                            }
-                                            aria-pressed={
-                                                newTagColour ===
-                                                colour
-                                            }
-                                            onClick={() =>
-                                                setNewTagColour(
-                                                    colour
-                                                )
-                                            }
-                                        />
-
-                                    ))}
-
-                                </section>
-
-
-                                {tagError && (
-
-                                    <p
-                                        className="task-form-error"
-                                        role="alert"
-                                    >
-
-                                        {tagError}
-
-                                    </p>
-
-                                )}
-
-
-                                <section className="tag-popup-buttons">
-
-
-                                    <button
-                                        type="button"
-                                        className="tag-popup-cancel"
-                                        onClick={() =>
-                                            setIsTagPopupOpen(
-                                                false
-                                            )
-                                        }
-                                    >
-
-                                        Cancel
-
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        className="tag-popup-add"
-                                        onClick={
-                                            handleAddTag
-                                        }
-                                        disabled={
-                                            !newTagName.trim() ||
-                                            isAddingTag
-                                        }
-                                    >
-
-                                        {isAddingTag
-                                            ? "Adding..."
-                                            : "Add tag"
-                                        }
-
-                                    </button>
-
-
-                                </section>
-
-
-                            </section>
-
-                        )}
-
-
-                    </section>
-
-
-
-                    {/* priority and weight */}
-                    <section className="task-options">
-
-
-                        {/* priority */}
-                        <section className="priority-wrapper">
-
-
-                            <select
-                                className="priority-select"
-                                value={taskPriority}
-                                onChange={(event) =>
-                                    setTaskPriority(
-                                        event.target.value
-                                    )
-                                }
-                            >
-
-                                <option value="">
-                                    Priority
-                                </option>
-
-                                <option value="high">
-                                    ⌃ High
-                                </option>
-
-                                <option value="medium">
-                                    - Medium
-                                </option>
-
-                                <option value="low">
-                                    ⌄ Low
-                                </option>
-
-                            </select>
-
-
-                            <span className="select-arrow">
-                                ▼
-                            </span>
-
-
-                        </section>
-
-
-
-                        {/* weight */}
-                        <section className="weight-wrapper">
-
-
-                            <select
-                                className="weight-select"
-                                value={taskWeight}
-                                onChange={(event) =>
-                                    setTaskWeight(
-                                        event.target.value
-                                    )
-                                }
-                            >
-
-                                <option value="">
-                                    Weight
-                                </option>
-
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-
-                            </select>
-
-
-                            <span className="select-arrow">
-                                ▼
-                            </span>
-
-
-                        </section>
-
-
-                    </section>
-
-
-                </section>
-
-
-
-                {/* second row */}
-                <section className="task-form-row">
-
-
-                    {/* deadline */}
-                    <section className="deadline-wrapper">
-
+                            })}
+                        </div>
 
                         <button
                             type="button"
-                            className="fake-dropdown deadline-dropdown"
-                            onClick={() =>
-                                setIsCalendarOpen(
-                                    !isCalendarOpen
-                                )
-                            }
+                            className="tf-calendar-clear"
+                            onClick={() => {
+
+                                setSelectedDate(null);
+
+                                setIsCalendarOpen(false);
+
+                            }}
                         >
-
-                            <span>
-                                {deadlineLabel}
-                            </span>
-
-                            <span className="dropdown-arrow">
-                                ▼
-                            </span>
-
+                            Clear deadline
                         </button>
 
-
-                        {/* calendar popup */}
-                        {isCalendarOpen && (
-
-                            <section className="deadline-calendar">
-
-
-                                <section className="calendar-header">
-
-
-                                    <button
-                                        type="button"
-                                        className="calendar-nav-button"
-                                        onClick={
-                                            goToPreviousMonth
-                                        }
-                                    >
-                                        ‹
-                                    </button>
-
-
-                                    <span className="calendar-month-label">
-
-                                        {MONTH_NAMES[viewMonth]} {viewYear}
-
-                                    </span>
-
-
-                                    <button
-                                        type="button"
-                                        className="calendar-nav-button"
-                                        onClick={
-                                            goToNextMonth
-                                        }
-                                    >
-                                        ›
-                                    </button>
-
-
-                                </section>
-
-
-                                <section className="calendar-weekdays">
-
-                                    {WEEKDAYS.map(
-                                        (weekday, index) => (
-
-                                            <span
-                                                key={index}
-                                                className="calendar-weekday"
-                                            >
-
-                                                {weekday}
-
-                                            </span>
-
-                                        )
-                                    )}
-
-                                </section>
-
-
-                                <section className="calendar-days">
-
-                                    {calendarCells.map(
-                                        (day, index) => {
-
-                                            const isSelected =
-                                                selectedDate &&
-                                                day === selectedDate.getDate() &&
-                                                viewMonth === selectedDate.getMonth() &&
-                                                viewYear === selectedDate.getFullYear();
-
-
-                                            return (
-
-                                                <button
-                                                    key={index}
-                                                    type="button"
-                                                    className={
-                                                        "calendar-day"
-                                                        + (
-                                                            day === null
-                                                                ? " calendar-day-empty"
-                                                                : ""
-                                                        )
-                                                        + (
-                                                            isSelected
-                                                                ? " calendar-day-selected"
-                                                                : ""
-                                                        )
-                                                    }
-                                                    disabled={
-                                                        day === null
-                                                    }
-                                                    onClick={() =>
-                                                        handleSelectDay(
-                                                            day
-                                                        )
-                                                    }
-                                                >
-
-                                                    {day}
-
-                                                </button>
-
-                                            );
-
-                                        }
-                                    )}
-
-                                </section>
-
-
-                                <button
-                                    type="button"
-                                    className="calendar-clear-button"
-                                    onClick={() => {
-
-                                        setSelectedDate(
-                                            null
-                                        );
-
-                                        setIsCalendarOpen(
-                                            false
-                                        );
-
-                                    }}
-                                >
-
-                                    Clear deadline
-
-                                </button>
-
-
-                            </section>
-
-                        )}
-
-
-                    </section>
-
-
-
-                    <section className="task-details">
-
-
-                        {/* task status */}
-                        <section className="task-status-wrapper">
-
-
-                            <select
-                                className="task-status-select"
-                                value={statusId}
-                                onChange={(event) =>
-                                    setStatusId(
-                                        event.target.value
-                                    )
-                                }
-                            >
-
-                                <option value="">
-                                    Task Status
-                                </option>
-
-
-                                {statuses.map(
-                                    (status) => (
-
-                                        <option
-                                            key={
-                                                status.status_id
-                                            }
-                                            value={
-                                                status.status_id
-                                            }
-                                        >
-
-                                            {status.status_name}
-
-                                        </option>
-
-                                    )
-                                )}
-
-                            </select>
-
-
-                            <span className="select-arrow">
-                                ▼
-                            </span>
-
-
-                        </section>
-
-
-
-                        {/* assignee */}
-                        <section className="assignee-wrapper">
-
-
-                            <select
-                                className="assignee-select"
-                                multiple
-                                value={assigneeIds}
-                                disabled={roleName !== "Admin"}
-                                onChange={(event) =>
-                                    setAssigneeIds(
-                                        Array.from(
-                                            event.target.selectedOptions,
-                                            (option) =>
-                                                option.value
-                                        )
-                                    )
-                                }
-                                aria-label="Task assignees"
-                                size={1}
-                            >
-
-                                <option
-                                    value=""
-                                    disabled
-                                >
-
-                                    Assignee
-
-                                </option>
-
-
-                                {members.map(
-                                    (member) => (
-
-                                        <option
-                                            key={
-                                                member.user_id
-                                            }
-                                            value={
-                                                member.user_id
-                                            }
-                                        >
-
-                                            {
-                                                member.user_pref_name ||
-                                                `${member.user_first_name} ${member.user_last_name}`
-                                            }
-
-                                        </option>
-
-                                    )
-                                )}
-
-                            </select>
-
-
-                            <span className="select-arrow">
-                                ▼
-                            </span>
-
-
-                        </section>
-
-
-                    </section>
-
-
-                </section>
-
-
-
-                {/* description */}
-                <textarea
-                    className="task-description"
-                    placeholder="Description"
-                    value={taskDescription}
-                    onChange={(event) =>
-                        setTaskDescription(
-                            event.target.value
-                        )
+                    </div>
+
+                )}
+
+            </div>
+        </div>
+    );
+
+
+    // the admin picks the developers working on this task from the project's developers
+    const assigneeField = (
+        <div className="tf-field">
+            <label htmlFor="task-assignee">Assignee</label>
+
+            <div className="tf-anchor" ref={assigneeRef}>
+
+                <button
+                    type="button"
+                    id="task-assignee"
+                    className="tf-input tf-dropdown"
+                    aria-haspopup="true"
+                    aria-expanded={isAssigneeOpen}
+                    disabled={roleName !== "Admin"}
+                    title={
+                        roleName === "Admin"
+                            ? undefined
+                            : "Only project admins can assign tasks."
                     }
-                ></textarea>
+                    onClick={() => {
 
+                        setIsCalendarOpen(false);
 
+                        setIsAssigneeOpen(!isAssigneeOpen);
 
-                {/* checklist */}
-                <section className="task-checklist-section">
+                    }}
+                >
+                    <span className={assigneeLabel ? "" : "is-placeholder"}>
+                        {assigneeLabel || "Select assignee"}
+                    </span>
+                    <Icon name="chevronDown" size={16} />
+                </button>
 
+                {isAssigneeOpen && (
 
-                    <h2>
-                        Checklist
-                    </h2>
+                    <div className="tf-menu" role="group" aria-label="Available developers">
 
+                        {members.length ? members.map((member) => (
 
-                    <section className="task-checklist-list">
+                            <label className="tf-menu-item" key={member.user_id}>
 
+                                <input
+                                    type="checkbox"
+                                    checked={isAssigned(member.user_id)}
+                                    onChange={() =>
+                                        toggleAssignee(member.user_id)
+                                    }
+                                />
 
-                        {checklists.length === 0 && (
+                                <span className="tf-menu-check" aria-hidden="true">
+                                    <Icon name="check" size={13} />
+                                </span>
 
-                            <p className="task-checklist-empty">
+                                <span className="tf-menu-name">
+                                    <strong>{getMemberName(member)}</strong>
+                                    {member.user_email && <small>{member.user_email}</small>}
+                                </span>
 
-                                No checklist items yet.
+                            </label>
 
+                        )) : (
+
+                            <p className="tf-menu-empty">
+                                No developers are on this project yet. Add some under Settings &rarr; Developers.
                             </p>
 
                         )}
 
+                    </div>
 
-                        {checklists.map((item) => (
+                )}
 
-                            <section
-                                key={item.id}
-                                className={
-                                    `task-checklist-item${
-                                        item.completed
-                                            ? " task-checklist-item-complete"
-                                            : ""
-                                    }`
+            </div>
+        </div>
+    );
+
+
+    const weightField = (
+        <div className="tf-field">
+            <label htmlFor="task-weight">Weight</label>
+            <select
+                id="task-weight"
+                className="tf-input tf-select"
+                value={taskWeight}
+                onChange={(event) =>
+                    setTaskWeight(event.target.value)
+                }
+            >
+                <option value="">Select weight</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((weight) => (
+                    <option key={weight} value={weight}>{weight}</option>
+                ))}
+            </select>
+        </div>
+    );
+
+
+    const priorityField = (
+        <div className="tf-field">
+            <label htmlFor="task-priority">Priority</label>
+            <select
+                id="task-priority"
+                className="tf-input tf-select"
+                value={taskPriority}
+                onChange={(event) =>
+                    setTaskPriority(event.target.value)
+                }
+            >
+                <option value="">Select priority</option>
+                <option value="high">⌃ High</option>
+                <option value="medium">- Medium</option>
+                <option value="low">⌄ Low</option>
+            </select>
+        </div>
+    );
+
+
+    const statusField = (
+        <div className="tf-field">
+            <label htmlFor="task-status">Status</label>
+            <select
+                id="task-status"
+                className="tf-input tf-select"
+                value={statusId}
+                onChange={(event) =>
+                    setStatusId(event.target.value)
+                }
+            >
+                <option value="">Status</option>
+                {statuses.map((status) => (
+                    <option key={status.status_id} value={status.status_id}>
+                        {status.status_name}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+
+
+    const tagsField = (
+        <div className="tf-field">
+            <span className="tf-label" id="task-tags-label">Tags</span>
+
+            <div className="tf-tags" ref={tagsRef} role="group" aria-labelledby="task-tags-label">
+
+                <button
+                    type="button"
+                    className="tf-chip tf-chip-add"
+                    aria-expanded={isTagPopupOpen}
+                    disabled={roleName !== "Admin"}
+                    title={
+                        roleName === "Admin"
+                            ? "Add a tag"
+                            : "Only project admins can edit task tags."
+                    }
+                    onClick={() => {
+
+                        if (roleName !== "Admin") {
+                            return;
+                        }
+
+                        setTagError("");
+
+                        setIsTagPopupOpen((open) => !open);
+
+                    }}
+                >
+                    <Icon name="plus" size={14} />
+                    tag
+                </button>
+
+                {projectTags.length
+                    ? projectTags.map((tag) => {
+
+                        const tagId = String(tag.tag_id);
+
+                        const isSelected = tagIds.includes(tagId);
+
+                        return (
+
+                            <button
+                                key={tagId}
+                                type="button"
+                                className={`tf-chip${isSelected ? " is-selected" : ""}`}
+                                aria-pressed={isSelected}
+                                title={tag.tag_desc}
+                                style={
+                                    isSelected
+                                        ? { backgroundColor: tag.tag_colour || "#3F9B76" }
+                                        : undefined
                                 }
+                                disabled={roleName !== "Admin"}
+                                onClick={() => {
+
+                                    if (roleName !== "Admin") {
+                                        return;
+                                    }
+
+                                    setTagIds((current) =>
+                                        isSelected
+                                            ? current.filter((id) => id !== tagId)
+                                            : [...current, tagId]
+                                    );
+
+                                }}
                             >
+                                {tag.tag_name}
+                            </button>
 
+                        );
 
-                                <label>
+                    })
+                    : (
+                        <span className="tf-tags-empty">No project tags</span>
+                    )
+                }
 
+                {roleName === "Admin" && isTagPopupOpen && (
 
-                                    <input
-                                        type="checkbox"
-                                        checked={
-                                            Boolean(
-                                                item.completed
-                                            )
-                                        }
-                                        disabled={!canToggleChecklist}
-                                        onChange={() =>
-                                            handleToggleChecklistItem(
-                                                item.id
-                                            )
-                                        }
-                                    />
+                    <div className="tf-tag-popup">
 
-
-                                    <section className="task-checklist-text">
-
-                                        <span className="task-checklist-item-text">
-                                            {item.text}
-                                        </span>
-
-                                        <span className="task-checklist-added-by">
-                                            Added by {item.addedBy?.name || "Unknown user"}
-                                        </span>
-
-                                    </section>
-
-
-                                </label>
-
-
-                                <button
-                                    type="button"
-                                    className="task-checklist-remove"
-                                    onClick={() =>
-                                        handleRemoveChecklistItem(
-                                            item.id
-                                        )
-                                    }
-                                    aria-label={
-                                        `Remove ${item.text}`
-                                    }
-                                >
-
-                                    ×
-
-                                </button>
-
-
-                            </section>
-
-                        ))}
-
-
-                    </section>
-
-
-
-                    <section className="task-checklist-add-row">
-
+                        <label className="tf-popup-label" htmlFor="new-task-tag-name">
+                            Tag name
+                        </label>
 
                         <input
-                            type="text"
-                            placeholder="Add checklist item"
-                            value={newChecklistItem}
+                            id="new-task-tag-name"
+                            className="tf-popup-input"
+                            value={newTagName}
                             onChange={(event) =>
-                                setNewChecklistItem(
-                                    event.target.value
-                                )
+                                setNewTagName(event.target.value)
                             }
-                            onKeyDown={
-                                handleChecklistKeyDown
-                            }
-                            maxLength={200}
+                            maxLength={40}
+                            autoFocus
                         />
 
+                        <span className="tf-popup-label">Choose a colour</span>
 
-                        <button
-                            type="button"
-                            onClick={
-                                handleAddChecklistItem
-                            }
-                            disabled={
-                                !newChecklistItem.trim()
-                            }
-                            aria-label="Add checklist item"
-                        >
+                        <div className="tf-swatches">
+                            {TAG_COLOURS.map((colour) => (
 
-                            +
+                                <button
+                                    key={colour}
+                                    type="button"
+                                    className={`tf-swatch${newTagColour === colour ? " is-selected" : ""}`}
+                                    style={{ backgroundColor: colour }}
+                                    aria-label={`Choose ${colour}`}
+                                    aria-pressed={newTagColour === colour}
+                                    onClick={() => setNewTagColour(colour)}
+                                />
 
-                        </button>
+                            ))}
+                        </div>
+
+                        {tagError && (
+                            <p className="tf-error" role="alert">{tagError}</p>
+                        )}
+
+                        <div className="tf-popup-buttons">
+
+                            <button
+                                type="button"
+                                className="tf-btn tf-btn-light"
+                                onClick={() => setIsTagPopupOpen(false)}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                type="button"
+                                className="tf-btn tf-btn-dark"
+                                onClick={handleAddTag}
+                                disabled={!newTagName.trim() || isAddingTag}
+                            >
+                                {isAddingTag ? "Adding..." : "Add tag"}
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                )}
+
+            </div>
+        </div>
+    );
 
 
-                    </section>
+    const descriptionField = (
+        <div className="tf-field">
+            <label htmlFor="task-description">Description</label>
+            <textarea
+                id="task-description"
+                className={`tf-textarea${isEditing ? " tf-textarea-tall" : ""}`}
+                placeholder={
+                    isEditing
+                        ? "Description"
+                        : "Add task details, requirements, and context for the assignee."
+                }
+                value={taskDescription}
+                onChange={(event) =>
+                    setTaskDescription(event.target.value)
+                }
+            ></textarea>
+        </div>
+    );
 
 
-                </section>
+    const checklistCard = (
+        <section className="tf-card tf-checklist" aria-labelledby="task-checklist-title">
 
+            <h2 id="task-checklist-title">Checklist</h2>
 
+            <div className="tf-checklist-list">
 
-                {/* errors */}
-                {formError && (
+                {checklists.length === 0 && (
 
-                    <p
-                        className="task-form-error"
-                        role="alert"
-                    >
-
-                        {formError}
-
+                    <p className="tf-checklist-empty">
+                        No checklist items yet.
                     </p>
 
                 )}
 
+                {checklists.map((item) => (
 
+                    <div
+                        key={item.id}
+                        className={`tf-checklist-item${item.completed ? " is-complete" : ""}`}
+                    >
 
-                {/* buttons */}
-                <section className="task-form-buttons">
+                        <label>
 
+                            <input
+                                type="checkbox"
+                                checked={Boolean(item.completed)}
+                                disabled={!canToggleChecklist}
+                                onChange={() =>
+                                    handleToggleChecklistItem(item.id)
+                                }
+                            />
 
-                    {/* admin-only delete when editing */}
-                    {isEditing && canDeleteTask && (
+                            <span className="tf-checklist-text">
+                                <span className="tf-checklist-name">{item.text}</span>
+                                <span className="tf-checklist-by">
+                                    Added by {item.addedBy?.name || "Unknown user"}
+                                </span>
+                            </span>
+
+                        </label>
 
                         <button
                             type="button"
-                            className="task-delete-edit-button"
-                            onClick={
-                                handleDeleteTask
+                            className="tf-checklist-remove"
+                            onClick={() =>
+                                handleRemoveChecklistItem(item.id)
                             }
-                            disabled={
-                                isSaving ||
-                                isDeleting
-                            }
+                            aria-label={`Remove ${item.text}`}
                         >
-
-                            {isDeleting
-                                ? "Deleting..."
-                                : "Delete Task"
-                            }
-
+                            <Icon name="x" size={14} />
                         </button>
 
-                    )}
+                    </div>
+
+                ))}
+
+            </div>
+
+            <div className="tf-checklist-add">
+
+                <input
+                    type="text"
+                    className="tf-input"
+                    placeholder="Add checklist item"
+                    aria-label="New checklist item"
+                    value={newChecklistItem}
+                    onChange={(event) =>
+                        setNewChecklistItem(event.target.value)
+                    }
+                    onKeyDown={handleChecklistKeyDown}
+                    maxLength={200}
+                />
+
+                <button
+                    type="button"
+                    className="tf-btn tf-btn-dark"
+                    onClick={handleAddChecklistItem}
+                    disabled={!newChecklistItem.trim()}
+                    aria-label="Add checklist item"
+                >
+                    <Icon name="plus" size={18} />
+                </button>
+
+            </div>
+
+        </section>
+    );
 
 
-                    <button
-                        type="button"
-                        className="task-cancel-button"
-                        onClick={onCancel}
-                        disabled={
-                            isSaving ||
-                            isDeleting
-                        }
-                    >
-
-                        Cancel
-
-                    </button>
+    const errorMessage = formError && (
+        <p className="tf-error tf-error-page" role="alert">{formError}</p>
+    );
 
 
-                    <button
-                        type="button"
-                        className="task-save-button"
-                        onClick={
-                            handleSaveTask
-                        }
-                        disabled={
-                            isSaving ||
-                            isDeleting
-                        }
-                    >
+    /*
+     * ==============================
+     * EDIT TASK
+     * ==============================
+     */
 
-                        {isSaving
-                            ? "Saving..."
-                            : isEditing
-                                ? "Save Changes"
-                                : "Save Task"
-                        }
+    if (isEditing) {
 
-                    </button>
+        return (
 
+            <WorkspaceShell
+                profile={currentUser}
+                breadcrumb={[
+                    { label: "Projects", icon: "arrowLeft", onClick: onOpenProjects },
+                    { label: "Tasks", onClick: onCancel },
+                    { label: "Edit task" }
+                ]}
+                breadcrumbStyle="card"
+                sidebarExtra={
+                    <div className="tf-sidebar-card">
+                        <span className="tf-weight-badge">{weightBadge}</span>
+                        <span>
+                            <strong>Task workspace</strong>
+                            <small>Edit mode</small>
+                        </span>
+                    </div>
+                }
+                headerRight={
+                    <div className="tf-header-actions">
+
+                        {canDeleteTask && (
+
+                            <button
+                                type="button"
+                                className="tf-btn tf-btn-danger"
+                                onClick={handleDeleteTask}
+                                disabled={isBusy}
+                            >
+                                {isDeleting ? "Deleting..." : "Delete task"}
+                            </button>
+
+                        )}
+
+                        <button
+                            type="button"
+                            className="tf-btn tf-btn-light"
+                            onClick={onCancel}
+                            disabled={isBusy}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            className="tf-btn tf-btn-dark"
+                            onClick={handleSaveTask}
+                            disabled={isBusy}
+                        >
+                            {isSaving ? "Saving..." : "Save changes"}
+                            {!isSaving && <Icon name="check" size={16} />}
+                        </button>
+
+                    </div>
+                }
+                onOpenProjects={onOpenProjects}
+                onOpenSettings={onOpenSettings}
+                onSignOut={onSignOut}
+            >
+
+                <div className="tf-page">
+
+                    <section className="tf-banner">
+
+                        <div className="tf-banner-name">
+
+                            <p className="tf-banner-kicker">Task editor</p>
+
+                            <label className="tf-sr-only" htmlFor="task-name">Task name</label>
+
+                            <input
+                                id="task-name"
+                                className="tf-banner-input"
+                                type="text"
+                                placeholder="Task name"
+                                value={taskName}
+                                onChange={(event) =>
+                                    setTaskName(event.target.value)
+                                }
+                            />
+
+                        </div>
+
+                        <div className="tf-banner-pill" title="Task weight">
+                            <span className="tf-weight-badge">{weightBadge}</span>
+                            Edit task
+                        </div>
+
+                    </section>
+
+                    <section className="tf-card">
+
+                        <div className="tf-row-five">
+                            {deadlineField}
+                            {assigneeField}
+                            {weightField}
+                            {priorityField}
+                            {statusField}
+                        </div>
+
+                        {tagsField}
+
+                        {descriptionField}
+
+                    </section>
+
+                    {checklistCard}
+
+                    {errorMessage}
+
+                </div>
+
+            </WorkspaceShell>
+
+        );
+
+    }
+
+
+    /*
+     * ==============================
+     * ADD TASK
+     * ==============================
+     */
+
+    return (
+
+        <WorkspaceShell
+            profile={currentUser}
+            breadcrumb={[
+                { label: "Projects", onClick: onOpenProjects },
+                { label: "Tasks", onClick: onCancel },
+                { label: "Add task" }
+            ]}
+            breadcrumbStyle="card"
+            headerRight={
+                <div className="ws-chip">
+                    <span className="ws-avatar" aria-hidden="true">{initial}</span>
+                </div>
+            }
+            onOpenProjects={onOpenProjects}
+            onOpenSettings={onOpenSettings}
+            onSignOut={onSignOut}
+        >
+
+            <div className="tf-page">
+
+                <section className="tf-intro">
+                    <h1>Add task</h1>
+                    <p>Create a new task and assign it to the right project, owner, and deadline.</p>
+                </section>
+
+                <section className="tf-card">
+
+                    <div className="tf-grid">
+
+                        <div className="tf-field tf-wide">
+                            <label htmlFor="task-name">Task name</label>
+                            <input
+                                id="task-name"
+                                className="tf-input"
+                                type="text"
+                                placeholder="Enter task name"
+                                value={taskName}
+                                onChange={(event) =>
+                                    setTaskName(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        {statusField}
+
+                        <div className="tf-cell">
+                            {tagsField}
+                        </div>
+
+                        {priorityField}
+
+                        {weightField}
+
+                        <div className="tf-wide">
+                            {deadlineField}
+                        </div>
+
+                        {assigneeField}
+
+                    </div>
+
+                    {descriptionField}
 
                 </section>
 
+                {checklistCard}
 
-            </section>
+                {errorMessage}
 
+                <footer className="tf-footer">
 
-        </main>
+                    <p>Review the task details before creating.</p>
+
+                    <div className="tf-footer-buttons">
+
+                        <button
+                            type="button"
+                            className="tf-btn tf-btn-light"
+                            onClick={onCancel}
+                            disabled={isBusy}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            className="tf-btn tf-btn-dark"
+                            onClick={handleSaveTask}
+                            disabled={isBusy}
+                        >
+                            {isSaving ? "Saving..." : "Create task"}
+                        </button>
+
+                    </div>
+
+                </footer>
+
+            </div>
+
+        </WorkspaceShell>
 
     );
 

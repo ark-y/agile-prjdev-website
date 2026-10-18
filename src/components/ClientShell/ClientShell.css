@@ -1,0 +1,301 @@
+.cs-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    background: var(--qx-paper);
+    color: var(--qx-ink);
+    font-family: "Fustat", sans-serif;
+}
+
+/* ---------- Sidebar ---------- */
+.cs-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    padding: 30px 18px 32px;
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.cs-sidebar .quantix-logo {
+    padding: 0 6px;
+}
+
+.cs-nav {
+    display: grid;
+    gap: 8px;
+}
+
+.cs-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    height: 53px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 12px;
+    background: #364869;
+    font: inherit;
+    font-size: 1.1875rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.cs-link:hover:not(.is-active) {
+    background: #41547A;
+}
+
+.cs-link.is-active {
+    background: var(--qx-salmon);
+    color: var(--qx-ink);
+}
+
+.cs-link:focus-visible,
+.cs-signout:focus-visible,
+.cs-back:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.cs-bottom {
+    display: grid;
+    gap: 22px;
+    margin-top: auto;
+}
+
+.cs-role-card {
+    display: grid;
+    gap: 6px;
+    padding: 18px 16px 20px;
+    border-radius: 14px;
+    background: #364869;
+}
+
+.cs-role-card small {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--qx-panel);
+}
+
+.cs-role-card strong {
+    font-size: 1.1875rem;
+    font-weight: 700;
+}
+
+.cs-role-card p {
+    font-size: 1.0313rem;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--qx-panel);
+}
+
+.cs-signout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 16px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 1.1875rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cs-signout:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Header ---------- */
+.cs-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cs-header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 86px;
+    padding: 0 32px;
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.cs-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.cs-heading h1 {
+    overflow: hidden;
+    font-size: 1.875rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cs-heading.is-upper h1 {
+    text-transform: uppercase;
+}
+
+.cs-badge {
+    flex: none;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--qx-salmon);
+    font-size: 1.0938rem;
+    font-weight: 700;
+    line-height: 40px;
+    color: var(--qx-ink);
+}
+
+.cs-back {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: #364869;
+    color: #fff;
+    cursor: pointer;
+}
+
+.cs-back:hover {
+    background: #41547A;
+}
+
+.cs-header-right {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.cs-header .notif-bell-button {
+    width: 41px;
+    height: 41px;
+    background: #364869;
+    color: #fff;
+}
+
+.cs-header .notif-bell-button:hover {
+    background: #41547A;
+}
+
+.cs-header .notif-bell-button:focus-visible {
+    outline-color: #fff;
+}
+
+.cs-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 41px;
+    padding: 0 18px 0 6px;
+    border-radius: 999px;
+    background: #364869;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.cs-avatar {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--qx-salmon);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: var(--qx-ink);
+}
+
+/* ---------- Content ---------- */
+.cs-content {
+    flex: 1;
+    padding: 32px 32px 48px;
+}
+
+@media (max-width: 900px) {
+    .cs-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cs-sidebar {
+        position: static;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 20px;
+        padding: 16px 20px;
+    }
+
+    .cs-nav {
+        grid-auto-flow: column;
+        gap: 6px;
+    }
+
+    .cs-link {
+        width: auto;
+        height: 44px;
+    }
+
+    .cs-bottom {
+        margin: 0 0 0 auto;
+    }
+
+    .cs-role-card {
+        display: none;
+    }
+
+    .cs-header {
+        min-height: 72px;
+        padding: 12px 20px;
+    }
+
+    .cs-heading h1 {
+        font-size: 1.375rem;
+    }
+
+    .cs-content {
+        padding: 24px 20px 40px;
+    }
+}
+
+@media (max-width: 640px) {
+    .cs-heading {
+        flex-wrap: wrap;
+        row-gap: 8px;
+    }
+
+    .cs-heading h1 {
+        overflow: visible;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 520px) {
+    .cs-chip {
+        display: none;
+    }
+}

@@ -1,851 +1,542 @@
-@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@400;700&display=swap');
-
-
-/* whole page */
-.project-page {
-    min-height: 100vh;
-    background-color: #D9D9D9;
-    font-family: "Fustat", sans-serif;
-}
-
-
-/* header */
-.project-header {
-    height: 150px;
-    background-color: #18273A;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 55px;
-    box-sizing: border-box;
-}
-
-
-/* project title */
-.project-header h1 {
-    margin: 0;
-
-    color: #D9D9D9;
-
-    font-size: 55px;
-    font-weight: 700;
-    letter-spacing: 4px;
-}
-
-
-/* icons */
-.project-header-icons {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-
-/* icon buttons */
-.project-header-icons button {
-    border: none;
-    background: none;
-    cursor: pointer;
-}
-
-
-/* message */
-.message-button {
-    color: #D9D9D9;
-    font-size: 38px;
-    opacity: 0.5;
-}
-
-
-/* settings */
-.settings-button {
-    color: #D9D9D9;
-    font-size: 52px;
-}
-
-
-/* everything below header */
-.project-body {
-    position: relative;
-
-    min-height: 600px;
-
-    overflow-y: hidden;
-
-    isolation: isolate;
-}
-
-
-/* sprint scrolling area */
-.sprint-area {
-    display: flex;
-
-    gap: 25px;
-
-    padding: 40px 430px 28px 50px;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    box-sizing: border-box;
-
-    position: relative;
-
-    z-index: 1;
-
-    scroll-behavior: smooth;
-
-    scrollbar-width: thin;
-
-    scrollbar-color:
-        rgba(24, 39, 58, 0.35)
-        transparent;
-}
-
-
-/* scrollbar */
-.sprint-area::-webkit-scrollbar {
-    height: 8px;
-}
-
-
-/* track */
-.sprint-area::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-
-/* handle */
-.sprint-area::-webkit-scrollbar-thumb {
-    background-color: rgba(24, 39, 58, 0.35);
-
-    border-radius: 20px;
-
-    border: 2px solid transparent;
-
-    background-clip: padding-box;
-}
-
-
-/* scrollbar hover */
-.sprint-area::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(24, 39, 58, 0.6);
-}
-
-
-/* backlog and sprint boxes */
-.sprint-box {
-    position: relative;
-
-    width: 260px;
-    min-width: 260px;
-    height: 510px;
-
-    background-color: #18273A;
-
-    border-radius: 30px;
-
-    padding: 25px;
-
-    box-sizing: border-box;
-
-    flex-shrink: 0;
-}
-
-
-/* backlog title */
-.sprint-box h2 {
-    margin: 0;
-
-    color: #D9D9D9;
-
-    font-size: 27px;
-    font-weight: 400;
-    letter-spacing: 1px;
-
-    text-align: center;
-}
-
-
-/* sprint name */
-.sprint-name-input {
-    width: 100%;
-
-    border: none;
-    outline: none;
-
-    background: transparent;
-    color: #D9D9D9;
-
-    padding: 0;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 27px;
-    font-weight: 400;
-    letter-spacing: 1px;
-
-    text-align: center;
-}
-
-
-/* editing sprint name */
-.sprint-name-input:focus {
-    background-color: rgba(217, 217, 217, 0.08);
-    border-radius: 12px;
-}
-
-
-/* delete sprint */
-.delete-sprint-button {
-    position: absolute;
-
-    top: 12px;
-    right: 15px;
-
-    width: 30px;
-    height: 30px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: transparent;
-    color: #D9D9D9;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 24px;
-
-    cursor: pointer;
-
-    opacity: 0.55;
-}
-
-
-/* delete hover */
-.delete-sprint-button:hover {
-    background-color: rgba(217, 217, 217, 0.12);
-    opacity: 1;
-}
-
-
-/* sprint dates */
-.sprint-dates {
-    margin-top: 10px;
-
-    display: flex;
-    justify-content: center;
-}
-
-
-/* date display */
-.sprint-date-display {
-    border: none;
-
-    background: transparent;
-    color: #D9D9D9;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-
-    cursor: pointer;
-
-    padding: 5px 10px;
-
-    border-radius: 10px;
-}
-
-
-/* date hover */
-.sprint-date-display:hover {
-    background-color: rgba(217, 217, 217, 0.1);
-}
-
-
-/* date editor */
-.sprint-date-editor {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 5px;
-
-    color: #D9D9D9;
-}
-
-
-/* date inputs */
-.sprint-date-editor input {
-    width: 90px;
-
-    border: none;
-    outline: none;
-
-    border-radius: 8px;
-
-    padding: 5px;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 11px;
-}
-
-
-/* date done */
-.date-done-button {
-    border: none;
-
-    background: transparent;
-    color: #D9D9D9;
-
-    font-size: 18px;
-
-    cursor: pointer;
-}
-
-
-/* total weight of the tasks in a sprint, top left opposite the delete button.
-   same circle as the task weight but flipped for the dark box */
-.sprint-weight-marker {
-    position: absolute;
-
-    top: 13px;
-    left: 16px;
-
-    min-width: 27px;
-    height: 27px;
-
-    padding: 0 5px;
-
-    box-sizing: border-box;
-
-    border-radius: 50%;
-
-    background-color: #D9D9D9;
-    color: #18273A;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-
-/* tasks area */
-.task-area {
-    margin-top: 25px;
-
-    /*
-     * Important for drag and drop:
-     * an empty sprint still needs an area
-     * that the user can drop a task into.
-     */
-    min-height: 330px;
-
-    border-radius: 15px;
-
-    transition:
-        background-color 0.15s ease,
-        outline 0.15s ease;
-}
-
-
-/* individual task */
-.task-card {
-    width: 100%;
-
-    min-height: 48px;
-
-    background-color: #D9D9D9;
-
-    border-radius: 15px;
-
-    padding: 10px 12px;
-
-    box-sizing: border-box;
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-bottom: 10px;
-
-    /*
-     * Shows the user that the task can
-     * be clicked and dragged.
-     */
-    cursor: default;
-
-    transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
-}
-
-
-/* mouse is holding a task */
-.task-card[draggable="true"] {
-    cursor: grab;
-}
-
-.task-card[draggable="true"]:active {
-    cursor: grabbing;
-}
-
-
-/* task currently being dragged */
-.task-card-dragging {
-    opacity: 0.45;
-
-    transform: scale(0.98);
-}
-
-
-/*
- * Applied to a task area while a task
- * is hovering over that sprint/backlog.
- */
-.task-area-drag-over {
-    background-color: rgba(217, 217, 217, 0.08);
-
-    outline:
-        2px dashed
-        rgba(217, 217, 217, 0.6);
-
-    outline-offset: 4px;
-}
-
-
-/* status circle */
-.task-status-circle {
-    width: 14px;
-    height: 14px;
-
-    min-width: 14px;
-
-    border-radius: 50%;
-
-    background-color: #8A8A8A;
-}
-
-
-/* task name */
-.task-card-name {
-    color: #18273A;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
-
+/* ---------- Page heading ---------- */
+.po-head h1 {
+    font-size: 2.125rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
     overflow-wrap: anywhere;
-
-    flex: 1;
-
-    min-width: 0;
 }
 
-
-/* right side of task card */
-.task-card-info {
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    flex-shrink: 0;
+.po-head p {
+    margin-top: 10px;
+    font-size: 1.125rem;
+    font-weight: 500;
 }
 
-
-/* priority symbol */
-.task-priority {
-    color: #18273A;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 21px;
-    font-weight: 700;
-}
-
-
-/* weight */
-.task-card-weight {
-    min-width: 27px;
-    height: 27px;
-
-    padding: 0 5px;
-
-    box-sizing: border-box;
-
-    border-radius: 50%;
-
-    background-color: #18273A;
-    color: #D9D9D9;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.task-card-name {
-    border: 0;
-    padding: 0;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    font: inherit;
-    text-align: left;
-}
-
-.task-delete-button {
-    border: 0;
-    border-radius: 50%;
-    background: transparent;
-    color: #d9d9d9;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.delete-project-button {
-    background: #8c3434;
-}
-
-.project-members {
-    padding: 20px;
-    color: #d9d9d9;
-}
-
-.project-members h2 {
-    margin-bottom: 12px;
-}
-
-.project-members p,
-.project-members section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.project-members select,
-.task-card-info select {
-    max-width: 180px;
-    padding: 6px;
-    border-radius: 8px;
-}
-
-.task-card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-}
-
-.task-card-tags span {
-    max-width: 90px;
-    overflow: hidden;
-    padding: 2px 6px;
-    border-radius: 3px;
-    color: #fff;
-    font-size: 11px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.project-tags {
-    padding: 0 20px 20px;
-    color: #d9d9d9;
-}
-
-.project-tags h2 {
-    margin-bottom: 12px;
-}
-
-.project-tags > p,
-.project-tags form {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.project-tags > p span {
-    border-left: 4px solid;
-    padding-left: 7px;
-}
-
-.project-tags button {
-    border: 0;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-}
-
-.project-tags form label {
+/* ---------- Board: columns on the left, progress on the right ---------- */
+.po-board {
     display: grid;
-    gap: 4px;
-}
-
-.project-tags form input {
-    width: 120px;
-    min-width: 0;
-}
-
-
-/* fade */
-.sidebar-fade {
-    position: absolute;
-
-    top: 0;
-    right: 0;
-
-    width: 500px;
-    height: 100%;
-
-    background: linear-gradient(
-        to right,
-        rgba(217, 217, 217, 0),
-        rgba(217, 217, 217, 0.75) 18%,
-        #D9D9D9 32%,
-        #D9D9D9 100%
-    );
-
-    pointer-events: none;
-
-    z-index: 5;
-}
-
-
-/* sidebar */
-.project-sidebar {
-    position: absolute;
-
-    top: 40px;
-    right: 40px;
-
-    width: 330px;
-
-    z-index: 10;
-}
-
-
-/* progress */
-.progress-box {
-    width: 100%;
-
-    padding: 25px;
-
-    box-sizing: border-box;
-
-    border-radius: 30px;
-
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
-
-/* progress title */
-.progress-box h2 {
-    margin: 0 0 20px 0;
-
-    color: #18273A;
-
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-
-/* progress row */
-.progress-row {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-/* progress bar */
-.progress-bar {
-    height: 14px;
-
-    flex: 1;
-
-    border-radius: 20px;
-
-    background-color: #D9D9D9;
-
-    overflow: hidden;
-}
-
-
-/* progress fill */
-.progress-fill {
-    display: block;
-
-    width: 46%;
-    height: 100%;
-
-    border-radius: 20px;
-
-    background-color: #6BB851;
-}
-
-
-/* progress number */
-.progress-number {
-    color: #D9D9D9;
-
-    font-size: 16px;
-}
-
-
-/* info */
-.progress-info {
-    margin-top: 17px;
-}
-
-
-/* info lines */
-.progress-info p {
-    margin: 2px 0;
-
-    color: #D9D9D9;
-
-    font-size: 22px;
-}
-
-
-/* sidebar buttons */
-.sidebar-buttons {
-    display: flex;
-
-    gap: 25px;
-
+    grid-template-columns: minmax(0, 1fr) 384px;
+    gap: 24px;
+    align-items: start;
     margin-top: 28px;
 }
 
+.po-lanes {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    overflow-x: auto;
+    padding: 2px 2px 14px;
+}
 
-/* add task and sprint */
-.sidebar-button {
-    width: 50%;
-    height: 215px;
+/* ---------- A column (backlog or sprint) ---------- */
+.po-lane {
+    display: flex;
+    flex: 0 0 232px;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 640px;
+    padding: 18px 14px 16px;
+    border-radius: 20px;
+    background: var(--qx-panel);
+    transition: outline-color 0.15s ease;
+}
 
-    border: none;
-    border-radius: 30px;
+.po-lane-complete {
+    opacity: 0.6;
+    filter: grayscale(0.35);
+}
 
-    background-color: rgba(0, 0, 0, 0.30);
-    color: #D9D9D9;
+.po-lane-drag-over {
+    outline: 2px dashed var(--qx-ink);
+    outline-offset: -5px;
+}
 
+.po-lane-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 4px;
+}
+
+.po-lane-header h2,
+.po-lane-name {
+    min-width: 0;
+    font-size: 1.6875rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.po-lane-name {
+    flex: 1;
+    width: 100%;
+    padding: 4px 6px;
+    margin-left: -6px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    font-family: inherit;
+    color: var(--qx-ink);
+}
+
+.po-lane-name:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.po-lane-name:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    background: #fff;
+}
+
+.po-lane-sub {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: -4px;
+}
+
+.po-badge {
+    display: grid;
+    place-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    border-radius: 50%;
+    background: var(--qx-paper);
+    font-size: 0.875rem;
+    font-weight: 800;
+}
+
+.po-lane-delete {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--qx-ink);
+    cursor: pointer;
+}
+
+.po-lane-delete:hover {
+    background: rgba(233, 171, 154, 0.6);
+}
+
+.po-lane-delete:focus-visible,
+.po-dates:focus-visible,
+.po-task:focus-visible,
+.po-action:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 2px;
+}
+
+.po-dates {
+    margin-left: 4px;
+    padding: 2px 4px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--qx-ink);
+    cursor: default;
+}
+
+.po-lane:not(.po-lane-complete) .po-dates:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.po-dates-editor {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 0 4px;
+}
+
+.po-dates-editor input {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0 6px;
+    border: 1px solid var(--qx-line);
+    border-radius: 6px;
+    background: #fff;
+    font: inherit;
+    font-size: 0.75rem;
+    color: var(--qx-ink);
+}
+
+.po-dates-done {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--qx-ink);
+    font: inherit;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ---------- Task cards ---------- */
+.po-lane-tasks {
+    display: grid;
+    flex: 1;
+    align-content: start;
+    gap: 10px;
+}
+
+.po-task {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--qx-paper);
+    box-shadow: 0 2px 5px rgba(37, 57, 92, 0.08);
+    cursor: pointer;
+    transition: box-shadow 0.15s ease;
+}
+
+.po-task[draggable="true"] {
+    cursor: grab;
+}
+
+.po-task:hover {
+    box-shadow: 0 4px 10px rgba(37, 57, 92, 0.16);
+}
+
+.po-task-complete {
+    opacity: 0.55;
+}
+
+.po-task-dragging {
+    opacity: 0.4;
+}
+
+.po-task-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.po-task-status {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #8793A1;
+}
+
+.po-task-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.po-task-info {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--qx-muted);
+}
+
+.po-task-priority {
+    font-size: 0.9375rem;
+    font-weight: 800;
+}
+
+.po-task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.po-task-tags span {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--qx-salmon);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.po-lane-empty {
+    padding: 20px 10px;
+    border: 1px dashed rgba(37, 57, 92, 0.3);
+    border-radius: 14px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--qx-muted);
+    text-align: center;
+}
+
+/* ---------- Right column ---------- */
+.po-side {
+    display: grid;
+    gap: 24px;
+}
+
+.po-progress {
+    padding: 24px 24px 28px;
+    border-radius: 22px;
+    background: var(--qx-ink);
+    color: #fff;
+}
+
+.po-progress header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.po-progress h2 {
+    font-size: 1.4375rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.po-percent {
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: #3C5477;
+    font-size: 1.375rem;
+    font-weight: 800;
+}
+
+.po-track {
+    height: 14px;
+    margin-top: 20px;
+    border-radius: 999px;
+    background: var(--qx-panel);
+    overflow: hidden;
+}
+
+.po-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: #BDE7AB;
+    transition: width 0.3s ease;
+}
+
+.po-count {
+    margin: 12px 0 22px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--qx-panel);
+}
+
+.po-facts {
+    display: grid;
+    gap: 14px;
+    list-style: none;
+}
+
+.po-facts li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 1.375rem;
+    font-weight: 500;
+}
+
+.po-facts li::before {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+.po-facts strong {
+    margin-left: auto;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #C5D5E8;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.po-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.po-action {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    gap: 5px;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 23px;
-
+    gap: 10px;
+    min-height: 150px;
+    border: 0;
+    border-radius: 20px;
+    background: var(--qx-ink);
+    font: inherit;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
 }
 
+.po-action:hover {
+    background: #1B2C49;
+    transform: translateY(-2px);
+}
 
-/* plus */
-.sidebar-plus {
-    font-size: 68px;
+/* ---------- Project tags ---------- */
+.po-tags {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--qx-panel);
+}
 
+.po-tags h2 {
+    font-size: 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.po-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.po-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 12px;
+    border: 2px solid var(--qx-salmon);
+    border-radius: 999px;
+    background: var(--qx-paper);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.po-tag button {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    font: inherit;
+    font-size: 1rem;
     line-height: 1;
-}
-
-
-/* sidebar hover */
-.sidebar-button:hover {
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
-
-/* back */
-.back-projects-button {
-    margin: 0 0 35px 50px;
-
-    border: none;
-    border-radius: 25px;
-
-    background-color: #18273A;
-    color: #D9D9D9;
-
-    padding: 12px 24px;
-
-    font-family: "Fustat", sans-serif;
-    font-size: 18px;
-
+    color: var(--qx-muted);
     cursor: pointer;
 }
 
-
-/* back hover */
-.back-projects-button:hover {
-    opacity: 0.9;
+.po-tag button:hover {
+    background: var(--qx-panel);
+    color: var(--qx-ink);
 }
 
-/* =========================================
-   COMPLETED TASKS
-   Only changes appearance when task is done
-========================================= */
-
-.task-card.task-card-complete {
-    background-color: #B5B5B5;
-    opacity: 0.55;
+.po-tags-empty {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--qx-muted);
 }
 
-.task-card.task-card-complete .task-card-name,
-.task-card.task-card-complete .task-priority {
-    color: #5F5F5F;
+.po-tag-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
 }
 
-.task-card.task-card-complete .task-card-weight {
-    background-color: #5F5F5F;
-    color: #D9D9D9;
+.po-tag-form label {
+    display: grid;
+    flex: 1;
+    gap: 6px;
+    min-width: 140px;
+    font-size: 0.8125rem;
+    font-weight: 700;
 }
 
-
-/* =========================================
-   COMPLETED SPRINTS
-   Sprint is greyed when:
-   - its end date has passed
-   OR
-   - all its tasks are complete
-========================================= */
-
-.sprint-box.sprint-box-complete {
-    background-color: #747A80;
-    opacity: 0.65;
+.po-tag-form input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--qx-line);
+    border-radius: 8px;
+    background: var(--qx-paper);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--qx-ink);
 }
 
-
-/*
-   Keep the contents readable while
-   still making the sprint look inactive.
-*/
-
-.sprint-box.sprint-box-complete .task-card {
-    opacity: 0.75;
+.po-tag-form input:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 1px;
 }
 
+.po-tag-form button {
+    height: 38px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--qx-ink);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
 
-/*
-   Completed tasks inside completed sprints
-   should still look more faded.
-*/
-
-.sprint-box.sprint-box-complete .task-card.task-card-complete {
+.po-tag-form button:disabled {
     opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.po-tag-error {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #8A2F1E;
+}
+
+/* ---------- Narrower screens ---------- */
+@media (max-width: 1280px) {
+    .po-board {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .po-head h1 {
+        font-size: 1.75rem;
+    }
+
+    .po-head p {
+        font-size: 0.9375rem;
+    }
+
+    .po-actions {
+        gap: 16px;
+    }
 }

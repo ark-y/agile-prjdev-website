@@ -1,0 +1,71 @@
+.quantix-logo {
+    display: flex;
+    color: var(--qx-ink);
+}
+
+/* ---------- Text wordmark (signed-out pages) ---------- */
+.quantix-logo-text {
+    align-items: center;
+    gap: 10px;
+}
+
+.quantix-logo-text .quantix-wordmark {
+    font-size: 1.8125rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.quantix-logo-text .quantix-sub {
+    align-self: flex-end;
+    padding-bottom: 5px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+/* ---------- Tile + stacked name (sidebar) ---------- */
+.quantix-logo-stacked {
+    align-items: center;
+    gap: 12px;
+}
+
+.quantix-tile {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--qx-ink);
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.quantix-stack {
+    display: grid;
+    line-height: 1.1;
+}
+
+.quantix-logo-stacked .quantix-wordmark {
+    font-size: 1.1875rem;
+    font-weight: 800;
+}
+
+.quantix-logo-stacked .quantix-sub {
+    font-size: 1.0625rem;
+    font-weight: 500;
+}
+
+/* ---------- Client sidebar (navy) ---------- */
+.quantix-logo-client {
+    color: #fff;
+}
+
+.quantix-logo-client .quantix-tile {
+    background: var(--qx-salmon);
+    color: var(--qx-ink);
+}
+
+.quantix-logo-client .quantix-sub {
+    font-size: 0.9375rem;
+}

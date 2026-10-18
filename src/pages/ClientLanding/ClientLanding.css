@@ -1,199 +1,145 @@
-/* Font import */
-@import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200;300;400;500;600;700;800&display=swap');
-
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.cl-intro h1 {
+    font-size: 2.375rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
 }
 
-html,
-body {
-    height: 100%;
-    background-color: #D9D9D9;
-    font-family: "Fustat", sans-serif;
-    color: #18273A;
+.cl-intro p {
+    margin-top: 10px;
+    font-size: 1.0938rem;
+    font-weight: 500;
 }
 
-/* Main page container */
-.client-page {
-    min-height: 100vh;
-    background-color: #D9D9D9;
+/* ---------- Project cards ---------- */
+.cl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+    list-style: none;
+}
+
+.cl-grid > li {
+    display: grid;
+}
+
+.cl-card {
     display: flex;
     flex-direction: column;
+    min-height: 258px;
+    padding: 24px 24px 22px;
+    border: 0;
+    border-radius: 20px;
+    background: var(--qx-panel);
+    box-shadow: 0 6px 14px rgba(37, 57, 92, 0.1);
+    font: inherit;
+    color: var(--qx-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Header section */
-.client-dashboard-header {
-    height: 150px;
-    background-color: #18273A;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 55px;
-    flex-shrink: 0;
+.cl-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 57, 92, 0.16);
 }
 
-.client-dashboard-header h1 {
-    margin: 0;
-    color: #D9D9D9;
-    font-size: 55px;
-    font-weight: 700;
-    letter-spacing: 5px;
+.cl-card:focus-visible,
+.cl-contact:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 3px;
 }
 
-.header-buttons {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-left: auto;
+.cl-card-name {
+    font-size: 1.875rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
-.header-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background-color: #D9D9D9;
-    color: #18273A;
-    font-family: "Fustat", sans-serif;
-    font-size: 16px;
+.cl-card-label {
+    margin-top: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(37, 57, 92, 0.22);
+    font-size: 1.0625rem;
+    font-weight: 500;
+}
+
+.cl-card-dates {
+    margin-top: 14px;
+    font-size: 1.1875rem;
     font-weight: 600;
 }
-/* Main content area */
-.dashboard-content {
-    flex: 1;
-    padding: 55px;
-    display: flex;
-    gap: 55px;
-    align-items: flex-start;
-}
 
-/* Left side - Progress donut chart */
-.progress-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.progress-donut-container {
-    width: 320px;
-    height: 320px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.progress-donut {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    color: #18273A;
-    font-size: 40px;
-    font-weight: 700;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* Right side - Tasks and sprint info */
-.right-panel {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-/* Current Tasks box */
-.current-tasks {
-    background-color: #A8A8A8;
-    border-radius: 30px;
-    padding: 35px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.current-tasks h2 {
-    color: #18273A;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    margin: 0 0 25px 0;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #18273A;
-}
-
-.current-tasks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.current-tasks-list .task-item {
+/* ---------- Nothing shared yet ---------- */
+.cl-empty {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    align-items: center;
-    color: #D9D9D9;
-    font-size: 20px;
-    font-weight: 400;
-    letter-spacing: 3px;
+    justify-items: center;
+    margin-top: 32px;
+    padding: 80px 32px 84px;
+    border-radius: 28px;
+    background: var(--qx-panel);
+    text-align: center;
 }
 
-/* Sprint box */
-.client-sprint-box {
-    background-color: #A8A8A8;
-    border-radius: 30px;
-    padding: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    min-height: 100px;
+.cl-art {
+    width: 192px;
+    height: auto;
 }
 
-.client-sprint-box h3 {
-    color: #18273A;
-    font-size: 30px;
+.cl-empty h2 {
+    margin-top: 28px;
+    font-size: 2.1875rem;
     font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    margin: 0;
+    line-height: 1.4;
 }
 
-.client-sprint-box .percentage {
-    color: #D9D9D9;
-    font-size: 36px;
-    font-weight: 700;
-    letter-spacing: 5px;
+.cl-empty p {
+    max-width: 580px;
+    margin-top: 22px;
+    font-size: 1.2188rem;
+    font-weight: 500;
+    line-height: 1.55;
 }
 
-.client-dashboard-header select,
-.client-dashboard-header button {
-    padding: 10px 14px;
+.cl-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 50px;
+    margin-top: 24px;
+    padding: 0 26px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 10px;
+    background: var(--qx-ink);
     font: inherit;
-}
-
-.client-dashboard-header button {
+    font-size: 1.0938rem;
+    font-weight: 700;
+    color: #fff;
     cursor: pointer;
+    transition: background 0.15s ease;
 }
 
-.client-empty-state {
-    margin: 40px;
-    font-size: 24px;
+.cl-contact:hover {
+    background: #1B2C49;
 }
 
-.client-sprint-box > span {
-    color: #18273a;
-    font-size: 20px;
+@media (max-width: 900px) {
+    .cl-intro h1 {
+        font-size: 1.875rem;
+    }
+
+    .cl-empty {
+        padding: 48px 20px 52px;
+    }
+
+    .cl-empty h2 {
+        font-size: 1.625rem;
+    }
+
+    .cl-empty p {
+        font-size: 1.0625rem;
+    }
 }

@@ -18,7 +18,9 @@ Use `Client` instead of `Admin` in the role lookup to prepare a client test acco
 
 6. Apply `20261007_project_settings.sql` after the role/access and app workflow migrations. It enables safe comment deletion and returns role and email details to project-member candidate lists.
 7. Apply `20261007_task_checklist_permissions.sql` after the other migrations. It allows assigned developers to update checklist completion while keeping other task-field updates restricted. Existing projects must apply this migration to Supabase before developers can save checklist changes.
-8. Link this repository to the Supabase project with the Supabase CLI and deploy the `create-project-member` Edge Function:
+8. Apply `20261008_notification_delete.sql` so people can delete their own notifications with the x on each notification card. Without it, the x shows a message asking for this migration.
+9. Apply `20261009_update_own_name.sql` so Developers and Clients can change their own name under Settings → Profile. Without it, saving a name shows a message asking for this migration.
+10. Link this repository to the Supabase project with the Supabase CLI and deploy the `create-project-member` Edge Function:
 
    ```sh
    supabase link --project-ref <project-ref>
@@ -27,7 +29,7 @@ Use `Client` instead of `Admin` in the role lookup to prepare a client test acco
 
    The function verifies the signed-in Admin and project membership before creating an Auth account, assigning its Developer or Client role, and adding it to that project. The Supabase Edge Function runtime supplies the service-role key; never put that key in frontend environment variables or source files.
 
-8. As an Admin, open a project, select Settings, then Developer or Client to add an existing account or create a new account with a temporary password. Added users should change that password under Settings → Security after signing in. Admins can delete projects from the project list; comment authors can delete their own comments, and project Admins can delete any comment in the project.
+11. As an Admin, open Settings from the sidebar, then use Developers or Clients to add an existing account to a project or create a new account with a temporary password (pick the project it joins). Use Projects to create or rename a project. Added users should change that password under Settings → Security after signing in; Developers and Clients can also change their name under Settings → Profile. Admins can delete projects from the project list; comment authors can delete their own comments, and project Admins can delete any comment in the project.
 
 For Netlify, set the same `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` variables in the site's environment settings. The deploy configuration runs `npm run build` and publishes `dist`.
 

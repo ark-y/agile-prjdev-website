@@ -103,3 +103,22 @@ export async function removeProjectMember(projectId, userId) {
         throw error;
     }
 }
+
+export async function updateOwnName({ firstName, lastName }) {
+    const { error } = await supabase.rpc("update_own_name", {
+        p_first_name: firstName,
+        p_last_name: lastName
+    });
+
+    if (error) {
+        const missing = error.code === "PGRST202" || /could not find the function/i.test(error.message || "");
+        throw new Error(
+            missing
+                ? "Saving your name needs the 20261009_update_own_name.sql migration to be applied in Supabase."
+                : error.message || "Could not update your name."
+        );
+    }
+
+    // Keep the sign-in account's own copy of the name in step (best effort).
+    await supabase.auth.updateUser({ data: { first_name: firstName, last_name: lastName } });
+}

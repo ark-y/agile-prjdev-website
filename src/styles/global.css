@@ -1,0 +1,23 @@
+/* Quantix brand tokens, taken from the Figma frames */
+:root {
+    --qx-ink: #25395C;
+    --qx-muted: #677488;
+    --qx-blue: #678EB5;
+    --qx-blue-dark: #55789F;
+    --qx-panel: #D9E5F1;
+    --qx-paper: #FAF8F5;
+    --qx-salmon: #E9AB9A;
+    --qx-line: #C5D2E3;
+}
+
+/* Error banner shown above any page */
+.app-error {
+    position: relative;
+    z-index: 30;
+    margin: 0;
+    padding: 12px 20px;
+    background: #fff0f0;
+    color: #8c2020;
+    font-weight: 700;
+}
+

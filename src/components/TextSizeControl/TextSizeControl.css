@@ -1,0 +1,49 @@
+/* Every rule is scoped under .tsc / .tsc-*, so nothing else in the app is affected. */
+.tsc {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 40;
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: #ffffff;
+    border: 1px solid #c5d2e3;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(37, 57, 92, 0.18);
+}
+
+.tsc-btn {
+    /* Fixed px on purpose: the control itself must not grow with the page text. */
+    min-width: 44px;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 1px solid #c5d2e3;
+    border-radius: 6px;
+    background: #f3f6f9;
+    color: #25395c;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.tsc-btn:hover:not(:disabled) {
+    background: #d9e5f1;
+}
+
+.tsc-btn:focus-visible {
+    outline: 3px solid #678eb5;
+    outline-offset: 2px;
+}
+
+.tsc-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tsc-value {
+    min-width: 56px;
+    font-weight: 600;
+}

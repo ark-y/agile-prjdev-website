@@ -13,6 +13,22 @@ export async function fetchAllProjects() {
     return data;
 }
 
+/*
+ * Every visible sprint's dates, in one query, so the project cards can show each
+ * project's timeline.
+ */
+export async function fetchSprintDates() {
+    const { data, error } = await supabase
+        .from("sprint")
+        .select("project_id, sprint_start_date, sprint_end_date");
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}
+
 export async function fetchProject(projectId) {
     const { data, error } = await supabase
         .from("project")
