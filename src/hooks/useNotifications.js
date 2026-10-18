@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { deleteNotification, fetchNotifications, markNotificationRead } from "../services/notificationService";
+import {
+    deleteNotification,
+    fetchNotifications,
+    markNotificationRead,
+    respondToTaskVolunteer
+} from "../services/notificationService";
 
 export function useNotifications(intervalMs = 30000) {
     const [notifications, setNotifications] = useState([]);
@@ -59,7 +64,43 @@ export function useNotifications(intervalMs = 30000) {
         }
     }
 
+    async function respondToVolunteer(notificationId, accept) {
+        const notification = notifications.find((item) => item.notif_id === notificationId);
+
+        try {
+            await respondToTaskVolunteer(notificationId, accept);
+            setNotifications((current) => current.map((item) =>
+                item.notif_id === notificationId
+                    ? {
+                        ...item,
+                        notif_is_read: true,
+                        notif_read_at: new Date().toISOString(),
+                        notif_action_status: accept ? "accepted" : "declined"
+                    }
+                    : item
+            ));
+            setError("");
+
+            if (accept && notification?.task_id && notification?.notif_volunteer_id) {
+                window.dispatchEvent(new CustomEvent("task-volunteer-accepted", {
+                    detail: {
+                        taskId: notification.task_id,
+                        developerId: notification.notif_volunteer_id
+                    }
+                }));
+            }
+        } catch (actionError) {
+            const missingMigration = actionError.code === "PGRST202"
+                || /could not find the function/i.test(actionError.message || "");
+            setError(
+                missingMigration
+                    ? "Task volunteer notifications need the 20261010_task_volunteer_notifications.sql migration to be applied in Supabase."
+                    : actionError.message || "Could not respond to the volunteer request."
+            );
+        }
+    }
+
     const unreadCount = notifications.filter((notification) => !notification.notif_is_read).length;
 
-    return { notifications, unreadCount, error, markRead, remove };
+    return { notifications, unreadCount, error, markRead, remove, respondToVolunteer };
 }

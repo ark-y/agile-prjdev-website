@@ -3,6 +3,8 @@ import Icon from "../../components/Icons/Icons";
 import WorkspaceShell from "../../components/WorkspaceShell/WorkspaceShell";
 import { useNotifications } from "../../hooks/useNotifications";
 import { formatDayMonth, formatProjectDates, projectDateRange } from "../../utils/projectDates";
+import { volunteerForBacklogTask } from "../../services/taskServices";
+import volunteerIcon from "../../assets/volunteer-icon.png";
 import "./ProjectOverview.css";
 
 function getPrioritySymbol(priority) {
@@ -83,6 +85,9 @@ function ProjectOverview({
     // Empty shows every task; otherwise only tasks assigned to any of these user ids.
     const [filterUserIds, setFilterUserIds] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [volunteeringTaskId, setVolunteeringTaskId] = useState(null);
+    const [volunteeredTaskIds, setVolunteeredTaskIds] = useState([]);
+    const [volunteerError, setVolunteerError] = useState(null);
     const filterRef = useRef(null);
 
     // Close the assignee dropdown on Escape or a click outside it.
@@ -170,6 +175,23 @@ function ProjectOverview({
         (assigneesByTask[String(task.task_id)] || [])
             .map((userId) => members.find((member) => String(member.user_id) === String(userId)))
             .filter(Boolean);
+
+    async function handleVolunteer(taskId) {
+        setVolunteeringTaskId(taskId);
+        setVolunteerError(null);
+
+        try {
+            await volunteerForBacklogTask(taskId);
+            setVolunteeredTaskIds((current) => [...new Set([...current, String(taskId)])]);
+        } catch (error) {
+            setVolunteerError({
+                taskId,
+                message: error.message || "Could not volunteer for this task."
+            });
+        } finally {
+            setVolunteeringTaskId(null);
+        }
+    }
 
     // Names such as Done, Complete and Completed all count as complete.
     const completedStatusIds = new Set(
@@ -280,9 +302,14 @@ function ProjectOverview({
             draggedTaskId === task.task_id ? "po-task-dragging" : ""
         ].filter(Boolean).join(" ");
 
+        const canVolunteer = isDeveloper
+            && (task.sprint_id === null || task.sprint_id === undefined)
+            && (assigneesByTask[String(task.task_id)] || []).length === 0;
+        const hasVolunteered = volunteeredTaskIds.includes(String(task.task_id));
+
         return (
+            <div key={task.task_id} className="po-task-entry">
             <div
-                key={task.task_id}
                 className={classes}
                 draggable={isAdmin}
                 role="button"
@@ -356,15 +383,38 @@ function ProjectOverview({
                                         +{hiddenAssignees.length}
                                     </span>
                                 )}
-                                {assignees.length === 0 && (
+                                {assignees.length === 0 && canVolunteer ? (
+                                    <button
+                                        type="button"
+                                        className="po-initials po-volunteer-button"
+                                        disabled={hasVolunteered || volunteeringTaskId === task.task_id}
+                                        title={hasVolunteered
+                                            ? "Volunteer request sent"
+                                            : volunteeringTaskId === task.task_id ? "Sending volunteer request" : "Volunteer for this task"}
+                                        aria-label={hasVolunteered
+                                            ? "Volunteer request sent"
+                                            : volunteeringTaskId === task.task_id ? "Sending volunteer request" : "Volunteer for this task"}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleVolunteer(task.task_id);
+                                        }}
+                                        onKeyDown={(event) => event.stopPropagation()}
+                                    >
+                                        <img src={volunteerIcon} alt="" />
+                                    </button>
+                                ) : assignees.length === 0 ? (
                                     <span className="po-initials is-empty" title="Unassigned" aria-label="Unassigned">
                                         &ndash;
                                     </span>
-                                )}
+                                ) : null}
                             </div>
                         )}
                     </div>
                 )}
+            </div>
+            {volunteerError?.taskId === task.task_id && (
+                <p className="po-volunteer-error" role="alert">{volunteerError.message}</p>
+            )}
             </div>
         );
     }

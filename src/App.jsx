@@ -112,6 +112,27 @@ function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        function handleTaskVolunteerAccepted(event) {
+            const { taskId, developerId } = event.detail || {};
+            if (!taskId || !developerId) {
+                return;
+            }
+
+            setAssigneesByTask((current) => {
+                const key = String(taskId);
+                const assigneeIds = current[key] || [];
+                if (assigneeIds.some((userId) => String(userId) === String(developerId))) {
+                    return current;
+                }
+                return { ...current, [key]: [...assigneeIds, developerId] };
+            });
+        }
+
+        window.addEventListener("task-volunteer-accepted", handleTaskVolunteerAccepted);
+        return () => window.removeEventListener("task-volunteer-accepted", handleTaskVolunteerAccepted);
+    }, []);
+
 
     /*
      * ==============================
