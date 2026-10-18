@@ -3,7 +3,7 @@ import { supabase } from "../supabaseClient";
 export async function fetchNotifications(limit = 30) {
     const { data, error } = await supabase
         .from("notification")
-        .select("notif_id, notif_message, notif_is_read, notif_delivered_at, notif_read_at, task_id")
+        .select("notif_id, notif_message, notif_is_read, notif_delivered_at, notif_read_at, task_id, notif_type, notif_volunteer_id, notif_action_status")
         .order("notif_delivered_at", { ascending: false })
         .limit(limit);
 
@@ -30,6 +30,17 @@ export async function markNotificationRead(notificationId) {
     }
 
     return data.notif_id;
+}
+
+export async function respondToTaskVolunteer(notificationId, accept) {
+    const { error } = await supabase.rpc("respond_to_task_volunteer", {
+        p_notification_id: notificationId,
+        p_accept: accept
+    });
+
+    if (error) {
+        throw error;
+    }
 }
 
 export async function deleteNotification(notificationId) {

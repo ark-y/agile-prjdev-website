@@ -333,6 +333,50 @@
     gap: 10px;
 }
 
+.po-task-entry {
+    display: grid;
+    gap: 6px;
+}
+
+.po-volunteer-button {
+    width: 28px;
+    min-width: 28px;
+    padding: 0;
+    border: 1px solid rgba(37, 57, 92, 0.35);
+    background: rgba(37, 57, 92, 0.08);
+    cursor: pointer;
+}
+
+.po-volunteer-button img {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+}
+
+.po-volunteer-button:hover:not(:disabled) {
+    background: rgba(37, 57, 92, 0.18);
+}
+
+.po-volunteer-button:disabled {
+    cursor: default;
+    opacity: 0.65;
+}
+
+.po-volunteer-button:focus-visible {
+    outline: 2px solid var(--qx-ink);
+    outline-offset: 2px;
+}
+
+.po-volunteer-error {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #8A2F1E;
+    overflow-wrap: anywhere;
+}
+
 .po-task {
     padding: 12px 14px;
     border-radius: 14px;

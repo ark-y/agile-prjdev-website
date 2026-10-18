@@ -199,3 +199,71 @@
 .notif-delete:hover {
     background: rgba(37, 57, 92, 0.18);
 }
+
+.notif-card.is-volunteer-request {
+    padding-bottom: 2px;
+}
+
+.notif-card.is-volunteer-request .notif-body {
+    cursor: default;
+}
+
+.notif-card.is-volunteer-request.is-pending {
+    background: #25395C;
+    color: #fff;
+}
+
+.notif-card.is-volunteer-request.is-pending .notif-body time {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.notif-card.is-volunteer-request.is-pending .notif-dot {
+    background: #fff;
+}
+
+.notif-card.is-volunteer-request.is-pending .notif-delete {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+}
+
+.notif-card.is-volunteer-request.is-pending .notif-delete:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.notif-card.is-volunteer-request.is-complete {
+    background: #E1E5EA;
+    color: #687488;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notif-card.is-volunteer-request.is-complete .notif-body time {
+    color: #687488;
+}
+
+.notif-volunteer-actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 18px 18px;
+}
+
+.notif-volunteer-actions button {
+    min-width: 92px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #fff;
+    color: #25395C;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.notif-volunteer-actions button:hover {
+    background: #E9EDF1;
+}
+
+.notif-volunteer-actions button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}

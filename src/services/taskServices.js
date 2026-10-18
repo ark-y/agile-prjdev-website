@@ -389,6 +389,22 @@ export async function unassignTask(taskId, userId) {
     throwIfError(error);
 }
 
+export async function volunteerForBacklogTask(taskId) {
+    const { error } = await supabase.rpc("volunteer_for_backlog_task", {
+        p_task_id: taskId
+    });
+
+    if (error) {
+        const missingMigration = error.code === "PGRST202"
+            || /could not find the function/i.test(error.message || "");
+        throw new Error(
+            missingMigration
+                ? "Task volunteer notifications need the 20261010_task_volunteer_notifications.sql migration to be applied in Supabase."
+                : error.message || "Could not volunteer for this task."
+        );
+    }
+}
+
 async function replaceTaskAssignees(taskId, assigneeIds = []) {
     const uniqueAssigneeIds = [...new Set(assigneeIds.filter(Boolean))];
     const { error } = await supabase.rpc("set_task_assignees", {
