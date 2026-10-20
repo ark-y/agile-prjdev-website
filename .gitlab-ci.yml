@@ -1,0 +1,41 @@
+
+stages:
+  - test
+  - build
+
+default:
+  image: node:22
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+
+unit_tests:
+  stage: test
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm test
+
+coverage:
+  stage: test
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run test:coverage
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    expire_in: 1 week
+
+build:
+  stage: build
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
