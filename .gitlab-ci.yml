@@ -13,14 +13,23 @@ default:
       export NVM_DIR="$CI_PROJECT_DIR/.nvm"
       export NPM_CONFIG_CACHE="$CI_PROJECT_DIR/.npm"
 
+      # Create the directories before installing Node.js
+      mkdir -p "$NVM_DIR"
+      mkdir -p "$NPM_CONFIG_CACHE"
+
+      # Install nvm if it is not already installed
       if [ ! -s "$NVM_DIR/nvm.sh" ]; then
         curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
       fi
 
+      # Load nvm
       . "$NVM_DIR/nvm.sh"
+
+      # Install and activate Node.js
       nvm install 22
       nvm use 22
 
+      # Confirm Node.js and npm are available
       node --version
       npm --version
 
